@@ -1,0 +1,56 @@
+<svg viewBox="0 0 220 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Clínica Latino">
+  <defs>
+    <linearGradient id="cl-grad" x1="10%" y1="90%" x2="90%" y2="10%">
+      <stop offset="0%" stop-color="#B9DB5C"/>
+      <stop offset="35%" stop-color="#5BB89A"/>
+      <stop offset="65%" stop-color="#2BB3B2"/>
+      <stop offset="100%" stop-color="#2C6FB1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Icon: two interlocking rounded shapes forming a medical cross -->
+  <!-- Shape A: top arm + right arm (forms a backward L / hook) -->
+  <path
+    d="M 110 22
+       C 88 22 70 40 70 62
+       L 70 88
+       L 44 88
+       C 22 88 4 106 4 128
+       C 4 150 22 168 44 168
+       L 70 168
+       L 70 168
+       C 88 168 106 150 106 128
+       L 106 102
+       L 132 102
+       C 154 102 172 84 172 62
+       C 172 40 154 22 132 22 Z"
+    fill="none"
+    stroke="url(#cl-grad)"
+    stroke-width="16"
+    stroke-linejoin="round"
+    stroke-linecap="round"/>
+
+  <!-- Shape B: bottom arm + interlocking, rotated -->
+  <path
+    d="M 110 168
+       C 132 168 150 150 150 128
+       L 150 102
+       L 176 102
+       C 198 102 216 120 216 142
+       C 216 164 198 182 176 182
+       L 150 182
+       L 150 208
+       C 150 230 132 248 110 248
+       C 88 248 70 230 70 208
+       L 70 182"
+    fill="none"
+    stroke="url(#cl-grad)"
+    stroke-width="16"
+    stroke-linejoin="round"
+    stroke-linecap="round"/>
+
+  <!-- Text -->
+  <text x="110" y="270" text-anchor="middle" fill="#6E7F8E" font-family="Lato, system-ui, sans-serif" font-size="12" font-weight="400" letter-spacing="5">
+    CLINICA
+  </text>
+</svg>
