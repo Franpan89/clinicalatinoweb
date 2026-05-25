@@ -6,9 +6,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    // Coincide con todo excepto:
-    // - _next/static, _next/image, favicon, archivos estáticos públicos
-    '/((?!_next/static|_next/image|favicon.ico|logo.svg|logo-icon.svg|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-  ],
+  // Solo ejecuta el middleware en rutas /admin — el sitio público no necesita
+  // refresco de sesión y así evitamos crashes en Edge para todas las páginas.
+  matcher: ['/admin/:path*'],
 }
