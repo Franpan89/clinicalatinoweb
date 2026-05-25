@@ -5,7 +5,6 @@ import About from '@/components/About'
 import Services from '@/components/Services'
 import Gallery from '@/components/Gallery'
 import Stats from '@/components/Stats'
-import Specialties from '@/components/Specialties'
 import Doctors from '@/components/Doctors'
 import Testimonials from '@/components/Testimonials'
 import Contact from '@/components/Contact'
@@ -51,7 +50,6 @@ export default async function Home() {
       <Services />
       <Gallery />
       <Stats />
-      <Specialties specialties={specialties} />
       <Doctors doctors={doctors} specialties={specialties} />
       <Testimonials />
       <Contact />
