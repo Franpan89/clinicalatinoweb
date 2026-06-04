@@ -65,6 +65,9 @@ export type Database = {
           schedule_days: ScheduleBlock[]
           languages: string[]
           photo_url: string | null
+          office_number: string | null
+          tower: string | null
+          contact_phone: string | null
           display_order: number
           active: boolean
         }
@@ -84,6 +87,9 @@ export type Database = {
           schedule_days?: ScheduleBlock[]
           languages?: string[]
           photo_url?: string | null
+          office_number?: string | null
+          tower?: string | null
+          contact_phone?: string | null
           display_order?: number
           active?: boolean
         }
@@ -100,6 +106,9 @@ export type Database = {
           schedule_days: ScheduleBlock[]
           languages: string[]
           photo_url: string | null
+          office_number: string | null
+          tower: string | null
+          contact_phone: string | null
           display_order: number
           active: boolean
         }>

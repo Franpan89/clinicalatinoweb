@@ -47,14 +47,14 @@ function AnimatedNumber({
 
 const stats = [
   {
-    target: 35,
+    target: 69,
     suffix: '',
     label: 'Años',
     sublabel: 'de Experiencia',
-    desc: 'Décadas cuidando la salud de la comunidad ecuatoriana con dedicación y excelencia.',
+    desc: 'Desde 1957 cuidando la salud de la comunidad cuencana con dedicación y excelencia.',
   },
   {
-    target: 15,
+    target: 40,
     suffix: '+',
     label: 'Especialidades',
     sublabel: 'Médicas',
@@ -106,12 +106,12 @@ export default function Stats() {
         <div className="text-center mb-16">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="h-px w-10 bg-gold" />
-            <span className="text-gold font-outfit text-xs font-semibold tracking-[0.3em] uppercase">
+            <span className="text-gold font-lato text-xs font-semibold tracking-[0.3em] uppercase">
               En Números
             </span>
             <div className="h-px w-10 bg-gold" />
           </div>
-          <h2 className="font-cormorant text-white text-4xl lg:text-5xl font-semibold">
+          <h2 className="font-lato text-white text-4xl lg:text-5xl font-semibold">
             La Confianza de Miles de Familias
           </h2>
         </div>
@@ -129,16 +129,16 @@ export default function Stats() {
               transition={{ delay: i * 0.15, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
               className="text-center px-8 py-10 border-b border-white/10 lg:border-b-0 lg:border-r lg:last:border-r-0"
             >
-              <div className="font-cormorant text-gold leading-none mb-1" style={{ fontSize: 'clamp(3.5rem, 6vw, 5rem)' }}>
+              <div className="font-lato text-gold leading-none mb-1" style={{ fontSize: 'clamp(3.5rem, 6vw, 5rem)' }}>
                 <AnimatedNumber target={stat.target} suffix={stat.suffix} />
               </div>
-              <div className="font-outfit text-white font-semibold uppercase tracking-widest text-xs mb-0.5">
+              <div className="font-lato text-white font-semibold uppercase tracking-widest text-xs mb-0.5">
                 {stat.label}
               </div>
-              <div className="font-outfit text-white/40 text-xs uppercase tracking-wider mb-5">
+              <div className="font-lato text-white/40 text-xs uppercase tracking-wider mb-5">
                 {stat.sublabel}
               </div>
-              <div className="font-outfit text-white/35 text-sm leading-relaxed max-w-[200px] mx-auto">
+              <div className="font-lato text-white/35 text-sm leading-relaxed max-w-[200px] mx-auto">
                 {stat.desc}
               </div>
             </motion.div>

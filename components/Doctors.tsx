@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { Clock, Languages, GraduationCap, Award, Calendar, Phone } from 'lucide-react'
+import { Clock, Languages, GraduationCap, Award, Calendar, Phone, MapPin, DoorOpen } from 'lucide-react'
 import { getInitials, formatSchedule } from '@/lib/doctors'
 import type { Doctor, Specialty } from '@/lib/types'
 
@@ -114,6 +114,27 @@ function DoctorCard({ doctor, index }: { doctor: Doctor; index: number }) {
               <span className="font-lato text-xs text-brand-dark/70">{scheduleText}</span>
             </div>
           )}
+          {(doctor.tower || doctor.office_number) && (
+            <div className="flex items-start gap-2.5">
+              <MapPin className="text-brand-teal flex-shrink-0 mt-0.5" size={13} />
+              <span className="font-lato text-xs text-brand-dark/70">
+                {[doctor.tower, doctor.office_number && `Consultorio ${doctor.office_number}`]
+                  .filter(Boolean)
+                  .join(' · ')}
+              </span>
+            </div>
+          )}
+          {doctor.contact_phone && (
+            <div className="flex items-start gap-2.5">
+              <Phone className="text-brand-teal flex-shrink-0 mt-0.5" size={13} />
+              <a
+                href={`tel:${doctor.contact_phone.replace(/\s+/g, '')}`}
+                className="font-lato text-xs text-brand-dark/70 hover:text-brand-teal transition-colors"
+              >
+                {doctor.contact_phone}
+              </a>
+            </div>
+          )}
           {doctor.languages.length > 0 && (
             <div className="flex items-start gap-2.5">
               <Languages className="text-brand-teal flex-shrink-0 mt-0.5" size={13} />
@@ -141,7 +162,7 @@ function DoctorCard({ doctor, index }: { doctor: Doctor; index: number }) {
             Agendar
           </a>
           <a
-            href="tel:+59372827074"
+            href={`tel:${(doctor.contact_phone || '+59372827074').replace(/\s+/g, '')}`}
             className="inline-flex items-center justify-center gap-2 border border-brand-teal/30 hover:border-brand-teal hover:bg-brand-teal/5 text-brand-dark font-lato font-bold py-3 px-4 text-xs tracking-wider uppercase transition-colors"
             aria-label="Llamar"
           >

@@ -130,6 +130,9 @@ export async function createDoctor(formData: FormData) {
   const experience = String(formData.get('experience') ?? '').trim()
   const education = parseLines(formData.get('education'))
   const languages = parseCommaList(formData.get('languages'))
+  const office_number = String(formData.get('office_number') ?? '').trim() || null
+  const tower = String(formData.get('tower') ?? '').trim() || null
+  const contact_phone = String(formData.get('contact_phone') ?? '').trim() || null
   const display_order = Number(formData.get('display_order') ?? 999)
   const active = formData.get('active') === 'on'
   const schedule_days = parseScheduleBlocks(formData)
@@ -161,6 +164,9 @@ export async function createDoctor(formData: FormData) {
     education,
     languages,
     photo_url,
+    office_number,
+    tower,
+    contact_phone,
     display_order,
     active,
   })
@@ -187,6 +193,9 @@ export async function updateDoctor(id: string, formData: FormData) {
   const experience = String(formData.get('experience') ?? '').trim()
   const education = parseLines(formData.get('education'))
   const languages = parseCommaList(formData.get('languages'))
+  const office_number = String(formData.get('office_number') ?? '').trim() || null
+  const tower = String(formData.get('tower') ?? '').trim() || null
+  const contact_phone = String(formData.get('contact_phone') ?? '').trim() || null
   const display_order = Number(formData.get('display_order') ?? 999)
   const active = formData.get('active') === 'on'
   const schedule_days = parseScheduleBlocks(formData)
@@ -208,6 +217,9 @@ export async function updateDoctor(id: string, formData: FormData) {
     schedule_days,
     education,
     languages,
+    office_number,
+    tower,
+    contact_phone,
     display_order,
     active,
   }

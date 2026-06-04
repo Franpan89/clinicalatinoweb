@@ -6,12 +6,12 @@ import { CheckCircle2, Building2 } from 'lucide-react'
 import PlaceholderImage from './PlaceholderImage'
 
 const values = [
-  'Tecnología médica de última generación',
-  'Staff de especialistas altamente calificados',
+  'Pioneros en cirugía laparoscópica desde 1991',
+  'Primera clínica del austro ecuatoriano',
+  'Tecnología endoscópica de vanguardia',
+  'Equipo de especialistas de excelencia',
   'Atención humanista y personalizada',
-  'Infraestructura moderna y confortable',
-  'Protocolos internacionales de calidad',
-  'Compromiso con la vida y la salud',
+  'Innovación constante con calidez médica',
 ]
 
 export default function About() {
@@ -30,14 +30,14 @@ export default function About() {
           >
             <PlaceholderImage
               label="Equipo médico"
-              filename="equipo-clinica.jpg"
+              filename="public/img/equipo-clinica.jpg"
               recommendedSize="1200×900px"
               icon={Building2}
               variant="brand"
               ratio="4/3"
             />
 
-            {/* Floating badge */}
+            {/* Floating badge — 69 años */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={inView ? { opacity: 1, scale: 1 } : {}}
@@ -45,7 +45,7 @@ export default function About() {
               className="absolute -bottom-6 -right-6 bg-white p-7 shadow-2xl border border-brand-surface"
             >
               <div className="font-lato text-brand-gradient text-5xl font-light leading-none">
-                35
+                69
               </div>
               <div className="font-lato text-brand-gray text-[10px] uppercase tracking-[0.2em] mt-1 font-bold">
                 Años de Experiencia
@@ -68,21 +68,25 @@ export default function About() {
             </div>
 
             <h2 className="font-lato text-brand-dark text-4xl lg:text-5xl font-light leading-[1.1] mb-6">
-              Comprometidos con tu{' '}
-              <span className="font-bold text-brand-gradient">Salud y Bienestar</span>
+              <span className="font-bold text-brand-gradient">69 años</span> de Experiencia
+              <br />en Medicina de Vanguardia
             </h2>
 
             <p className="font-lato text-brand-gray leading-relaxed mb-5 text-[15px] font-light">
-              Clínica Latino es un centro médico privado de referencia en Cuenca, Ecuador.
-              Desde nuestra fundación en 1990, hemos combinado la calidez humana con la
-              innovación tecnológica para brindar servicios de salud de excelencia a toda
-              la comunidad.
+              <strong className="font-bold text-brand-dark">Clínica Latino</strong> es la
+              institución que hoy consolida la historia médica de Cuenca. Fundada en{' '}
+              <strong className="font-bold text-brand-dark">1957</strong> como la primera
+              clínica del austro por el{' '}
+              <strong className="font-bold text-brand-dark">Dr. Rubén Astudillo</strong>{' '}
+              y un destacado grupo de especialistas, nuestra evolución nos mantiene
+              actualmente a la vanguardia de la salud.
             </p>
 
             <p className="font-lato text-brand-gray leading-relaxed mb-9 text-[15px] font-light">
-              Nuestro equipo de médicos especialistas trabaja bajo los más altos estándares
-              internacionales de calidad, utilizando tecnología de vanguardia para garantizar
-              diagnósticos precisos y tratamientos efectivos.
+              Somos los <strong className="font-bold text-brand-dark">pioneros históricos en
+              equipamiento endoscópico</strong> y los primeros a nivel nacional en realizar{' '}
+              <strong className="font-bold text-brand-dark">cirugías laparoscópicas desde
+              1991</strong>.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-10">

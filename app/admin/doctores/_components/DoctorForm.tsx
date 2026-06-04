@@ -296,6 +296,40 @@ export default function DoctorForm({
           <ScheduleEditor initialBlocks={doctor?.schedule_days ?? []} />
         </Section>
 
+        {/* Ubicación física + contacto */}
+        <Section
+          title="Ubicación y contacto"
+          subtitle="Información que aparecerá en la tarjeta pública del médico para que los pacientes lo encuentren."
+        >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <Field label="Torre" hint="Ej: Torre A, Edificio Principal">
+              <input
+                name="tower"
+                defaultValue={doctor?.tower ?? ''}
+                placeholder="Torre / Edificio"
+                className={inputClass}
+              />
+            </Field>
+            <Field label="N° de consultorio" hint="Ej: 301, B-12">
+              <input
+                name="office_number"
+                defaultValue={doctor?.office_number ?? ''}
+                placeholder="Número o código"
+                className={inputClass}
+              />
+            </Field>
+            <Field label="Teléfono de contacto" hint="Directo al consultorio (opcional)">
+              <input
+                name="contact_phone"
+                type="tel"
+                defaultValue={doctor?.contact_phone ?? ''}
+                placeholder="+593-7-..."
+                className={inputClass}
+              />
+            </Field>
+          </div>
+        </Section>
+
         {/* Display */}
         <Section title="Configuración de visualización">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
