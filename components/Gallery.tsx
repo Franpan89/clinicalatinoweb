@@ -2,17 +2,23 @@
 
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { Building2, BedDouble, Stethoscope, Play, Video, Sparkles } from 'lucide-react'
+import { Play, Video, Sparkles } from 'lucide-react'
 import PlaceholderImage from './PlaceholderImage'
 
 /**
  * Para usar un video real:
- *   - Súbelo a YouTube/Vimeo y pega la URL embed en GALLERY_VIDEO_URL, o
- *   - Sube un MP4 a `public/img/clinica-video.mp4` y úsalo con <video>.
- *
- * Para usar imágenes reales, reemplaza cada `src={null}` con la ruta del archivo.
+ *   - Pega la URL embed de YouTube/Vimeo en GALLERY_VIDEO_URL
+ *   - O sube un MP4 a `public/img/clinica-video.mp4` y cambia la lógica al <video> tag
  */
 const GALLERY_VIDEO_URL: string | null = null
+
+const items = [
+  { src: '/img/fachada.jpg', label: 'Fachada principal', alt: 'Fachada de Clínica Latino' },
+  { src: '/img/habitacion.jpg', label: 'Habitación hospitalaria', alt: 'Habitación' },
+  { src: '/img/quirofano.jpg', label: 'Quirófano', alt: 'Sala de quirófano' },
+  { src: '/img/laboratorio.jpg', label: 'Laboratorio', alt: 'Laboratorio clínico' },
+  { src: '/img/imagenes.jpg', label: 'Centro de imágenes', alt: 'Centro de imágenes diagnósticas' },
+]
 
 export default function Gallery() {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.05 })
@@ -41,44 +47,42 @@ export default function Gallery() {
           </p>
         </div>
 
+        {/* Layout: video grande + 5 imágenes */}
         <motion.div
           ref={ref}
           initial="hidden"
           animate={inView ? 'visible' : 'hidden'}
-          variants={{ visible: { transition: { staggerChildren: 0.12 } } }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-5"
+          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+          className="grid grid-cols-2 md:grid-cols-3 gap-4 md:auto-rows-[200px]"
         >
-          {/* ── Video principal (col-span 2) ──────────────── */}
+          {/* Video institucional — grande (col-span-2 row-span-2) */}
           <motion.div
             variants={{
               hidden: { opacity: 0, scale: 0.96 },
               visible: { opacity: 1, scale: 1, transition: { duration: 0.7 } },
             }}
-            className="md:col-span-2 group cursor-pointer relative overflow-hidden"
+            className="col-span-2 row-span-2 group cursor-pointer relative overflow-hidden"
           >
             {GALLERY_VIDEO_URL ? (
-              <div className="aspect-video bg-brand-dark">
-                <iframe
-                  src={GALLERY_VIDEO_URL}
-                  title="Video institucional"
-                  className="w-full h-full"
-                  frameBorder={0}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                />
-              </div>
+              <iframe
+                src={GALLERY_VIDEO_URL}
+                title="Video institucional Clínica Latino"
+                className="w-full h-full"
+                frameBorder={0}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
             ) : (
-              <div className="relative aspect-video">
+              <div className="relative h-full">
                 <PlaceholderImage
                   label="Video institucional"
                   filename="public/img/clinica-video.mp4"
                   recommendedSize="MP4 1920×1080 · o YouTube embed URL"
                   icon={Video}
                   variant="dark"
-                  ratio="16/9"
-                  className="h-full"
+                  ratio="auto"
+                  className="h-full w-full"
                 />
-                {/* Play button overlay */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div className="w-20 h-20 rounded-full bg-brand-gradient flex items-center justify-center shadow-2xl shadow-brand-teal/30 group-hover:scale-110 transition-transform duration-300">
                     <Play size={32} className="text-white ml-1" fill="currentColor" />
@@ -88,86 +92,28 @@ export default function Gallery() {
             )}
           </motion.div>
 
-          {/* ── Imagen vertical: fachada ──────────────────── */}
-          <motion.div
-            variants={{
-              hidden: { opacity: 0, scale: 0.96 },
-              visible: { opacity: 1, scale: 1, transition: { duration: 0.7 } },
-            }}
-            className="group cursor-pointer overflow-hidden"
-          >
-            <PlaceholderImage
-              label="Fachada principal"
-              filename="public/img/fachada.jpg"
-              recommendedSize="800×900px"
-              icon={Building2}
-              variant="brand"
-              ratio="auto"
-              className="h-full min-h-[280px] group-hover:scale-105 transition-transform duration-700"
-            />
-          </motion.div>
-
-          {/* ── Habitación ──────────────────────────────── */}
-          <motion.div
-            variants={{
-              hidden: { opacity: 0, scale: 0.96 },
-              visible: { opacity: 1, scale: 1, transition: { duration: 0.7 } },
-            }}
-            className="group cursor-pointer overflow-hidden"
-          >
-            <PlaceholderImage
-              label="Habitación hospitalaria"
-              filename="public/img/habitacion.jpg"
-              recommendedSize="800×600px"
-              icon={BedDouble}
-              variant="soft"
-              ratio="4/3"
-              className="group-hover:scale-105 transition-transform duration-700"
-            />
-          </motion.div>
-
-          {/* ── Quirófano ───────────────────────────────── */}
-          <motion.div
-            variants={{
-              hidden: { opacity: 0, scale: 0.96 },
-              visible: { opacity: 1, scale: 1, transition: { duration: 0.7 } },
-            }}
-            className="group cursor-pointer overflow-hidden"
-          >
-            <PlaceholderImage
-              label="Quirófano"
-              filename="public/img/quirofano.jpg"
-              recommendedSize="800×600px"
-              icon={Stethoscope}
-              variant="dark"
-              ratio="4/3"
-              className="group-hover:scale-105 transition-transform duration-700"
-            />
-          </motion.div>
-
-          {/* ── Video corto adicional ─────────────────────── */}
-          <motion.div
-            variants={{
-              hidden: { opacity: 0, scale: 0.96 },
-              visible: { opacity: 1, scale: 1, transition: { duration: 0.7 } },
-            }}
-            className="group cursor-pointer overflow-hidden relative"
-          >
-            <PlaceholderImage
-              label="Video operaciones"
-              filename="public/img/operaciones-video.mp4"
-              recommendedSize="MP4 vertical o cuadrado"
-              icon={Video}
-              variant="outline"
-              ratio="4/3"
-              className="group-hover:scale-105 transition-transform duration-700"
-            />
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="w-14 h-14 rounded-full bg-brand-teal flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
-                <Play size={20} className="text-white ml-0.5" fill="currentColor" />
+          {/* 5 imágenes */}
+          {items.map((item, i) => (
+            <motion.div
+              key={i}
+              variants={{
+                hidden: { opacity: 0, scale: 0.96 },
+                visible: { opacity: 1, scale: 1, transition: { duration: 0.7 } },
+              }}
+              className="group cursor-pointer overflow-hidden relative"
+            >
+              <PlaceholderImage
+                src={item.src}
+                alt={item.alt}
+                ratio="auto"
+                className="h-full w-full group-hover:scale-105 transition-transform duration-700"
+              />
+              {/* Caption overlay on hover */}
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-dark/85 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="font-lato text-white text-sm font-bold">{item.label}</div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          ))}
         </motion.div>
 
         <div className="mt-10 text-center">

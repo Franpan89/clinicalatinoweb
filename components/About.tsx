@@ -29,11 +29,8 @@ export default function About() {
             className="relative"
           >
             <PlaceholderImage
-              label="Equipo médico"
-              filename="public/img/equipo-clinica.jpg"
-              recommendedSize="1200×900px"
-              icon={Building2}
-              variant="brand"
+              src="/img/equipo-clinica.jpg"
+              alt="Equipo médico de Clínica Latino"
               ratio="4/3"
             />
 

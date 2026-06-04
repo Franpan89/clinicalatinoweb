@@ -98,14 +98,11 @@ export default function Services() {
   return (
     <section id="servicios" className="py-24 bg-white">
       <div className="container mx-auto">
-        {/* Banner placeholder */}
+        {/* Banner */}
         <div className="mb-16">
           <PlaceholderImage
-            label="Banner de servicios"
-            filename="public/img/banner-servicios.jpg"
-            recommendedSize="2400×600px"
-            icon={Building2}
-            variant="brand"
+            src="/img/banner-servicios.jpg"
+            alt="Banner Clínica Latino — Servicios"
             ratio="4/1"
           />
         </div>

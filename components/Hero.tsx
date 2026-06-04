@@ -19,7 +19,7 @@ const fadeUp = {
  *   2. Cambia HERO_IMAGE_SRC a `'/img/hero-banner.png'`
  * Tamaño recomendado: 900×1100 px (vertical), PNG con fondo transparente.
  */
-const HERO_IMAGE_SRC: string | null = null
+const HERO_IMAGE_SRC: string | null = '/img/hero-banner.png'
 
 // Stats que también son links rápidos a secciones del sitio
 const heroStats = [
