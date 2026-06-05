@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Users, Plus, ArrowRight, Activity, Layers } from 'lucide-react'
+import { Users, Plus, ArrowRight, Activity, Layers, Settings } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 
 export default async function AdminDashboard() {
@@ -84,6 +84,12 @@ export default async function AdminDashboard() {
           desc="Agregar una nueva área médica al catálogo del sitio."
           icon={<Plus size={18} />}
         />
+        <QuickAction
+          href="/admin/configuracion"
+          title="Configuración del sitio"
+          desc="Mapa de Google, dirección textual y otros ajustes generales del sitio público."
+          icon={<Settings size={18} />}
+        />
       </div>
     </div>
   )
@@ -124,7 +130,7 @@ function StatCard({
       </div>
       <div className="flex items-baseline gap-2">
         <div
-          className={`font-lato font-light text-4xl ${
+          className={`font-lato font-semibold text-4xl ${
             accent ? 'text-brand-gradient' : 'text-brand-dark'
           }`}
         >

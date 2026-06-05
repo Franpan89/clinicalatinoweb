@@ -1,10 +1,8 @@
 import Navigation from '@/components/Navigation'
 import Hero from '@/components/Hero'
-import TrustBar from '@/components/TrustBar'
 import About from '@/components/About'
 import Services from '@/components/Services'
 import Gallery from '@/components/Gallery'
-import Stats from '@/components/Stats'
 import Doctors from '@/components/Doctors'
 import Testimonials from '@/components/Testimonials'
 import Contact from '@/components/Contact'
@@ -12,6 +10,7 @@ import EmergencyCTA from '@/components/EmergencyCTA'
 import Footer from '@/components/Footer'
 import { createClient } from '@/lib/supabase/server'
 import { getActiveSpecialties } from '@/lib/data/specialties'
+import { getSiteSettings } from '@/lib/data/settings'
 import type { Doctor } from '@/lib/types'
 
 export const revalidate = 60
@@ -39,20 +38,25 @@ async function getDoctors(): Promise<Doctor[]> {
 }
 
 export default async function Home() {
-  const [doctors, specialties] = await Promise.all([getDoctors(), getActiveSpecialties()])
+  const [doctors, specialties, settings] = await Promise.all([
+    getDoctors(),
+    getActiveSpecialties(),
+    getSiteSettings(),
+  ])
 
   return (
     <main>
       <Navigation />
       <Hero />
-      <TrustBar />
       <About />
       <Services />
       <Gallery />
-      <Stats />
       <Doctors doctors={doctors} specialties={specialties} />
       <Testimonials />
-      <Contact />
+      <Contact
+        mapEmbedUrl={settings.map_embed_url}
+        mapAddress={settings.map_address}
+      />
       <EmergencyCTA />
       <Footer />
     </main>

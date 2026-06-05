@@ -4,7 +4,9 @@ import './globals.css'
 
 const lato = Lato({
   subsets: ['latin'],
-  weight: ['100', '300', '400', '700', '900'],
+  // Lato sólo ofrece 100, 300, 400, 700, 900 en Google Fonts.
+  // No hay 500 ni 600, así que `font-medium`/`font-semibold` caerán a 700 vía font-weight nearest.
+  weight: ['400', '700', '900'],
   style: ['normal', 'italic'],
   variable: '--font-lato',
   display: 'swap',

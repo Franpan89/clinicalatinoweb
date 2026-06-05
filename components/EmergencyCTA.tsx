@@ -52,13 +52,13 @@ export default function EmergencyCTA() {
               </span>
             </div>
             <h2
-              className="font-lato text-white font-light leading-[1.1] mb-4"
+              className="font-lato text-white font-normal leading-[1.1] mb-4"
               style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)' }}
             >
               ¿Necesitas Atención <br />
               <span className="font-bold">de Emergencia?</span>
             </h2>
-            <p className="font-lato text-red-200/80 leading-relaxed text-[15px] font-light">
+            <p className="font-lato text-red-200/80 leading-relaxed text-[15px] font-normal">
               Nuestro equipo de emergencias está disponible las 24 horas del día, los 7
               días de la semana. No esperes — cada minuto cuenta en una emergencia médica.
             </p>

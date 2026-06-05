@@ -1,24 +1,33 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, Phone, ChevronDown } from 'lucide-react'
 import Logo from './Logo'
+import { SERVICES } from '@/lib/services'
 
-const navLinks = [
-  { label: 'Inicio', href: '#inicio' },
+type ChildLink = { label: string; href: string }
+
+type NavItem = {
+  label: string
+  href: string
+  children?: ChildLink[]
+}
+
+const navLinks: NavItem[] = [
+  { label: 'Inicio', href: '/#inicio' },
   {
     label: 'Servicios',
-    href: '#servicios',
-    children: [
-      'Quirófano', 'Neonatología', 'Cuidados Intensivos',
-      'Cardio Latino', 'Cirugía Estética', 'Ginecología',
-    ],
+    href: '/#servicios',
+    children: SERVICES.map((s) => ({
+      label: s.title,
+      href: `/servicios/${s.slug}`,
+    })),
   },
-  { label: 'Especialidades', href: '#especialidades' },
-  { label: 'Médicos', href: '#medicos' },
-  { label: 'Quiénes Somos', href: '#nosotros' },
-  { label: 'Contacto', href: '#contacto' },
+  { label: 'Médicos', href: '/#medicos' },
+  { label: 'Quiénes Somos', href: '/#nosotros' },
+  { label: 'Contacto', href: '/#contacto' },
 ]
 
 export default function Navigation() {
@@ -45,10 +54,10 @@ export default function Navigation() {
         <a href="#inicio" className="flex items-center gap-3 group">
           <Logo size={42} />
           <div className="hidden sm:flex flex-col leading-none">
-            <span className="font-lato font-light text-[9px] tracking-[0.35em] uppercase text-brand-gray">
+            <span className="font-lato font-medium text-[9px] tracking-[0.35em] uppercase text-brand-gray">
               Clínica
             </span>
-            <span className="font-lato font-light text-xl -mt-0.5 tracking-tight text-brand-dark">
+            <span className="font-lato font-medium text-xl -mt-0.5 tracking-tight text-brand-dark">
               Latino
             </span>
           </div>
@@ -77,16 +86,16 @@ export default function Navigation() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 8 }}
                   transition={{ duration: 0.2 }}
-                  className="absolute top-full left-0 mt-1 bg-white border border-brand-surface shadow-xl py-2 min-w-[200px]"
+                  className="absolute top-full left-0 mt-1 bg-white border border-brand-surface shadow-xl py-2 min-w-[260px]"
                 >
                   {link.children.map((child) => (
-                    <a
-                      key={child}
-                      href="#servicios"
+                    <Link
+                      key={child.href}
+                      href={child.href}
                       className="block px-5 py-2.5 text-brand-dark/70 hover:text-brand-blue hover:bg-brand-surface font-lato text-sm transition-colors"
                     >
-                      {child}
-                    </a>
+                      {child.label}
+                    </Link>
                   ))}
                 </motion.div>
               )}

@@ -406,3 +406,44 @@ export async function toggleSpecialtyActive(id: string, currentActive: boolean) 
   revalidatePath('/admin/especialidades')
   return { success: true }
 }
+
+// ─── SITE SETTINGS ────────────────────────────────────
+export async function updateSetting(key: string, value: string | null) {
+  const supabase = createClient()
+  const { error } = await supabase
+    .from('site_settings')
+    .upsert(
+      { key, value, updated_at: new Date().toISOString() },
+      { onConflict: 'key' }
+    )
+  if (error) {
+    console.error('Update setting error:', error)
+    return { error: error.message }
+  }
+  revalidatePath('/')
+  revalidatePath('/admin/configuracion')
+  return { success: true }
+}
+
+export async function updateMapSettings(formData: FormData) {
+  const map_embed_url = String(formData.get('map_embed_url') ?? '').trim() || null
+  const map_address = String(formData.get('map_address') ?? '').trim() || null
+
+  const supabase = createClient()
+  const { error } = await supabase.from('site_settings').upsert(
+    [
+      { key: 'map_embed_url', value: map_embed_url, updated_at: new Date().toISOString() },
+      { key: 'map_address', value: map_address, updated_at: new Date().toISOString() },
+    ],
+    { onConflict: 'key' }
+  )
+
+  if (error) {
+    console.error('Update map settings error:', error)
+    return { error: error.message }
+  }
+
+  revalidatePath('/')
+  revalidatePath('/admin/configuracion')
+  return { success: true }
+}

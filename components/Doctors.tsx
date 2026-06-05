@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { Clock, Languages, GraduationCap, Award, Calendar, Phone, MapPin, DoorOpen } from 'lucide-react'
+import { Clock, Award, Phone, Building2, DoorOpen } from 'lucide-react'
 import { getInitials, formatSchedule } from '@/lib/doctors'
 import type { Doctor, Specialty } from '@/lib/types'
 
@@ -48,7 +48,7 @@ function DoctorAvatar({ doctor }: { doctor: Doctor }) {
       </svg>
 
       <span
-        className="font-lato text-white font-thin relative z-10"
+        className="font-lato text-white font-medium relative z-10"
         style={{ fontSize: 'clamp(3rem, 6vw, 5rem)' }}
       >
         {initials}
@@ -103,72 +103,42 @@ function DoctorCard({ doctor, index }: { doctor: Doctor; index: number }) {
           {doctor.subspecialty}
         </div>
 
-        <p className="font-lato text-brand-gray text-sm leading-relaxed mb-5 flex-grow font-light">
-          {doctor.bio}
-        </p>
+        {doctor.bio && (
+          <p className="font-lato text-brand-gray text-sm leading-relaxed mb-5 font-normal">
+            {doctor.bio}
+          </p>
+        )}
 
-        <div className="space-y-2.5 mb-5 pb-5 border-b border-brand-surface">
+        <div className="space-y-2.5 mb-5 pb-5 border-b border-brand-surface flex-grow">
           {scheduleText && (
             <div className="flex items-start gap-2.5">
               <Clock className="text-brand-teal flex-shrink-0 mt-0.5" size={13} />
               <span className="font-lato text-xs text-brand-dark/70">{scheduleText}</span>
             </div>
           )}
-          {(doctor.tower || doctor.office_number) && (
+          {doctor.tower && (
             <div className="flex items-start gap-2.5">
-              <MapPin className="text-brand-teal flex-shrink-0 mt-0.5" size={13} />
+              <Building2 className="text-brand-teal flex-shrink-0 mt-0.5" size={13} />
+              <span className="font-lato text-xs text-brand-dark/70">{doctor.tower}</span>
+            </div>
+          )}
+          {doctor.office_number && (
+            <div className="flex items-start gap-2.5">
+              <DoorOpen className="text-brand-teal flex-shrink-0 mt-0.5" size={13} />
               <span className="font-lato text-xs text-brand-dark/70">
-                {[doctor.tower, doctor.office_number && `Consultorio ${doctor.office_number}`]
-                  .filter(Boolean)
-                  .join(' · ')}
-              </span>
-            </div>
-          )}
-          {doctor.contact_phone && (
-            <div className="flex items-start gap-2.5">
-              <Phone className="text-brand-teal flex-shrink-0 mt-0.5" size={13} />
-              <a
-                href={`tel:${doctor.contact_phone.replace(/\s+/g, '')}`}
-                className="font-lato text-xs text-brand-dark/70 hover:text-brand-teal transition-colors"
-              >
-                {doctor.contact_phone}
-              </a>
-            </div>
-          )}
-          {doctor.languages.length > 0 && (
-            <div className="flex items-start gap-2.5">
-              <Languages className="text-brand-teal flex-shrink-0 mt-0.5" size={13} />
-              <span className="font-lato text-xs text-brand-dark/70">
-                {doctor.languages.join(' · ')}
-              </span>
-            </div>
-          )}
-          {doctor.education[0] && (
-            <div className="flex items-start gap-2.5">
-              <GraduationCap className="text-brand-teal flex-shrink-0 mt-0.5" size={13} />
-              <span className="font-lato text-xs text-brand-dark/70 leading-snug">
-                {doctor.education[0]}
+                Consultorio {doctor.office_number}
               </span>
             </div>
           )}
         </div>
 
-        <div className="flex gap-2">
-          <a
-            href="#contacto"
-            className="flex-1 inline-flex items-center justify-center gap-2 bg-brand-dark hover:bg-brand-blue text-white font-lato font-bold py-3 text-xs tracking-wider uppercase transition-colors"
-          >
-            <Calendar size={13} />
-            Agendar
-          </a>
-          <a
-            href={`tel:${(doctor.contact_phone || '+59372827074').replace(/\s+/g, '')}`}
-            className="inline-flex items-center justify-center gap-2 border border-brand-teal/30 hover:border-brand-teal hover:bg-brand-teal/5 text-brand-dark font-lato font-bold py-3 px-4 text-xs tracking-wider uppercase transition-colors"
-            aria-label="Llamar"
-          >
-            <Phone size={13} className="text-brand-teal" />
-          </a>
-        </div>
+        <a
+          href={`tel:${(doctor.contact_phone || '+59372827074').replace(/\s+/g, '')}`}
+          className="inline-flex items-center justify-center gap-2 bg-brand-dark hover:bg-brand-blue text-white font-lato font-bold py-3 text-xs tracking-wider uppercase transition-colors w-full"
+        >
+          <Phone size={13} />
+          Contactar
+        </a>
       </div>
     </motion.article>
   )
@@ -212,7 +182,7 @@ export default function Doctors({
   ]
 
   return (
-    <section id="medicos" className="py-24 bg-brand-surface scroll-mt-20">
+    <section id="medicos" className="py-16 bg-brand-surface scroll-mt-20">
       <div className="container mx-auto">
         <div className="text-center mb-12" ref={ref}>
           <div className="flex items-center justify-center gap-3 mb-4">
@@ -222,10 +192,10 @@ export default function Doctors({
             </span>
             <div className="h-px w-10 bg-brand-gradient" />
           </div>
-          <h2 className="font-lato text-brand-dark text-4xl lg:text-5xl font-light mb-4">
+          <h2 className="font-lato text-brand-dark text-4xl lg:text-5xl font-normal mb-4">
             Especialistas a Tu Servicio
           </h2>
-          <p className="text-brand-gray font-lato font-light max-w-xl mx-auto text-[15px] leading-relaxed">
+          <p className="text-brand-gray font-lato font-normal max-w-xl mx-auto text-[15px] leading-relaxed">
             Conoce a nuestro equipo médico. Filtra por especialidad para encontrar al
             profesional ideal según tu necesidad de salud.
           </p>

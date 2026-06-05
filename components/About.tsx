@@ -18,7 +18,7 @@ export default function About() {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 })
 
   return (
-    <section id="nosotros" className="py-24 bg-white">
+    <section id="nosotros" className="py-16 bg-white">
       <div className="container mx-auto">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Imagen */}
@@ -41,7 +41,7 @@ export default function About() {
               transition={{ delay: 0.4, duration: 0.6 }}
               className="absolute -bottom-6 -right-6 bg-white p-7 shadow-2xl border border-brand-surface"
             >
-              <div className="font-lato text-brand-gradient text-5xl font-light leading-none">
+              <div className="font-lato text-brand-gradient text-5xl font-normal leading-none">
                 69
               </div>
               <div className="font-lato text-brand-gray text-[10px] uppercase tracking-[0.2em] mt-1 font-bold">
@@ -64,12 +64,12 @@ export default function About() {
               </span>
             </div>
 
-            <h2 className="font-lato text-brand-dark text-4xl lg:text-5xl font-light leading-[1.1] mb-6">
+            <h2 className="font-lato text-brand-dark text-4xl lg:text-5xl font-normal leading-[1.1] mb-6">
               <span className="font-bold text-brand-gradient">69 años</span> de Experiencia
               <br />en Medicina de Vanguardia
             </h2>
 
-            <p className="font-lato text-brand-gray leading-relaxed mb-5 text-[15px] font-light">
+            <p className="font-lato text-brand-gray leading-relaxed mb-5 text-[15px] font-normal">
               <strong className="font-bold text-brand-dark">Clínica Latino</strong> es la
               institución que hoy consolida la historia médica de Cuenca. Fundada en{' '}
               <strong className="font-bold text-brand-dark">1957</strong> como la primera
@@ -79,7 +79,7 @@ export default function About() {
               actualmente a la vanguardia de la salud.
             </p>
 
-            <p className="font-lato text-brand-gray leading-relaxed mb-9 text-[15px] font-light">
+            <p className="font-lato text-brand-gray leading-relaxed mb-9 text-[15px] font-normal">
               Somos los <strong className="font-bold text-brand-dark">pioneros históricos en
               equipamiento endoscópico</strong> y los primeros a nivel nacional en realizar{' '}
               <strong className="font-bold text-brand-dark">cirugías laparoscópicas desde

@@ -50,12 +50,12 @@ export default function Specialties({ specialties }: { specialties: Specialty[] 
                 Especialidades
               </span>
             </div>
-            <h2 className="font-lato text-brand-dark text-5xl font-light leading-[1.1]">
+            <h2 className="font-lato text-brand-dark text-5xl font-normal leading-[1.1]">
               Médicos Especialistas
               <br />a Tu Servicio
             </h2>
           </div>
-          <p className="text-brand-gray font-lato font-light max-w-sm leading-relaxed lg:text-right text-[15px]">
+          <p className="text-brand-gray font-lato font-normal max-w-sm leading-relaxed lg:text-right text-[15px]">
             Selecciona una especialidad para ver el listado completo de médicos
             disponibles, sus credenciales y horarios de atención.
           </p>
@@ -89,7 +89,7 @@ export default function Specialties({ specialties }: { specialties: Specialty[] 
                 <h3 className="font-lato text-white text-2xl font-bold mb-2 relative z-10">
                   {spec.label}
                 </h3>
-                <p className="font-lato text-white/60 text-sm leading-relaxed relative z-10 font-light">
+                <p className="font-lato text-white/60 text-sm leading-relaxed relative z-10 font-normal">
                   {spec.description}
                 </p>
 

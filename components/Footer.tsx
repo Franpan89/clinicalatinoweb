@@ -35,10 +35,10 @@ export default function Footer() {
             <a href="#inicio" className="flex items-center gap-3 mb-6">
               <Logo size={44} />
               <div className="flex flex-col leading-none">
-                <span className="font-lato font-light text-[9px] tracking-[0.35em] uppercase text-white/50">
+                <span className="font-lato font-medium text-[9px] tracking-[0.35em] uppercase text-white/50">
                   Clínica
                 </span>
-                <span className="font-lato font-light text-xl -mt-0.5 tracking-tight text-white">
+                <span className="font-lato font-medium text-xl -mt-0.5 tracking-tight text-white">
                   Latino
                 </span>
               </div>

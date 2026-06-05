@@ -150,6 +150,23 @@ export type Database = {
         }>
         Relationships: []
       }
+      site_settings: {
+        Row: {
+          key: string
+          value: string | null
+          updated_at: string
+        }
+        Insert: {
+          key: string
+          value?: string | null
+          updated_at?: string
+        }
+        Update: Partial<{
+          value: string | null
+          updated_at: string
+        }>
+        Relationships: []
+      }
       services: {
         Row: {
           id: string

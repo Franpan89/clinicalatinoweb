@@ -25,7 +25,12 @@ const specialties = [
 
 type FormState = 'idle' | 'success' | 'error'
 
-export default function Contact() {
+type ContactProps = {
+  mapEmbedUrl?: string | null
+  mapAddress?: string | null
+}
+
+export default function Contact({ mapEmbedUrl, mapAddress }: ContactProps = {}) {
   const [formState, setFormState] = useState<FormState>('idle')
   const [errorMsg, setErrorMsg] = useState('')
   const [isPending, startTransition] = useTransition()
@@ -45,85 +50,129 @@ export default function Contact() {
     })
   }
 
+  const contactItems = [
+    {
+      icon: Phone,
+      label: 'Teléfono Principal',
+      value: '+593-7-2827-074',
+      sub: 'Emergencias disponibles 24/7',
+      href: 'tel:+59372827074',
+    },
+    {
+      icon: MapPin,
+      label: 'Ubicación',
+      value: mapAddress || 'Cuenca, Ecuador',
+      sub: 'Consulta la dirección al agendar',
+    },
+    {
+      icon: Clock,
+      label: 'Horario de Atención',
+      value: 'Lunes a Domingo',
+      sub: '24 horas del día, sin excepción',
+    },
+    {
+      icon: Mail,
+      label: 'Correo Electrónico',
+      value: 'info@clinicalatino.med.ec',
+      sub: 'Respondemos en menos de 24h',
+      href: 'mailto:info@clinicalatino.med.ec',
+    },
+  ]
+
   return (
-    <section id="contacto" className="py-24 bg-white">
-      <div className="container mx-auto">
-        <div className="grid lg:grid-cols-2 gap-16" ref={ref}>
-          {/* Left: Info */}
+    <section id="contacto" className="py-16 bg-white">
+      <div className="container mx-auto" ref={ref}>
+        {/* Section header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center mb-12"
+        >
+          <div className="flex items-center justify-center gap-3 mb-5">
+            <div className="h-px w-10 bg-brand-gradient" />
+            <span className="text-brand-blue font-lato text-xs font-bold tracking-[0.3em] uppercase">
+              Contacto
+            </span>
+            <div className="h-px w-10 bg-brand-gradient" />
+          </div>
+          <h2 className="font-lato text-brand-dark text-4xl lg:text-5xl font-normal leading-[1.1] mb-4">
+            Agenda tu Cita{' '}
+            <span className="font-bold text-brand-gradient">Hoy Mismo</span>
+          </h2>
+          <p className="font-lato text-brand-gray text-[15px] leading-relaxed max-w-2xl mx-auto font-normal">
+            Completa el formulario y nuestro equipo se pondrá en contacto contigo a la
+            brevedad para confirmar tu cita con el especialista de tu elección.
+          </p>
+        </motion.div>
+
+        {/* 4 contact items — single horizontal row */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-14"
+        >
+          {contactItems.map((item, i) => {
+            const Wrapper: 'a' | 'div' = item.href ? 'a' : 'div'
+            return (
+              <Wrapper
+                key={i}
+                {...(item.href ? { href: item.href } : {})}
+                className={`flex items-start gap-4 p-5 bg-white border border-brand-surface transition-all duration-300 ${
+                  item.href ? 'hover:border-brand-teal/50 hover:shadow-lg hover:shadow-brand-teal/5 cursor-pointer group' : ''
+                }`}
+              >
+                <div className="w-10 h-10 bg-brand-teal/10 group-hover:bg-brand-teal/20 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors">
+                  <item.icon className="text-brand-teal" size={18} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="font-lato text-[10px] text-brand-gray uppercase tracking-[0.15em] font-bold mb-1">
+                    {item.label}
+                  </div>
+                  <div className="font-lato text-brand-dark font-bold text-sm leading-tight mb-1 truncate">
+                    {item.value}
+                  </div>
+                  <div className="font-lato text-brand-gray text-xs leading-snug">
+                    {item.sub}
+                  </div>
+                </div>
+              </Wrapper>
+            )
+          })}
+        </motion.div>
+
+        <div className="grid lg:grid-cols-[1fr_1.1fr] gap-12">
+          {/* Left: Map */}
           <motion.div
             initial={{ opacity: 0, x: -24 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="h-full min-h-[480px]"
           >
-            <div className="flex items-center gap-3 mb-5">
-              <div className="h-px w-10 bg-gold" />
-              <span className="text-gold font-outfit text-xs font-semibold tracking-[0.3em] uppercase">
-                Contacto
-              </span>
-            </div>
-            <h2 className="font-cormorant text-navy text-4xl lg:text-5xl font-semibold leading-[1.1] mb-6">
-              Agenda tu Cita <br />
-              <span className="italic text-gold">Hoy Mismo</span>
-            </h2>
-            <p className="font-outfit text-gray-500 text-[15px] leading-relaxed mb-10">
-              Completa el formulario y nuestro equipo se pondrá en contacto contigo a la
-              brevedad para confirmar tu cita con el especialista de tu elección.
-            </p>
-
-            {/* Map / Ubicación placeholder */}
-            <div className="mb-8">
+            {mapEmbedUrl ? (
+              <iframe
+                src={mapEmbedUrl}
+                width="100%"
+                height="100%"
+                style={{ border: 0, minHeight: 480 }}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Ubicación de Clínica Latino"
+                allowFullScreen
+                className="w-full h-full"
+              />
+            ) : (
               <PlaceholderImage
                 label="Mapa / Ubicación"
-                filename="mapa-ubicacion.jpg"
-                recommendedSize="800×400px"
+                filename="Configura en /admin/configuracion"
+                recommendedSize="Google Maps embed"
                 icon={Map}
                 variant="soft"
-                ratio="2/1"
+                ratio="3/4"
+                className="h-full"
               />
-            </div>
-
-            {/* Contact details */}
-            <div className="space-y-5">
-              {[
-                {
-                  icon: Phone,
-                  label: 'Teléfono Principal',
-                  value: '+593-7-2827-074',
-                  sub: 'Emergencias disponibles 24/7',
-                },
-                {
-                  icon: MapPin,
-                  label: 'Ubicación',
-                  value: 'Cuenca, Ecuador',
-                  sub: 'Consulta la dirección exacta al agendar',
-                },
-                {
-                  icon: Clock,
-                  label: 'Horario de Atención',
-                  value: 'Lunes a Domingo',
-                  sub: '24 horas del día, sin excepción',
-                },
-                {
-                  icon: Mail,
-                  label: 'Correo Electrónico',
-                  value: 'info@clinicalatino.med.ec',
-                  sub: 'Respondemos en menos de 24h',
-                },
-              ].map((item, i) => (
-                <div key={i} className="flex items-start gap-4">
-                  <div className="w-10 h-10 bg-brand-teal/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <item.icon className="text-brand-teal" size={18} />
-                  </div>
-                  <div>
-                    <div className="font-lato text-xs text-brand-gray uppercase tracking-wider mb-0.5">
-                      {item.label}
-                    </div>
-                    <div className="font-lato text-brand-dark font-bold text-sm">{item.value}</div>
-                    <div className="font-lato text-brand-gray text-xs mt-0.5">{item.sub}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            )}
           </motion.div>
 
           {/* Right: Form */}

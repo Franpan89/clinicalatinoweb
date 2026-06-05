@@ -30,10 +30,10 @@ export default function LoginPage() {
         <div className="flex flex-col items-center mb-10">
           <Logo size={70} />
           <div className="text-center mt-4">
-            <div className="font-lato font-light text-xs tracking-[0.35em] uppercase text-brand-gray">
+            <div className="font-lato font-medium text-xs tracking-[0.35em] uppercase text-brand-gray">
               Clínica
             </div>
-            <div className="font-lato font-light text-3xl tracking-tight text-brand-dark">
+            <div className="font-lato font-medium text-3xl tracking-tight text-brand-dark">
               Latino
             </div>
           </div>

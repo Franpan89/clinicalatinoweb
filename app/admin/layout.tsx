@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { LogOut, Users, Calendar, Home as HomeIcon, Layers } from 'lucide-react'
+import { LogOut, Users, Calendar, Home as HomeIcon, Layers, Settings } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { signOut } from './actions'
 import Logo from '@/components/Logo'
@@ -44,6 +44,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                 href="/admin/especialidades"
                 icon={<Layers size={15} />}
                 label="Especialidades"
+              />
+              <NavLink
+                href="/admin/configuracion"
+                icon={<Settings size={15} />}
+                label="Configuración"
               />
               <NavLink
                 href="/"

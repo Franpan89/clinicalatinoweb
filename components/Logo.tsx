@@ -37,10 +37,10 @@ export default function Logo({
 
       {withText && (
         <div className={`flex flex-col leading-none ${textClassName}`}>
-          <span className="font-lato font-light text-[10px] tracking-[0.35em] uppercase">
+          <span className="font-lato font-medium text-[10px] tracking-[0.35em] uppercase">
             Clínica
           </span>
-          <span className="font-lato font-light text-2xl -mt-0.5 tracking-tight">
+          <span className="font-lato font-medium text-2xl -mt-0.5 tracking-tight">
             Latino
           </span>
         </div>

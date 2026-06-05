@@ -103,7 +103,7 @@ export default function DoctorForm({
                   className="w-full h-full object-cover"
                 />
               ) : fullName ? (
-                <div className="w-full h-full bg-brand-gradient flex items-center justify-center text-white font-lato font-thin text-3xl">
+                <div className="w-full h-full bg-brand-gradient flex items-center justify-center text-white font-lato font-medium text-3xl">
                   {getInitials(fullName)}
                 </div>
               ) : (

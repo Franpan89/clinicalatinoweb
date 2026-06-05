@@ -51,7 +51,7 @@ export default function Testimonials() {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.05 })
 
   return (
-    <section className="py-24 bg-cream-dark">
+    <section className="py-16 bg-cream-dark">
       <div className="container mx-auto">
         {/* Header */}
         <div className="text-center mb-16">

@@ -1,6 +1,6 @@
 'use client'
 
-import { useId } from 'react'
+import { useId, useState } from 'react'
 import { ImageIcon, type LucideIcon } from 'lucide-react'
 
 type Variant = 'brand' | 'soft' | 'dark' | 'outline'
@@ -40,13 +40,15 @@ export default function PlaceholderImage({
 }) {
   const id = useId()
   const patternId = `ph-${id.replace(/[:]/g, '')}`
+  const [imgError, setImgError] = useState(false)
 
-  if (src) {
+  if (src && !imgError) {
     return (
       <div className={`relative overflow-hidden ${className}`} style={{ aspectRatio: ratio }}>
         <img
           src={src}
           alt={alt ?? label ?? ''}
+          onError={() => setImgError(true)}
           className="absolute inset-0 w-full h-full object-cover"
         />
       </div>

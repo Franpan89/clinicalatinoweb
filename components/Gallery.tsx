@@ -24,7 +24,7 @@ export default function Gallery() {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.05 })
 
   return (
-    <section className="py-24 bg-white">
+    <section className="py-16 bg-white">
       <div className="container mx-auto">
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-12 gap-6">
@@ -35,13 +35,13 @@ export default function Gallery() {
                 Nuestras Instalaciones
               </span>
             </div>
-            <h2 className="font-lato text-brand-dark text-4xl lg:text-5xl font-light leading-[1.1]">
+            <h2 className="font-lato text-brand-dark text-4xl lg:text-5xl font-normal leading-[1.1]">
               Infraestructura
               <br />
               <span className="font-bold text-brand-gradient">de Vanguardia</span>
             </h2>
           </div>
-          <p className="text-brand-gray font-lato font-light max-w-md text-[15px] leading-relaxed lg:text-right">
+          <p className="text-brand-gray font-lato font-normal max-w-md text-[15px] leading-relaxed lg:text-right">
             Espacios diseñados para la comodidad del paciente y la excelencia clínica,
             con equipos de última generación en cada área.
           </p>

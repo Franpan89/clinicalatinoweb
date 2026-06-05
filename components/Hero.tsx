@@ -85,11 +85,11 @@ export default function Hero() {
               animate="visible"
               custom={0.35}
               variants={fadeUp}
-              className="font-lato font-thin text-brand-dark leading-[1.05] mb-6"
+              className="font-lato font-medium text-brand-dark leading-[1.05] mb-6"
               style={{ fontSize: 'clamp(2.2rem, 4.8vw, 4rem)' }}
             >
-              <span className="font-light text-brand-gradient">Tecnología</span>{' '}
-              <span className="font-thin">de Vanguardia,</span>
+              <span className="font-normal text-brand-gradient">Tecnología</span>{' '}
+              <span className="font-medium">de Vanguardia,</span>
               <br />
               Los primeros en cuidar de Tí
             </motion.h1>
@@ -100,7 +100,7 @@ export default function Hero() {
               animate="visible"
               custom={0.5}
               variants={fadeUp}
-              className="text-brand-gray font-lato font-light text-lg leading-relaxed mb-9 max-w-[540px]"
+              className="text-brand-gray font-lato font-normal text-lg leading-relaxed mb-9 max-w-[540px]"
             >
               <strong className="font-bold text-brand-dark">69 años</strong> brindando atención
               médica especializada con innovación, experiencia y calidez humana.
@@ -204,11 +204,11 @@ export default function Hero() {
                 alt="Clínica Latino — médico especialista"
                 label="Hero — imagen principal"
                 filename="public/img/hero-banner.png"
-                recommendedSize="900×1100px · PNG (fondo transparente)"
+                recommendedSize="875×630px · PNG (fondo transparente)"
                 icon={Stethoscope}
                 variant="brand"
-                ratio="9/11"
-                className="shadow-2xl shadow-brand-teal/10"
+                ratio="875/630"
+                className=""
               />
             </div>
 
