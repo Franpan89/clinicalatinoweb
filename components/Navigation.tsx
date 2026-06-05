@@ -16,18 +16,18 @@ type NavItem = {
 }
 
 const navLinks: NavItem[] = [
-  { label: 'Inicio', href: '/#inicio' },
+  { label: 'Inicio', href: '/' },
+  { label: 'Nuestros Médicos', href: '/medicos' },
   {
     label: 'Servicios',
-    href: '/#servicios',
+    href: '/servicios',
     children: SERVICES.map((s) => ({
       label: s.title,
       href: `/servicios/${s.slug}`,
     })),
   },
-  { label: 'Médicos', href: '/#medicos' },
-  { label: 'Quiénes Somos', href: '/#nosotros' },
-  { label: 'Contacto', href: '/#contacto' },
+  { label: 'Quiénes Somos', href: '/nosotros' },
+  { label: 'Contacto', href: '/contacto' },
 ]
 
 export default function Navigation() {

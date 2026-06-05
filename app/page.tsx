@@ -47,17 +47,18 @@ export default async function Home() {
   return (
     <main>
       <Navigation />
+      {/* Orden según diagrama de arquitectura del sitio */}
       <Hero />
-      <About />
       <Services />
-      <Gallery />
       <Doctors doctors={doctors} specialties={specialties} />
-      <Testimonials />
+      <Gallery />
       <Contact
         mapEmbedUrl={settings.map_embed_url}
         mapAddress={settings.map_address}
       />
+      <Testimonials />
       <EmergencyCTA />
+      <About />
       <Footer />
     </main>
   )
