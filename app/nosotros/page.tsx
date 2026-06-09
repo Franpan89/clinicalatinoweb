@@ -3,6 +3,9 @@ import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import About from '@/components/About'
 import EmergencyCTA from '@/components/EmergencyCTA'
+import { getSiteSettings } from '@/lib/data/settings'
+
+export const revalidate = 60
 
 export const metadata: Metadata = {
   title: 'Quiénes Somos · Clínica Latino',
@@ -10,10 +13,11 @@ export const metadata: Metadata = {
     'Conoce nuestra historia. Fundada en 1957 por el Dr. Rubén Astudillo, Clínica Latino consolida 69 años de medicina de excelencia en Cuenca, Ecuador.',
 }
 
-export default function NosotrosPage() {
+export default async function NosotrosPage() {
+  const settings = await getSiteSettings()
   return (
     <main>
-      <Navigation />
+      <Navigation logoUrl={settings.logo_url} />
 
       {/* Page header */}
       <section className="pt-32 pb-12 bg-white relative overflow-hidden">
@@ -44,7 +48,7 @@ export default function NosotrosPage() {
         </div>
       </section>
 
-      <About />
+      <About mediaUrl={settings.about_media_url} />
 
       {/* Hitos / Cronología */}
       <section className="py-16 bg-brand-surface">
@@ -104,7 +108,7 @@ export default function NosotrosPage() {
       </section>
 
       <EmergencyCTA />
-      <Footer />
+      <Footer logoUrl={settings.logo_url} />
     </main>
   )
 }

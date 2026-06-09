@@ -1,6 +1,7 @@
 import Link from 'next/link'
-import { LogOut, Users, Calendar, Home as HomeIcon, Layers, Settings } from 'lucide-react'
+import { LogOut, Users, Calendar, Home as HomeIcon, Layers, Settings, Image as ImageIcon } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { getSiteSettings } from '@/lib/data/settings'
 import { signOut } from './actions'
 import Logo from '@/components/Logo'
 
@@ -10,9 +11,10 @@ export const metadata = {
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const [{ data: { user } }, settings] = await Promise.all([
+    supabase.auth.getUser(),
+    getSiteSettings(),
+  ])
 
   // El middleware ya redirige si no hay sesión, pero por defensa:
   // si estamos en /admin/login, no mostramos sidebar
@@ -22,7 +24,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <header className="bg-white border-b border-brand-surface sticky top-0 z-40">
           <div className="container mx-auto flex items-center justify-between py-4">
             <Link href="/admin" className="flex items-center gap-3">
-              <Logo size={36} />
+              <Logo size={36} src={settings.logo_url} />
               <div>
                 <div className="font-lato font-bold text-brand-dark text-sm">
                   Clínica Latino
@@ -44,6 +46,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                 href="/admin/especialidades"
                 icon={<Layers size={15} />}
                 label="Especialidades"
+              />
+              <NavLink
+                href="/admin/medios"
+                icon={<ImageIcon size={15} />}
+                label="Medios"
               />
               <NavLink
                 href="/admin/configuracion"

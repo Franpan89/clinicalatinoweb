@@ -30,7 +30,7 @@ const navLinks: NavItem[] = [
   { label: 'Contacto', href: '/contacto' },
 ]
 
-export default function Navigation() {
+export default function Navigation({ logoUrl }: { logoUrl?: string | null } = {}) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
@@ -52,7 +52,7 @@ export default function Navigation() {
       <div className="container mx-auto flex items-center justify-between">
         {/* Logo */}
         <a href="#inicio" className="flex items-center gap-3 group">
-          <Logo size={42} />
+          <Logo size={42} src={logoUrl} />
           <div className="hidden sm:flex flex-col leading-none">
             <span className="font-lato font-medium text-[9px] tracking-[0.35em] uppercase text-brand-gray">
               Clínica

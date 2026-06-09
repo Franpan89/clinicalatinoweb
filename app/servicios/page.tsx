@@ -6,6 +6,9 @@ import Footer from '@/components/Footer'
 import EmergencyCTA from '@/components/EmergencyCTA'
 import PlaceholderImage from '@/components/PlaceholderImage'
 import { SERVICES } from '@/lib/services'
+import { getSiteSettings } from '@/lib/data/settings'
+
+export const revalidate = 60
 
 export const metadata: Metadata = {
   title: 'Servicios · Clínica Latino',
@@ -13,10 +16,12 @@ export const metadata: Metadata = {
     'Conoce todos los servicios médicos de Clínica Latino: quirófano, neonatología, cuidados intensivos, ginecología, laboratorio, centro de imágenes y más.',
 }
 
-export default function ServiciosPage() {
+export default async function ServiciosPage() {
+  const settings = await getSiteSettings()
+  const banner = settings.services_banner_url || '/img/banner-servicios.jpg'
   return (
     <main>
-      <Navigation />
+      <Navigation logoUrl={settings.logo_url} />
 
       {/* Page header */}
       <section className="pt-32 pb-12 bg-white relative overflow-hidden">
@@ -52,7 +57,7 @@ export default function ServiciosPage() {
       <section className="bg-white">
         <div className="container mx-auto pb-12">
           <PlaceholderImage
-            src="/img/banner-servicios.jpg"
+            src={banner}
             alt="Banner Clínica Latino — Servicios"
             ratio="4/1"
           />
@@ -92,7 +97,7 @@ export default function ServiciosPage() {
       </section>
 
       <EmergencyCTA />
-      <Footer />
+      <Footer logoUrl={settings.logo_url} />
     </main>
   )
 }

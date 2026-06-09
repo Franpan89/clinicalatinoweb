@@ -22,7 +22,7 @@ const clinicLinks = [
   { label: 'Contacto', href: '#contacto' },
 ]
 
-export default function Footer() {
+export default function Footer({ logoUrl }: { logoUrl?: string | null } = {}) {
   const year = new Date().getFullYear()
 
   return (
@@ -33,7 +33,7 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <a href="#inicio" className="flex items-center gap-3 mb-6">
-              <Logo size={44} />
+              <Logo size={44} src={logoUrl} />
               <div className="flex flex-col leading-none">
                 <span className="font-lato font-medium text-[9px] tracking-[0.35em] uppercase text-white/50">
                   Clínica

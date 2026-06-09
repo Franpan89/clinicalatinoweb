@@ -425,6 +425,88 @@ export async function updateSetting(key: string, value: string | null) {
   return { success: true }
 }
 
+// ─── MEDIA (Hero, banners, gallery, about, services) ─────────
+export async function uploadSiteMedia(formData: FormData) {
+  const key = String(formData.get('key') ?? '').trim()
+  const file = formData.get('file') as File | null
+
+  if (!key) return { error: 'Falta la clave de configuración.' }
+  if (!file || file.size === 0) return { error: 'Selecciona un archivo.' }
+  if (file.size > 50 * 1024 * 1024) return { error: 'El archivo no puede superar 50 MB.' }
+
+  const supabase = createClient()
+  const ext = file.name.split('.').pop()?.toLowerCase() || 'bin'
+  const filename = `${key.replace(/[^a-z0-9-]/gi, '-')}-${Date.now()}.${ext}`
+
+  const { error: uploadError } = await supabase.storage
+    .from('site-media')
+    .upload(filename, file, {
+      cacheControl: '3600',
+      upsert: false,
+      contentType: file.type || undefined,
+    })
+
+  if (uploadError) {
+    console.error('Site media upload error:', uploadError)
+    return { error: uploadError.message }
+  }
+
+  const { data } = supabase.storage.from('site-media').getPublicUrl(filename)
+
+  const { error: updateError } = await supabase.from('site_settings').upsert(
+    { key, value: data.publicUrl, updated_at: new Date().toISOString() },
+    { onConflict: 'key' }
+  )
+
+  if (updateError) {
+    console.error('Site media settings update error:', updateError)
+    return { error: updateError.message }
+  }
+
+  revalidatePath('/')
+  revalidatePath('/admin/medios')
+  return { success: true, url: data.publicUrl }
+}
+
+export async function setSiteMediaUrl(formData: FormData) {
+  const key = String(formData.get('key') ?? '').trim()
+  const url = String(formData.get('url') ?? '').trim() || null
+
+  if (!key) return { error: 'Falta la clave de configuración.' }
+
+  const supabase = createClient()
+  const { error } = await supabase.from('site_settings').upsert(
+    { key, value: url, updated_at: new Date().toISOString() },
+    { onConflict: 'key' }
+  )
+
+  if (error) {
+    console.error('setSiteMediaUrl error:', error)
+    return { error: error.message }
+  }
+
+  revalidatePath('/')
+  revalidatePath('/admin/medios')
+  return { success: true }
+}
+
+export async function clearSiteMedia(key: string) {
+  const supabase = createClient()
+  const { error } = await supabase.from('site_settings').upsert(
+    { key, value: null, updated_at: new Date().toISOString() },
+    { onConflict: 'key' }
+  )
+
+  if (error) {
+    console.error('clearSiteMedia error:', error)
+    return { error: error.message }
+  }
+
+  revalidatePath('/')
+  revalidatePath('/admin/medios')
+  return { success: true }
+}
+
 export async function updateMapSettings(formData: FormData) {
   const map_embed_url = String(formData.get('map_embed_url') ?? '').trim() || null
   const map_address = String(formData.get('map_address') ?? '').trim() || null

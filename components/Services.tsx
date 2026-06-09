@@ -17,8 +17,9 @@ const item = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
 }
 
-export default function Services() {
+export default function Services({ bannerSrc }: { bannerSrc?: string | null } = {}) {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.05 })
+  const banner = bannerSrc || '/img/banner-servicios.jpg'
 
   return (
     <section id="servicios" className="py-16 bg-white">
@@ -26,7 +27,7 @@ export default function Services() {
         {/* Banner */}
         <div className="mb-12">
           <PlaceholderImage
-            src="/img/banner-servicios.jpg"
+            src={banner}
             alt="Banner Clínica Latino — Servicios"
             ratio="4/1"
           />

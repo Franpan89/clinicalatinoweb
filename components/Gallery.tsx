@@ -1,27 +1,36 @@
 'use client'
 
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { Play, Video, Sparkles } from 'lucide-react'
+import { Play, Video, Sparkles, ArrowUpRight } from 'lucide-react'
 import PlaceholderImage from './PlaceholderImage'
+import { isVideoEmbed } from '@/lib/utils/maps'
 
-/**
- * Para usar un video real:
- *   - Pega la URL embed de YouTube/Vimeo en GALLERY_VIDEO_URL
- *   - O sube un MP4 a `public/img/clinica-video.mp4` y cambia la lógica al <video> tag
- */
-const GALLERY_VIDEO_URL: string | null = null
+type GalleryItem = {
+  url: string | null
+  label: string
+  fallback: string
+  href?: string
+}
 
-const items = [
-  { src: '/img/fachada.jpg', label: 'Fachada principal', alt: 'Fachada de Clínica Latino' },
-  { src: '/img/habitacion.jpg', label: 'Habitación hospitalaria', alt: 'Habitación' },
-  { src: '/img/quirofano.jpg', label: 'Quirófano', alt: 'Sala de quirófano' },
-  { src: '/img/laboratorio.jpg', label: 'Laboratorio', alt: 'Laboratorio clínico' },
-  { src: '/img/imagenes.jpg', label: 'Centro de imágenes', alt: 'Centro de imágenes diagnósticas' },
+type GalleryProps = {
+  videoUrl?: string | null
+  videoHref?: string
+  items?: GalleryItem[]
+}
+
+const DEFAULT_ITEMS: GalleryItem[] = [
+  { url: null, fallback: '/img/fachada.jpg', label: 'Fachada principal', href: '/nosotros' },
+  { url: null, fallback: '/img/habitacion.jpg', label: 'Habitación hospitalaria', href: '/servicios/hospitalizacion' },
+  { url: null, fallback: '/img/quirofano.jpg', label: 'Quirófano', href: '/servicios/quirofano' },
+  { url: null, fallback: '/img/laboratorio.jpg', label: 'Laboratorio', href: '/servicios/laboratorio' },
+  { url: null, fallback: '/img/imagenes.jpg', label: 'Centro de imágenes', href: '/servicios/centro-imagenes' },
 ]
 
-export default function Gallery() {
+export default function Gallery({ videoUrl, videoHref = '/nosotros', items }: GalleryProps = {}) {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.05 })
+  const galleryItems = items ?? DEFAULT_ITEMS
 
   return (
     <section className="py-16 bg-white">
@@ -55,28 +64,40 @@ export default function Gallery() {
           variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
           className="grid grid-cols-2 md:grid-cols-3 gap-4 md:auto-rows-[200px]"
         >
-          {/* Video institucional — grande (col-span-2 row-span-2) */}
+          {/* Video institucional — col-span-2 row-span-2 */}
           <motion.div
             variants={{
               hidden: { opacity: 0, scale: 0.96 },
               visible: { opacity: 1, scale: 1, transition: { duration: 0.7 } },
             }}
-            className="col-span-2 row-span-2 group cursor-pointer relative overflow-hidden"
+            className="col-span-2 row-span-2 group relative overflow-hidden"
           >
-            {GALLERY_VIDEO_URL ? (
-              <iframe
-                src={GALLERY_VIDEO_URL}
-                title="Video institucional Clínica Latino"
-                className="w-full h-full"
-                frameBorder={0}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-              />
+            {videoUrl ? (
+              isVideoEmbed(videoUrl) ? (
+                <iframe
+                  src={videoUrl}
+                  title="Video institucional Clínica Latino"
+                  className="w-full h-full"
+                  frameBorder={0}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              ) : (
+                <video
+                  src={videoUrl}
+                  className="w-full h-full object-cover"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  controls={false}
+                />
+              )
             ) : (
-              <div className="relative h-full">
+              <Link href={videoHref} className="block relative h-full cursor-pointer">
                 <PlaceholderImage
                   label="Video institucional"
-                  filename="public/img/clinica-video.mp4"
+                  filename="Configura en /admin/medios"
                   recommendedSize="MP4 1920×1080 · o YouTube embed URL"
                   icon={Video}
                   variant="dark"
@@ -88,32 +109,52 @@ export default function Gallery() {
                     <Play size={32} className="text-white ml-1" fill="currentColor" />
                   </div>
                 </div>
-              </div>
+              </Link>
             )}
           </motion.div>
 
-          {/* 5 imágenes */}
-          {items.map((item, i) => (
-            <motion.div
-              key={i}
-              variants={{
-                hidden: { opacity: 0, scale: 0.96 },
-                visible: { opacity: 1, scale: 1, transition: { duration: 0.7 } },
-              }}
-              className="group cursor-pointer overflow-hidden relative"
-            >
-              <PlaceholderImage
-                src={item.src}
-                alt={item.alt}
-                ratio="auto"
-                className="h-full w-full group-hover:scale-105 transition-transform duration-700"
-              />
-              {/* Caption overlay on hover */}
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-dark/85 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="font-lato text-white text-sm font-bold">{item.label}</div>
-              </div>
-            </motion.div>
-          ))}
+          {/* 5 imágenes — cada una link a su servicio */}
+          {galleryItems.map((item, i) => {
+            const content = (
+              <>
+                <PlaceholderImage
+                  src={item.url || item.fallback}
+                  alt={item.label}
+                  ratio="auto"
+                  className="h-full w-full group-hover:scale-105 transition-transform duration-700"
+                />
+                {/* Overlay con label + arrow */}
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/40 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-between gap-2">
+                  <div className="font-lato text-white text-sm font-bold leading-tight">
+                    {item.label}
+                  </div>
+                  {item.href && (
+                    <div className="w-8 h-8 bg-brand-gradient flex items-center justify-center flex-shrink-0">
+                      <ArrowUpRight size={14} className="text-white" />
+                    </div>
+                  )}
+                </div>
+              </>
+            )
+            return (
+              <motion.div
+                key={i}
+                variants={{
+                  hidden: { opacity: 0, scale: 0.96 },
+                  visible: { opacity: 1, scale: 1, transition: { duration: 0.7 } },
+                }}
+                className="group overflow-hidden relative"
+              >
+                {item.href ? (
+                  <Link href={item.href} className="block w-full h-full cursor-pointer" aria-label={item.label}>
+                    {content}
+                  </Link>
+                ) : (
+                  <div className="block w-full h-full">{content}</div>
+                )}
+              </motion.div>
+            )
+          })}
         </motion.div>
 
         <div className="mt-10 text-center">

@@ -14,12 +14,10 @@ const fadeUp = {
 }
 
 /**
- * Para reemplazar el placeholder por una imagen real:
- *   1. Guarda el PNG en `public/img/hero-banner.png`
- *   2. Cambia HERO_IMAGE_SRC a `'/img/hero-banner.png'`
- * Tamaño recomendado: 900×1100 px (vertical), PNG con fondo transparente.
+ * Imagen del hero — gestionada desde /admin/medios.
+ * Cae al archivo local si no hay nada configurado en site_settings.
  */
-const HERO_IMAGE_SRC: string | null = '/img/hero-banner.png'
+const DEFAULT_HERO_IMAGE = '/img/hero-banner.png'
 
 // Stats que también son links rápidos a secciones del sitio
 const heroStats = [
@@ -29,7 +27,8 @@ const heroStats = [
   { value: '100%', label: 'Tecnología de Punta', href: '#servicios' },
 ]
 
-export default function Hero() {
+export default function Hero({ imageSrc }: { imageSrc?: string | null } = {}) {
+  const HERO_IMAGE_SRC = imageSrc || DEFAULT_HERO_IMAGE
   return (
     <section
       id="inicio"
@@ -62,7 +61,7 @@ export default function Hero() {
 
       {/* Main content — 2 column layout */}
       <div className="relative z-10 container mx-auto">
-        <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center">
+        <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-stretch">
           {/* ── Columna izquierda: texto ─────────────────────── */}
           <div className="max-w-[640px]">
             {/* Eyebrow */}
@@ -167,20 +166,21 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* ── Columna derecha: imagen / placeholder ───────── */}
+          {/* ── Columna derecha: imagen pegada bottom-right ───────── */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1.1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="relative hidden lg:block"
+            className="relative hidden lg:flex h-full self-stretch min-h-[560px] items-end justify-end"
           >
             {/* Decorative gradient ring detrás */}
             <motion.svg
               viewBox="0 0 400 400"
-              className="absolute -inset-8 w-[calc(100%+4rem)] h-[calc(100%+4rem)] opacity-50 pointer-events-none"
+              className="absolute right-0 bottom-0 w-full h-auto max-h-full opacity-40 pointer-events-none"
               initial={{ opacity: 0, rotate: -10 }}
-              animate={{ opacity: 0.5, rotate: 0 }}
+              animate={{ opacity: 0.4, rotate: 0 }}
               transition={{ duration: 1.8, ease: 'easeOut' }}
+              style={{ aspectRatio: '1/1' }}
             >
               <defs>
                 <linearGradient id="hero-ring-grad" x1="0%" y1="100%" x2="100%" y2="0%">
@@ -189,46 +189,34 @@ export default function Hero() {
                   <stop offset="100%" stopColor="#2C6FB1" />
                 </linearGradient>
               </defs>
-              <circle cx="200" cy="200" r="195" fill="none" stroke="url(#hero-ring-grad)" strokeWidth="1" opacity="0.4" />
-              <circle cx="200" cy="200" r="160" fill="none" stroke="url(#hero-ring-grad)" strokeWidth="0.8" opacity="0.25" />
-              <path d="M 200 5 A 195 195 0 0 1 395 200" fill="none" stroke="url(#hero-ring-grad)" strokeWidth="2" opacity="0.65" />
-              <path d="M 5 200 A 195 195 0 0 1 200 395" fill="none" stroke="url(#hero-ring-grad)" strokeWidth="2" opacity="0.65" />
+              <circle cx="200" cy="200" r="195" fill="none" stroke="url(#hero-ring-grad)" strokeWidth="1" opacity="0.5" />
+              <circle cx="200" cy="200" r="160" fill="none" stroke="url(#hero-ring-grad)" strokeWidth="0.8" opacity="0.3" />
+              <path d="M 200 5 A 195 195 0 0 1 395 200" fill="none" stroke="url(#hero-ring-grad)" strokeWidth="2" opacity="0.7" />
+              <path d="M 5 200 A 195 195 0 0 1 200 395" fill="none" stroke="url(#hero-ring-grad)" strokeWidth="2" opacity="0.7" />
               <circle cx="200" cy="10" r="5" fill="#B9DB5C" opacity="0.8" />
               <circle cx="200" cy="390" r="5" fill="#2C6FB1" opacity="0.8" />
             </motion.svg>
 
-            {/* Imagen / placeholder */}
-            <div className="relative">
-              <PlaceholderImage
+            {/* Imagen — pegada bottom-right, fill width al 100% */}
+            {HERO_IMAGE_SRC ? (
+              <img
                 src={HERO_IMAGE_SRC}
-                alt="Clínica Latino — médico especialista"
+                alt="Clínica Latino — médicos especialistas"
+                className="relative z-10 w-full h-auto object-contain object-bottom max-h-[80vh]"
+              />
+            ) : (
+              <PlaceholderImage
+                src={null}
                 label="Hero — imagen principal"
                 filename="public/img/hero-banner.png"
                 recommendedSize="875×630px · PNG (fondo transparente)"
                 icon={Stethoscope}
                 variant="brand"
                 ratio="875/630"
-                className=""
+                className="w-full"
               />
-            </div>
+            )}
 
-            {/* Floating brand badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.1, duration: 0.7 }}
-              className="absolute -bottom-5 -left-5 bg-white p-4 pr-6 shadow-2xl border border-brand-surface flex items-center gap-3 hidden xl:flex"
-            >
-              <div className="w-10 h-10 bg-brand-gradient flex items-center justify-center text-white">
-                <Calendar size={18} />
-              </div>
-              <div>
-                <div className="font-lato text-[10px] uppercase tracking-[0.2em] text-brand-gray font-bold">
-                  Atención
-                </div>
-                <div className="font-lato text-brand-dark text-sm font-bold">24/7 todos los días</div>
-              </div>
-            </motion.div>
           </motion.div>
         </div>
       </div>

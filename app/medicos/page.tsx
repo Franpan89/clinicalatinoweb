@@ -5,6 +5,7 @@ import Doctors from '@/components/Doctors'
 import EmergencyCTA from '@/components/EmergencyCTA'
 import { createClient } from '@/lib/supabase/server'
 import { getActiveSpecialties } from '@/lib/data/specialties'
+import { getSiteSettings } from '@/lib/data/settings'
 import type { Doctor } from '@/lib/types'
 
 export const revalidate = 60
@@ -38,11 +39,15 @@ async function getDoctors(): Promise<Doctor[]> {
 }
 
 export default async function MedicosPage() {
-  const [doctors, specialties] = await Promise.all([getDoctors(), getActiveSpecialties()])
+  const [doctors, specialties, settings] = await Promise.all([
+    getDoctors(),
+    getActiveSpecialties(),
+    getSiteSettings(),
+  ])
 
   return (
     <main>
-      <Navigation />
+      <Navigation logoUrl={settings.logo_url} />
 
       {/* Page header */}
       <section className="pt-32 pb-12 bg-white relative overflow-hidden">
@@ -76,7 +81,7 @@ export default async function MedicosPage() {
 
       <Doctors doctors={doctors} specialties={specialties} />
       <EmergencyCTA />
-      <Footer />
+      <Footer logoUrl={settings.logo_url} />
     </main>
   )
 }

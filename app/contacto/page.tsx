@@ -18,7 +18,7 @@ export default async function ContactoPage() {
 
   return (
     <main>
-      <Navigation />
+      <Navigation logoUrl={settings.logo_url} />
 
       {/* Page header */}
       <section className="pt-32 pb-8 bg-white relative overflow-hidden">
@@ -54,7 +54,7 @@ export default async function ContactoPage() {
         mapAddress={settings.map_address}
       />
       <EmergencyCTA />
-      <Footer />
+      <Footer logoUrl={settings.logo_url} />
     </main>
   )
 }

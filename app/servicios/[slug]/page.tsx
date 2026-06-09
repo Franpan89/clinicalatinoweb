@@ -12,6 +12,7 @@ import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import PlaceholderImage from '@/components/PlaceholderImage'
 import { SERVICES, getServiceBySlug } from '@/lib/services'
+import { getSiteSettings } from '@/lib/data/settings'
 
 export async function generateStaticParams() {
   return SERVICES.map((s) => ({ slug: s.slug }))
@@ -32,7 +33,7 @@ export async function generateMetadata({
   }
 }
 
-export default function ServiceLandingPage({
+export default async function ServiceLandingPage({
   params,
 }: {
   params: { slug: string }
@@ -41,10 +42,13 @@ export default function ServiceLandingPage({
   if (!service) notFound()
 
   const Icon = service.icon
+  const settings = await getSiteSettings()
+  const customImage = settings[`service_image_${service.slug}`]
+  const imageSrc = customImage || service.image
 
   return (
     <main>
-      <Navigation />
+      <Navigation logoUrl={settings.logo_url} />
 
       {/* Header / Hero corto */}
       <section className="pt-32 pb-16 bg-white relative overflow-hidden">
@@ -67,10 +71,10 @@ export default function ServiceLandingPage({
             {/* Columna 1: imagen vertical */}
             <div className="relative">
               <PlaceholderImage
-                src={service.image}
+                src={imageSrc}
                 alt={service.title}
                 label={service.title}
-                filename={service.image.replace(/^\//, '')}
+                filename={`service_image_${service.slug} en /admin/medios`}
                 recommendedSize="900×1200px (vertical)"
                 variant="brand"
                 ratio="3/4"
@@ -190,7 +194,7 @@ export default function ServiceLandingPage({
         </div>
       </section>
 
-      <Footer />
+      <Footer logoUrl={settings.logo_url} />
     </main>
   )
 }

@@ -5,29 +5,31 @@ type LogoProps = {
   withText?: boolean
   /** Color del texto cuando withText=true */
   textClassName?: string
+  /** URL del logo. Si no se provee, usa /logo.svg local. */
+  src?: string | null
   className?: string
 }
+
+const DEFAULT_LOGO = '/logo.svg'
 
 /**
  * Logo Clínica Latino
  *
- * Renderiza `public/logo.svg` (sólo el ícono — versión cuadrada sin texto)
- * vía <img>. Para reemplazar por el archivo oficial, simplemente sobreescribe
- * `public/logo.svg` con el nuevo SVG. El sitio se actualiza automáticamente.
- *
- * Si quieres usar la versión horizontal con texto incluida en el archivo SVG,
- * cambia `withText={false}` y la prop interna usa esa versión.
+ * Renderiza el logo configurado en /admin/medios (site_settings.logo_url),
+ * con fallback al archivo local `public/logo.svg`.
  */
 export default function Logo({
   size = 40,
   withText = false,
   textClassName = 'text-brand-gray',
+  src,
   className = '',
 }: LogoProps) {
+  const logoUrl = src || DEFAULT_LOGO
   return (
     <div className={`flex items-center gap-3 ${className}`}>
       <img
-        src="/logo.svg"
+        src={logoUrl}
         alt="Clínica Latino"
         width={size}
         height={size}

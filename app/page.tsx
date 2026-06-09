@@ -46,20 +46,30 @@ export default async function Home() {
 
   return (
     <main>
-      <Navigation />
+      <Navigation logoUrl={settings.logo_url} />
       {/* Orden según diagrama de arquitectura del sitio */}
-      <Hero />
-      <Services />
+      <Hero imageSrc={settings.hero_image_url} />
+      <Services bannerSrc={settings.services_banner_url} />
       <Doctors doctors={doctors} specialties={specialties} />
-      <Gallery />
+      <Gallery
+        videoUrl={settings.gallery_video_url}
+        videoHref="/nosotros"
+        items={[
+          { url: settings.gallery_1_url, fallback: '/img/fachada.jpg', label: 'Fachada principal', href: '/nosotros' },
+          { url: settings.gallery_2_url, fallback: '/img/habitacion.jpg', label: 'Habitación hospitalaria', href: '/servicios/hospitalizacion' },
+          { url: settings.gallery_3_url, fallback: '/img/quirofano.jpg', label: 'Quirófano', href: '/servicios/quirofano' },
+          { url: settings.gallery_4_url, fallback: '/img/laboratorio.jpg', label: 'Laboratorio', href: '/servicios/laboratorio' },
+          { url: settings.gallery_5_url, fallback: '/img/imagenes.jpg', label: 'Centro de imágenes', href: '/servicios/centro-imagenes' },
+        ]}
+      />
       <Contact
         mapEmbedUrl={settings.map_embed_url}
         mapAddress={settings.map_address}
       />
       <Testimonials />
       <EmergencyCTA />
-      <About />
-      <Footer />
+      <About mediaUrl={settings.about_media_url} />
+      <Footer logoUrl={settings.logo_url} />
     </main>
   )
 }
