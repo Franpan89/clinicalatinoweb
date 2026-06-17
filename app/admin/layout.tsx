@@ -24,11 +24,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <header className="bg-white border-b border-brand-surface sticky top-0 z-40">
           <div className="container mx-auto flex items-center justify-between py-4">
             <Link href="/admin" className="flex items-center gap-3">
-              <Logo size={36} src={settings.logo_url} />
-              <div>
-                <div className="font-lato font-bold text-brand-dark text-sm">
-                  Clínica Latino
-                </div>
+              <Logo size={42} src={settings.logo_url} />
+              <div className="border-l border-brand-surface pl-3">
                 <div className="font-lato text-[10px] tracking-[0.25em] uppercase text-brand-gray">
                   Panel de Administración
                 </div>

@@ -51,16 +51,8 @@ export default function Navigation({ logoUrl }: { logoUrl?: string | null } = {}
     >
       <div className="container mx-auto flex items-center justify-between">
         {/* Logo */}
-        <a href="#inicio" className="flex items-center gap-3 group">
-          <Logo size={42} src={logoUrl} />
-          <div className="hidden sm:flex flex-col leading-none">
-            <span className="font-lato font-medium text-[9px] tracking-[0.35em] uppercase text-brand-gray">
-              Clínica
-            </span>
-            <span className="font-lato font-medium text-xl -mt-0.5 tracking-tight text-brand-dark">
-              Latino
-            </span>
-          </div>
+        <a href="/" className="flex items-center group">
+          <Logo size={52} src={logoUrl} />
         </a>
 
         {/* Desktop Nav */}

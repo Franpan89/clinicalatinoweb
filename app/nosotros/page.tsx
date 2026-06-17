@@ -48,7 +48,15 @@ export default async function NosotrosPage() {
         </div>
       </section>
 
-      <About mediaUrl={settings.about_media_url} />
+      <About
+        slides={[
+          settings.about_slide_1,
+          settings.about_slide_2,
+          settings.about_slide_3,
+          settings.about_slide_4,
+          settings.about_slide_5,
+        ]}
+      />
 
       {/* Hitos / Cronología */}
       <section className="py-16 bg-brand-surface">

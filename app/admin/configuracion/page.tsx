@@ -1,5 +1,6 @@
 import { getSiteSettings } from '@/lib/data/settings'
 import MapSettingsForm from './_components/MapSettingsForm'
+import LeadsEmailForm from './_components/LeadsEmailForm'
 
 export const dynamic = 'force-dynamic'
 
@@ -17,10 +18,14 @@ export default async function ConfiguracionPage() {
         </p>
       </div>
 
-      <MapSettingsForm
-        initialEmbedUrl={settings.map_embed_url ?? ''}
-        initialAddress={settings.map_address ?? ''}
-      />
+      <div className="space-y-6">
+        <LeadsEmailForm initialEmail={settings.leads_email ?? ''} />
+
+        <MapSettingsForm
+          initialEmbedUrl={settings.map_embed_url ?? ''}
+          initialAddress={settings.map_address ?? ''}
+        />
+      </div>
     </div>
   )
 }

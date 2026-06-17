@@ -507,6 +507,30 @@ export async function clearSiteMedia(key: string) {
   return { success: true }
 }
 
+// ─── LEADS / CONTACTO ─────────────────────────────────
+export async function updateLeadsEmail(formData: FormData) {
+  const leads_email = String(formData.get('leads_email') ?? '').trim() || null
+
+  // Validación básica de email
+  if (leads_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(leads_email)) {
+    return { error: 'El formato del email no es válido.' }
+  }
+
+  const supabase = createClient()
+  const { error } = await supabase.from('site_settings').upsert(
+    { key: 'leads_email', value: leads_email, updated_at: new Date().toISOString() },
+    { onConflict: 'key' }
+  )
+
+  if (error) {
+    console.error('updateLeadsEmail error:', error)
+    return { error: error.message }
+  }
+
+  revalidatePath('/admin/configuracion')
+  return { success: true }
+}
+
 export async function updateMapSettings(formData: FormData) {
   const map_embed_url = String(formData.get('map_embed_url') ?? '').trim() || null
   const map_address = String(formData.get('map_address') ?? '').trim() || null

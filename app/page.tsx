@@ -1,4 +1,5 @@
 import Navigation from '@/components/Navigation'
+import TopSlideshow from '@/components/TopSlideshow'
 import Hero from '@/components/Hero'
 import About from '@/components/About'
 import Services from '@/components/Services'
@@ -48,6 +49,15 @@ export default async function Home() {
     <main>
       <Navigation logoUrl={settings.logo_url} />
       {/* Orden según diagrama de arquitectura del sitio */}
+      <TopSlideshow
+        slides={[
+          settings.top_slide_1,
+          settings.top_slide_2,
+          settings.top_slide_3,
+          settings.top_slide_4,
+          settings.top_slide_5,
+        ]}
+      />
       <Hero imageSrc={settings.hero_image_url} />
       <Services bannerSrc={settings.services_banner_url} />
       <Doctors doctors={doctors} specialties={specialties} />
@@ -68,7 +78,15 @@ export default async function Home() {
       />
       <Testimonials />
       <EmergencyCTA />
-      <About mediaUrl={settings.about_media_url} />
+      <About
+        slides={[
+          settings.about_slide_1,
+          settings.about_slide_2,
+          settings.about_slide_3,
+          settings.about_slide_4,
+          settings.about_slide_5,
+        ]}
+      />
       <Footer logoUrl={settings.logo_url} />
     </main>
   )

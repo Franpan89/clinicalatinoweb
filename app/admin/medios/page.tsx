@@ -36,6 +36,28 @@ export default async function MediosPage() {
         />
       </div>
 
+      {/* ── SLIDESHOW SUPERIOR ──────────────────────────── */}
+      <SectionHeader
+        title="Slideshow superior (Inicio)"
+        subtitle="Banner full-width en el tope del home. Hasta 5 slides (imágenes y/o videos) que rotan automáticamente. Si dejas todos vacíos, el banner no aparece."
+      />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+        {[1, 2, 3, 4, 5].map((n) => (
+          <MediaUploader
+            key={`top_slide_${n}`}
+            mediaKey={`top_slide_${n}`}
+            label={`Slide ${n}`}
+            description={n === 1 ? 'Primer slide' : 'Opcional'}
+            currentUrl={settings[`top_slide_${n}`]}
+            recommendedSize="1920×500px (panorámico) · img o video"
+            previewRatio="42/11"
+            mediaType={inferMediaType(settings[`top_slide_${n}`])}
+            accept="image/jpeg,image/png,image/webp,video/mp4,video/webm"
+            allowExternalUrl
+          />
+        ))}
+      </div>
+
       {/* ── HOME ────────────────────────────────────────── */}
       <SectionHeader title="Página de Inicio" subtitle="Banners principales del home" />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-12">
@@ -59,23 +81,26 @@ export default async function MediosPage() {
         />
       </div>
 
-      {/* ── QUIÉNES SOMOS ─────────────────────────────────── */}
+      {/* ── QUIÉNES SOMOS (slideshow) ─────────────────────── */}
       <SectionHeader
-        title="Quiénes Somos"
-        subtitle="Imagen O video — el sitio detecta automáticamente el tipo según el archivo subido o la URL pegada."
+        title="Quiénes Somos — Slideshow"
+        subtitle="Hasta 5 slides que rotan automáticamente. Mezcla imágenes y videos: las imágenes duran ~5s, los videos MP4 se reproducen completos, los embeds 15s. Deja vacíos los que no uses."
       />
-      <div className="mb-12">
-        <MediaUploader
-          mediaKey="about_media_url"
-          label="Quiénes Somos — imagen o video"
-          description="Sube un MP4 (video local), JPG/PNG (imagen) o pega URL de YouTube/Vimeo (embed)."
-          currentUrl={settings.about_media_url}
-          recommendedSize="MP4 1280×960 · o imagen 1200×900px"
-          previewRatio="4/3"
-          mediaType={inferMediaType(settings.about_media_url)}
-          accept="image/jpeg,image/png,image/webp,video/mp4,video/webm"
-          allowExternalUrl
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+        {[1, 2, 3, 4, 5].map((n) => (
+          <MediaUploader
+            key={`about_slide_${n}`}
+            mediaKey={`about_slide_${n}`}
+            label={`Slide ${n}`}
+            description={n === 1 ? 'Primer slide (imagen o video)' : 'Opcional'}
+            currentUrl={settings[`about_slide_${n}`]}
+            recommendedSize="MP4 o imagen · 1200×900px"
+            previewRatio="4/3"
+            mediaType={inferMediaType(settings[`about_slide_${n}`])}
+            accept="image/jpeg,image/png,image/webp,video/mp4,video/webm"
+            allowExternalUrl
+          />
+        ))}
       </div>
 
       {/* ── GALLERY ───────────────────────────────────────── */}

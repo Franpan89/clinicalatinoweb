@@ -2,9 +2,8 @@
 
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { CheckCircle2, Building2 } from 'lucide-react'
-import PlaceholderImage from './PlaceholderImage'
-import { inferMediaType, isVideoEmbed } from '@/lib/utils/maps'
+import { CheckCircle2 } from 'lucide-react'
+import AboutSlideshow from './AboutSlideshow'
 
 const values = [
   'Pioneros en cirugía laparoscópica desde 1991',
@@ -16,52 +15,24 @@ const values = [
 ]
 
 export default function About({
-  mediaUrl,
+  slides,
 }: {
-  mediaUrl?: string | null
+  slides?: (string | null | undefined)[]
 } = {}) {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 })
-  const mediaType = inferMediaType(mediaUrl)
 
   return (
     <section id="nosotros" className="py-16 bg-white">
       <div className="container mx-auto">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Media — imagen o video */}
+          {/* Media — slideshow de imágenes y/o videos */}
           <motion.div
             initial={{ opacity: 0, x: -32 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             className="relative"
           >
-            {mediaUrl && mediaType === 'video' ? (
-              <div className="aspect-[4/3] bg-brand-dark overflow-hidden">
-                {isVideoEmbed(mediaUrl) ? (
-                  <iframe
-                    src={mediaUrl}
-                    title="Clínica Latino"
-                    className="w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                ) : (
-                  <video
-                    src={mediaUrl}
-                    className="w-full h-full object-cover"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                  />
-                )}
-              </div>
-            ) : (
-              <PlaceholderImage
-                src={mediaUrl || '/img/equipo-clinica.jpg'}
-                alt="Equipo médico de Clínica Latino"
-                ratio="4/3"
-              />
-            )}
+            <AboutSlideshow slides={slides ?? []} />
 
             {/* Floating badge — 69 años */}
             <motion.div
