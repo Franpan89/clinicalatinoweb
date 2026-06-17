@@ -205,10 +205,10 @@ export default function Hero({ imageSrc }: { imageSrc?: string | null } = {}) {
                 className="relative z-10 w-full h-auto object-contain object-bottom max-h-[80vh]"
                 style={{
                   WebkitMaskImage:
-                    'linear-gradient(to bottom, #000 55%, transparent 100%), linear-gradient(to right, #000 65%, transparent 100%)',
+                    'linear-gradient(to bottom, #000 82%, transparent 100%), linear-gradient(to right, #000 85%, transparent 100%)',
                   WebkitMaskComposite: 'source-in',
                   maskImage:
-                    'linear-gradient(to bottom, #000 55%, transparent 100%), linear-gradient(to right, #000 65%, transparent 100%)',
+                    'linear-gradient(to bottom, #000 82%, transparent 100%), linear-gradient(to right, #000 85%, transparent 100%)',
                   maskComposite: 'intersect',
                 }}
               />
