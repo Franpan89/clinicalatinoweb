@@ -97,7 +97,7 @@ export default async function ServiciosPage() {
       </section>
 
       <EmergencyCTA />
-      <Footer logoUrl={settings.logo_url} />
+      <Footer logoUrl={settings.logo_url} socials={settings} />
     </main>
   )
 }

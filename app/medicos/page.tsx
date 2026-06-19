@@ -81,7 +81,7 @@ export default async function MedicosPage() {
 
       <Doctors doctors={doctors} specialties={specialties} />
       <EmergencyCTA />
-      <Footer logoUrl={settings.logo_url} />
+      <Footer logoUrl={settings.logo_url} socials={settings} />
     </main>
   )
 }

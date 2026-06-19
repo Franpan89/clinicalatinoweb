@@ -87,7 +87,7 @@ export default async function Home() {
           settings.about_slide_5,
         ]}
       />
-      <Footer logoUrl={settings.logo_url} />
+      <Footer logoUrl={settings.logo_url} socials={settings} />
     </main>
   )
 }

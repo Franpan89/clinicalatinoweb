@@ -507,6 +507,43 @@ export async function clearSiteMedia(key: string) {
   return { success: true }
 }
 
+// ─── REDES SOCIALES ───────────────────────────────────
+export async function updateSocialLinks(formData: FormData) {
+  const keys = [
+    'social_facebook',
+    'social_instagram',
+    'social_tiktok',
+    'social_youtube',
+    'social_whatsapp',
+    'social_x',
+    'social_linkedin',
+  ]
+
+  const rows = keys.map((key) => {
+    const raw = String(formData.get(key) ?? '').trim()
+    return { key, value: raw || null, updated_at: new Date().toISOString() }
+  })
+
+  // Validación: si hay valor, debe parecer URL
+  for (const r of rows) {
+    if (r.value && !/^https?:\/\//i.test(r.value)) {
+      return { error: `${r.key.replace('social_', '')}: la URL debe empezar con http:// o https://` }
+    }
+  }
+
+  const supabase = createClient()
+  const { error } = await supabase.from('site_settings').upsert(rows, { onConflict: 'key' })
+
+  if (error) {
+    console.error('updateSocialLinks error:', error)
+    return { error: error.message }
+  }
+
+  revalidatePath('/')
+  revalidatePath('/admin/configuracion')
+  return { success: true }
+}
+
 // ─── LEADS / CONTACTO ─────────────────────────────────
 export async function updateLeadsEmail(formData: FormData) {
   const leads_email = String(formData.get('leads_email') ?? '').trim() || null

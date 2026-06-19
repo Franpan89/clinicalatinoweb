@@ -194,7 +194,7 @@ export default async function ServiceLandingPage({
         </div>
       </section>
 
-      <Footer logoUrl={settings.logo_url} />
+      <Footer logoUrl={settings.logo_url} socials={settings} />
     </main>
   )
 }

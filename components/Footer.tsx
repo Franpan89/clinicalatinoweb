@@ -1,7 +1,9 @@
 import Link from 'next/link'
-import { Phone, MapPin, Mail, Clock, Facebook, Instagram, Twitter } from 'lucide-react'
+import { Phone, MapPin, Mail, Clock } from 'lucide-react'
 import Logo from './Logo'
+import SocialIcon from './SocialIcon'
 import { SERVICES } from '@/lib/services'
+import { SOCIAL_PLATFORMS } from '@/lib/social'
 
 // Primeros 9 servicios para el footer, con link a su landing
 const serviceLinks = SERVICES.slice(0, 9).map((s) => ({
@@ -17,8 +19,20 @@ const clinicLinks = [
   { label: 'Contacto', href: '/contacto' },
 ]
 
-export default function Footer({ logoUrl }: { logoUrl?: string | null } = {}) {
+export default function Footer({
+  logoUrl,
+  socials,
+}: {
+  logoUrl?: string | null
+  socials?: Record<string, string | null>
+} = {}) {
   const year = new Date().getFullYear()
+
+  // Solo redes con URL configurada
+  const activeSocials = SOCIAL_PLATFORMS.filter((p) => socials?.[p.key]).map((p) => ({
+    ...p,
+    href: socials![p.key] as string,
+  }))
 
   return (
     <footer className="bg-navy-dark pt-16 pb-8">
@@ -34,21 +48,22 @@ export default function Footer({ logoUrl }: { logoUrl?: string | null } = {}) {
               Centro médico privado con tecnología de vanguardia y atención humanista.
               Tu salud es nuestra misión desde 1990.
             </p>
-            <div className="flex gap-2.5">
-              {[
-                { icon: Facebook, href: '#' },
-                { icon: Instagram, href: '#' },
-                { icon: Twitter, href: '#' },
-              ].map(({ icon: Icon, href }, i) => (
-                <a
-                  key={i}
-                  href={href}
-                  className="w-9 h-9 border border-white/15 hover:border-gold flex items-center justify-center text-white/35 hover:text-gold transition-all duration-200"
-                >
-                  <Icon size={15} />
-                </a>
-              ))}
-            </div>
+            {activeSocials.length > 0 && (
+              <div className="flex flex-wrap gap-2.5">
+                {activeSocials.map((s) => (
+                  <a
+                    key={s.key}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={s.label}
+                    className="w-9 h-9 border border-white/15 hover:border-gold flex items-center justify-center text-white/35 hover:text-gold transition-all duration-200"
+                  >
+                    <SocialIcon platform={s.key} size={15} />
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Services */}
