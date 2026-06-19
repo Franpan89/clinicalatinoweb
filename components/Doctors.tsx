@@ -133,7 +133,7 @@ function DoctorCard({ doctor, index }: { doctor: Doctor; index: number }) {
         </div>
 
         <a
-          href={`tel:${(doctor.contact_phone || '+59372827074').replace(/\s+/g, '')}`}
+          href={`tel:${(doctor.contact_phone || '+59372846666').replace(/\s+/g, '')}`}
           className="inline-flex items-center justify-center gap-2 bg-brand-dark hover:bg-brand-blue text-white font-lato font-bold py-3 text-xs tracking-wider uppercase transition-colors w-full"
         >
           <Phone size={13} />

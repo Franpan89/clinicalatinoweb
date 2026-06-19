@@ -61,7 +61,7 @@ export default async function NosotrosPage() {
       {/* Hitos / Cronología */}
       <section className="py-16 bg-brand-surface">
         <div className="container mx-auto max-w-4xl">
-          <div className="text-center mb-12">
+          <div className="text-center mb-14">
             <div className="flex items-center justify-center gap-3 mb-4">
               <div className="h-px w-10 bg-brand-gradient" />
               <span className="text-brand-blue font-lato text-xs font-bold tracking-[0.3em] uppercase">
@@ -74,44 +74,63 @@ export default async function NosotrosPage() {
             </h2>
           </div>
 
-          <ul className="space-y-6">
+          {/* Línea de tiempo vertical */}
+          <ol className="relative border-l-2 border-brand-teal/25 ml-3 md:ml-6 space-y-10">
             {[
               {
                 year: '1957',
                 title: 'Fundación',
-                desc: 'Dr. Rubén Astudillo y un destacado grupo de especialistas fundan la primera clínica privada del austro ecuatoriano.',
+                desc: 'El 4 de febrero de 1957 surgió la Clínica Santa Clara como la primera clínica de Cuenca, creada por el Dr. Rubén Astudillo Quintanilla.',
               },
               {
-                year: '1991',
-                title: 'Pioneros en laparoscopía',
-                desc: 'Realizamos las primeras cirugías laparoscópicas a nivel nacional, marcando un antes y un después en la medicina ecuatoriana.',
+                year: '1985',
+                title: 'Clínica Latinoamericana',
+                desc: 'Con la participación de un nuevo grupo de médicos ampliaron el servicio y le cambiaron el nombre a Clínica Latinoamericana.',
               },
               {
-                year: 'Hoy',
-                title: 'Vanguardia médica',
-                desc: 'Centro médico privado con tecnología de punta, 40+ especialidades y atención 24/7 los 365 días del año.',
+                year: '1992',
+                title: 'Pioneros en cirugía laparoscópica',
+                desc: 'Fuimos los pioneros en el país en realizar intervenciones quirúrgicas mínimas invasivas para la extirpación de la vesícula biliar, apéndice, útero y ovarios.',
+              },
+              {
+                year: '1995',
+                title: 'Hospital Latinoamericano',
+                desc: 'Se terminó la construcción del actual edificio, que contaba con la capacidad suficiente para formar a partir de entonces el Hospital Latinoamericano, con todos los servicios y atención especializada.',
+              },
+              {
+                year: '2020',
+                title: 'Hospital centinela',
+                desc: 'Durante la pandemia por COVID-19, Clínica Latino asumió un papel fundamental como hospital centinela, implementando estrictos protocolos de bioseguridad y adecuando áreas seguras para la atención de pacientes.',
+              },
+              {
+                year: '2026',
+                title: 'Certificación ISO 9001:2015',
+                desc: 'Clínica Latino obtuvo la certificación ISO 9001:2015, un reconocimiento internacional que avala la calidad de sus procesos y su compromiso con la mejora continua.',
               },
             ].map((m) => (
-              <li
-                key={m.year}
-                className="flex flex-col md:flex-row gap-5 bg-white p-6 border border-brand-surface"
-              >
-                <div className="md:w-32 flex-shrink-0">
-                  <div className="font-lato text-brand-gradient text-3xl font-bold leading-none">
-                    {m.year}
-                  </div>
+              <li key={m.year} className="relative pl-8 md:pl-10">
+                {/* Punto en la línea */}
+                <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-gradient ring-4 ring-brand-surface" />
+                <div className="font-lato text-brand-gradient text-3xl font-bold leading-none mb-2">
+                  {m.year}
                 </div>
-                <div>
-                  <h3 className="font-lato text-brand-dark text-lg font-bold mb-1">
-                    {m.title}
-                  </h3>
-                  <p className="font-lato text-brand-gray leading-relaxed text-[15px]">
-                    {m.desc}
-                  </p>
-                </div>
+                <h3 className="font-lato text-brand-dark text-lg font-bold mb-1.5 uppercase tracking-wide">
+                  {m.title}
+                </h3>
+                <p className="font-lato text-brand-gray leading-relaxed text-[15px] max-w-2xl">
+                  {m.desc}
+                </p>
               </li>
             ))}
-          </ul>
+          </ol>
+
+          {/* Cierre / quote */}
+          <div className="mt-14 bg-brand-gradient p-8 md:p-10 text-center">
+            <p className="font-lato text-white text-xl md:text-2xl font-medium italic leading-relaxed max-w-3xl mx-auto">
+              &ldquo;Cuidar de ti ha sido nuestra prioridad desde el inicio. Hoy seguimos
+              creciendo e innovando para ofrecerte una atención médica de excelencia.&rdquo;
+            </p>
+          </div>
         </div>
       </section>
 

@@ -105,7 +105,7 @@ export default function Footer({ logoUrl }: { logoUrl?: string | null } = {}) {
               <div className="flex items-start gap-3">
                 <Phone className="text-gold flex-shrink-0 mt-0.5" size={15} />
                 <div>
-                  <div className="font-outfit text-white/60 text-sm">+593-7-2827-074</div>
+                  <div className="font-outfit text-white/60 text-sm">+593 72 846-666</div>
                   <div className="font-outfit text-white/25 text-xs mt-0.5">Emergencias 24 horas</div>
                 </div>
               </div>

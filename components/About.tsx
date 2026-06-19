@@ -6,7 +6,7 @@ import { CheckCircle2 } from 'lucide-react'
 import AboutSlideshow from './AboutSlideshow'
 
 const values = [
-  'Pioneros en cirugía laparoscópica desde 1991',
+  'Pioneros en cirugía laparoscópica desde 1992',
   'Primera clínica del austro ecuatoriano',
   'Tecnología endoscópica de vanguardia',
   'Equipo de especialistas de excelencia',
@@ -83,7 +83,7 @@ export default function About({
               Somos los <strong className="font-bold text-brand-dark">pioneros históricos en
               equipamiento endoscópico</strong> y los primeros a nivel nacional en realizar{' '}
               <strong className="font-bold text-brand-dark">cirugías laparoscópicas desde
-              1991</strong>.
+              1992</strong>.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-10">

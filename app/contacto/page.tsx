@@ -10,7 +10,7 @@ export const revalidate = 60
 export const metadata: Metadata = {
   title: 'Contacto · Clínica Latino',
   description:
-    'Agenda tu cita en Clínica Latino. Atendemos 24/7 en Cuenca, Ecuador. Teléfono +593-7-2827-074. Emergencias disponibles todos los días del año.',
+    'Agenda tu cita en Clínica Latino. Atendemos 24/7 en Cuenca, Ecuador. Teléfono +593 72 846-666. Emergencias disponibles todos los días del año.',
 }
 
 export default async function ContactoPage() {

@@ -97,11 +97,11 @@ export default function Navigation({ logoUrl }: { logoUrl?: string | null } = {}
 
         {/* Emergency CTA */}
         <a
-          href="tel:+59372827074"
+          href="tel:+59372846666"
           className="hidden lg:flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 font-lato text-sm font-bold transition-all duration-200 hover:shadow-lg rounded-sm"
         >
           <Phone size={15} />
-          <span>2827-074</span>
+          <span>072 846-666</span>
           <span className="text-red-200 text-xs font-normal">24/7</span>
         </a>
 
@@ -136,11 +136,11 @@ export default function Navigation({ logoUrl }: { logoUrl?: string | null } = {}
                 </a>
               ))}
               <a
-                href="tel:+59372827074"
+                href="tel:+59372846666"
                 className="flex items-center gap-2 text-red-600 font-lato text-sm py-4 font-bold"
               >
                 <Phone size={16} />
-                Emergencias: +593-7-2827-074
+                Emergencias: +593 72 846-666
               </a>
             </div>
           </motion.div>

@@ -66,7 +66,7 @@ export default function EmergencyCTA() {
 
           <div className="flex flex-col gap-5">
             <a
-              href="tel:+59372827074"
+              href="tel:+59372846666"
               className="group flex items-center gap-5 bg-white hover:bg-red-50 text-red-900 px-8 py-5 font-lato font-bold text-xl transition-all duration-200 hover:shadow-2xl min-w-[300px]"
             >
               <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
@@ -76,7 +76,7 @@ export default function EmergencyCTA() {
                 <div className="text-red-400 text-xs font-normal uppercase tracking-widest mb-0.5">
                   Llamar ahora
                 </div>
-                <div>+593-7-2827-074</div>
+                <div>+593 72 846-666</div>
               </div>
             </a>
 

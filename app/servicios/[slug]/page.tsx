@@ -144,11 +144,11 @@ export default async function ServiceLandingPage({
                   />
                 </Link>
                 <a
-                  href="tel:+59372827074"
+                  href="tel:+59372846666"
                   className="inline-flex items-center gap-2.5 border-2 border-brand-dark/15 hover:border-brand-blue text-brand-dark hover:text-brand-blue font-lato font-bold px-7 py-3.5 transition-all duration-300 text-sm tracking-wide"
                 >
                   <Phone size={16} />
-                  Llamar al 2827-074
+                  Llamar al 072 846-666
                 </a>
               </div>
             </div>

@@ -54,9 +54,9 @@ export default function Contact({ mapEmbedUrl, mapAddress }: ContactProps = {}) 
     {
       icon: Phone,
       label: 'Teléfono Principal',
-      value: '+593-7-2827-074',
+      value: '+593 72 846-666',
       sub: 'Emergencias disponibles 24/7',
-      href: 'tel:+59372827074',
+      href: 'tel:+59372846666',
     },
     {
       icon: MapPin,
