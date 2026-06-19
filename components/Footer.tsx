@@ -1,25 +1,20 @@
+import Link from 'next/link'
 import { Phone, MapPin, Mail, Clock, Facebook, Instagram, Twitter } from 'lucide-react'
 import Logo from './Logo'
+import { SERVICES } from '@/lib/services'
 
-const serviceLinks = [
-  'Quirófano',
-  'Neonatología',
-  'Cuidados Intensivos',
-  'Cardio Latino',
-  'Cirugía Estética',
-  'Ginecología',
-  'Centro de Imágenes',
-  'Laboratorio',
-  'Emergencia 24/7',
-]
+// Primeros 9 servicios para el footer, con link a su landing
+const serviceLinks = SERVICES.slice(0, 9).map((s) => ({
+  label: s.title,
+  href: `/servicios/${s.slug}`,
+}))
 
 const clinicLinks = [
-  { label: 'Inicio', href: '#inicio' },
-  { label: 'Quiénes Somos', href: '#nosotros' },
-  { label: 'Especialidades', href: '#especialidades' },
-  { label: 'Nuestros Médicos', href: '#medicos' },
-  { label: 'Blog de Salud', href: '#blog' },
-  { label: 'Contacto', href: '#contacto' },
+  { label: 'Inicio', href: '/' },
+  { label: 'Nuestros Médicos', href: '/medicos' },
+  { label: 'Servicios', href: '/servicios' },
+  { label: 'Quiénes Somos', href: '/nosotros' },
+  { label: 'Contacto', href: '/contacto' },
 ]
 
 export default function Footer({ logoUrl }: { logoUrl?: string | null } = {}) {
@@ -63,14 +58,14 @@ export default function Footer({ logoUrl }: { logoUrl?: string | null } = {}) {
             </h4>
             <ul className="space-y-2.5">
               {serviceLinks.map((s) => (
-                <li key={s}>
-                  <a
-                    href="#servicios"
+                <li key={s.href}>
+                  <Link
+                    href={s.href}
                     className="font-outfit text-white/35 hover:text-gold text-sm transition-colors flex items-center gap-2 group"
                   >
                     <span className="w-1 h-1 bg-gold/40 rounded-full group-hover:bg-gold transition-colors flex-shrink-0" />
-                    {s}
-                  </a>
+                    {s.label}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -84,13 +79,13 @@ export default function Footer({ logoUrl }: { logoUrl?: string | null } = {}) {
             <ul className="space-y-2.5">
               {clinicLinks.map((link) => (
                 <li key={link.label}>
-                  <a
+                  <Link
                     href={link.href}
                     className="font-outfit text-white/35 hover:text-gold text-sm transition-colors flex items-center gap-2 group"
                   >
                     <span className="w-1 h-1 bg-gold/40 rounded-full group-hover:bg-gold transition-colors flex-shrink-0" />
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -102,17 +97,22 @@ export default function Footer({ logoUrl }: { logoUrl?: string | null } = {}) {
               Contacto
             </h4>
             <div className="space-y-5">
-              <div className="flex items-start gap-3">
+              <a href="tel:+59372846666" className="flex items-start gap-3 group">
                 <Phone className="text-gold flex-shrink-0 mt-0.5" size={15} />
                 <div>
-                  <div className="font-outfit text-white/60 text-sm">+593 72 846-666</div>
+                  <div className="font-outfit text-white/60 group-hover:text-gold text-sm transition-colors">+593 72 846-666</div>
                   <div className="font-outfit text-white/25 text-xs mt-0.5">Emergencias 24 horas</div>
                 </div>
-              </div>
-              <div className="flex items-start gap-3">
+              </a>
+              <a
+                href="https://maps.google.com/?q=Clínica+Latino+Cuenca+Ecuador"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-3 group"
+              >
                 <MapPin className="text-gold flex-shrink-0 mt-0.5" size={15} />
-                <div className="font-outfit text-white/60 text-sm">Cuenca, Ecuador</div>
-              </div>
+                <div className="font-outfit text-white/60 group-hover:text-gold text-sm transition-colors">Cuenca, Ecuador</div>
+              </a>
               <div className="flex items-start gap-3">
                 <Clock className="text-gold flex-shrink-0 mt-0.5" size={15} />
                 <div>
@@ -120,12 +120,12 @@ export default function Footer({ logoUrl }: { logoUrl?: string | null } = {}) {
                   <div className="font-outfit text-gold text-sm font-semibold">24 Horas</div>
                 </div>
               </div>
-              <div className="flex items-start gap-3">
+              <a href="mailto:info@clinicalatino.med.ec" className="flex items-start gap-3 group">
                 <Mail className="text-gold flex-shrink-0 mt-0.5" size={15} />
-                <div className="font-outfit text-white/60 text-sm">
+                <div className="font-outfit text-white/60 group-hover:text-gold text-sm transition-colors">
                   info@clinicalatino.med.ec
                 </div>
-              </div>
+              </a>
             </div>
           </div>
         </div>
