@@ -3,6 +3,7 @@
 import { useRef, useState, useTransition } from 'react'
 import { Upload, X, CheckCircle, AlertCircle, Link as LinkIcon, FileVideo, Image as ImageIcon } from 'lucide-react'
 import { uploadSiteMedia, setSiteMediaUrl, clearSiteMedia } from '@/app/admin/actions'
+import { toEmbedUrl } from '@/lib/utils/maps'
 
 type MediaUploaderProps = {
   /** Clave única en site_settings — ej: 'hero_image_url' */
@@ -43,6 +44,7 @@ export default function MediaUploader({
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const isVideo = mediaType === 'video'
+  const embedUrl = previewUrl ? toEmbedUrl(previewUrl) : null
   const isYouTube = previewUrl && /youtube\.com|youtu\.be|vimeo\.com/.test(previewUrl)
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,16 +76,17 @@ export default function MediaUploader({
   const handleSaveExternal = () => {
     if (!externalUrl.trim()) return
     setStatus({ kind: 'idle' })
+    const resolvedUrl = toEmbedUrl(externalUrl.trim()) ?? externalUrl.trim()
     const fd = new FormData()
     fd.append('key', mediaKey)
-    fd.append('url', externalUrl.trim())
+    fd.append('url', resolvedUrl)
 
     startTransition(async () => {
       const result = await setSiteMediaUrl(fd)
       if (result?.error) {
         setStatus({ kind: 'error', msg: result.error })
       } else {
-        setPreviewUrl(externalUrl.trim())
+        setPreviewUrl(resolvedUrl)
         setExternalUrl('')
         setStatus({ kind: 'success', msg: 'URL guardada.' })
         setTimeout(() => setStatus({ kind: 'idle' }), 3000)
@@ -141,7 +144,7 @@ export default function MediaUploader({
           isVideo ? (
             isYouTube ? (
               <iframe
-                src={previewUrl}
+                src={embedUrl ?? previewUrl}
                 className="w-full h-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen

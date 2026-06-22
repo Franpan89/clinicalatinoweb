@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { Play, Video, Sparkles, ArrowUpRight } from 'lucide-react'
 import PlaceholderImage from './PlaceholderImage'
-import { isVideoEmbed } from '@/lib/utils/maps'
+import { isVideoEmbed, toEmbedUrl } from '@/lib/utils/maps'
 
 type GalleryItem = {
   url: string | null
@@ -75,7 +75,7 @@ export default function Gallery({ videoUrl, videoHref = '/nosotros', items }: Ga
             {videoUrl ? (
               isVideoEmbed(videoUrl) ? (
                 <iframe
-                  src={videoUrl}
+                  src={toEmbedUrl(videoUrl) ?? videoUrl}
                   title="Video institucional Clínica Latino"
                   className="w-full h-full"
                   frameBorder={0}

@@ -20,6 +20,32 @@ export function isVideoEmbed(url: string | null | undefined): boolean {
 }
 
 /**
+ * Convierte cualquier URL de YouTube o Vimeo al formato embed que permite iframe.
+ * - youtube.com/watch?v=ID → youtube.com/embed/ID
+ * - youtu.be/ID            → youtube.com/embed/ID
+ * - vimeo.com/ID           → player.vimeo.com/video/ID
+ * - ya es embed            → sin cambios
+ */
+export function toEmbedUrl(url: string | null | undefined): string | null {
+  if (!url) return null
+
+  // YouTube watch URL
+  const ytWatch = url.match(/youtube\.com\/watch\?(?:.*&)?v=([\w-]+)/i)
+  if (ytWatch) return `https://www.youtube.com/embed/${ytWatch[1]}`
+
+  // YouTube short URL
+  const ytShort = url.match(/youtu\.be\/([\w-]+)/i)
+  if (ytShort) return `https://www.youtube.com/embed/${ytShort[1]}`
+
+  // Vimeo
+  const vimeo = url.match(/vimeo\.com\/(\d+)/i)
+  if (vimeo) return `https://player.vimeo.com/video/${vimeo[1]}`
+
+  // Ya es embed u otra URL → devuelve tal cual
+  return url
+}
+
+/**
  * Acepta un iframe HTML completo o solo la URL y devuelve la URL limpia.
  * Si el input no parece una URL válida de Google Maps, devuelve null.
  *
