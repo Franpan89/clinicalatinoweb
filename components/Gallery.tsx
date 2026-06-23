@@ -16,7 +16,6 @@ type GalleryItem = {
 
 type GalleryProps = {
   videoUrl?: string | null
-  videoHref?: string
   items?: GalleryItem[]
 }
 
@@ -28,7 +27,7 @@ const DEFAULT_ITEMS: GalleryItem[] = [
   { url: null, fallback: '/img/imagenes.jpg', label: 'Centro de imágenes', href: '/servicios/centro-imagenes' },
 ]
 
-export default function Gallery({ videoUrl, videoHref = '/nosotros', items }: GalleryProps = {}) {
+export default function Gallery({ videoUrl, items }: GalleryProps = {}) {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.05 })
   const galleryItems = items ?? DEFAULT_ITEMS
 
@@ -94,7 +93,7 @@ export default function Gallery({ videoUrl, videoHref = '/nosotros', items }: Ga
                 />
               )
             ) : (
-              <Link href={videoHref} className="block relative h-full cursor-pointer">
+              <div className="relative h-full">
                 <PlaceholderImage
                   label="Video institucional"
                   filename="Configura en /admin/medios"
@@ -105,11 +104,11 @@ export default function Gallery({ videoUrl, videoHref = '/nosotros', items }: Ga
                   className="h-full w-full"
                 />
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="w-20 h-20 rounded-full bg-brand-gradient flex items-center justify-center shadow-2xl shadow-brand-teal/30 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-20 h-20 rounded-full bg-brand-gradient flex items-center justify-center shadow-2xl shadow-brand-teal/30">
                     <Play size={32} className="text-white ml-1" fill="currentColor" />
                   </div>
                 </div>
-              </Link>
+              </div>
             )}
           </motion.div>
 

@@ -63,7 +63,6 @@ export default async function Home() {
       <Doctors doctors={doctors} specialties={specialties} />
       <Gallery
         videoUrl={settings.gallery_video_url}
-        videoHref="/nosotros"
         items={[
           { url: settings.gallery_1_url, fallback: '/img/fachada.jpg', label: 'Fachada principal', href: '/nosotros' },
           { url: settings.gallery_2_url, fallback: '/img/habitacion.jpg', label: 'Habitación hospitalaria', href: '/servicios/hospitalizacion' },
