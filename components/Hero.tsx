@@ -1,11 +1,10 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ArrowRight, Phone, Calendar, ChevronDown, Stethoscope, Users } from 'lucide-react'
-import PlaceholderImage from './PlaceholderImage'
+import { ArrowRight, Phone, Calendar, ChevronDown, Users } from 'lucide-react'
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 32 },
+  hidden: { opacity: 0, y: 28 },
   visible: (delay = 0) => ({
     opacity: 1,
     y: 0,
@@ -13,13 +12,6 @@ const fadeUp = {
   }),
 }
 
-/**
- * Imagen del hero — gestionada desde /admin/medios.
- * Cae al archivo local si no hay nada configurado en site_settings.
- */
-const DEFAULT_HERO_IMAGE = '/img/hero-banner.png'
-
-// Stats que también son links rápidos a secciones del sitio
 const heroStats = [
   { value: '24/7', label: 'Emergencias', href: '#contacto' },
   { value: '+69', label: 'Años de Experiencia', href: '#nosotros' },
@@ -28,13 +20,12 @@ const heroStats = [
 ]
 
 export default function Hero({ imageSrc }: { imageSrc?: string | null } = {}) {
-  const HERO_IMAGE_SRC = imageSrc || DEFAULT_HERO_IMAGE
   return (
     <section
       id="inicio"
-      className="relative min-h-[80vh] lg:min-h-[88vh] bg-white flex items-center overflow-hidden pt-24 pb-16"
+      className="relative bg-white flex items-center overflow-hidden pt-28 pb-14"
     >
-      {/* Subtle dot grid */}
+      {/* Dot grid */}
       <div className="absolute inset-0 opacity-[0.04]">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -46,12 +37,11 @@ export default function Hero({ imageSrc }: { imageSrc?: string | null } = {}) {
         </svg>
       </div>
 
-      {/* Soft brand-gradient glows */}
+      {/* Glows */}
       <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full bg-brand-green/10 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-20 right-1/4 w-[500px] h-[500px] rounded-full bg-brand-blue/10 blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 right-0 w-[400px] h-[400px] rounded-full bg-brand-teal/10 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-20 right-1/4 w-[500px] h-[500px] rounded-full bg-brand-blue/8 blur-3xl pointer-events-none" />
 
-      {/* Gradient vertical accent line (left) */}
+      {/* Accent line left */}
       <motion.div
         className="absolute left-0 top-0 bottom-0 w-1 bg-brand-gradient-vertical opacity-60 z-10"
         initial={{ scaleY: 0 }}
@@ -59,174 +49,105 @@ export default function Hero({ imageSrc }: { imageSrc?: string | null } = {}) {
         transition={{ duration: 1.2, delay: 0.5 }}
       />
 
-      {/* Main content — 2 column layout */}
-      <div className="relative z-10 container mx-auto">
-        <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-stretch">
-          {/* ── Columna izquierda: texto ─────────────────────── */}
-          <div className="max-w-[640px]">
-            {/* Eyebrow */}
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              custom={0.2}
-              variants={fadeUp}
-              className="flex items-center gap-3 mb-7"
-            >
-              <div className="h-px w-10 bg-brand-gradient" />
-              <span className="text-brand-blue font-lato text-xs font-bold tracking-[0.35em] uppercase">
-                Cuenca · Ecuador · Desde 1957
-              </span>
-            </motion.div>
+      {/* Content — centrado */}
+      <div className="relative z-10 container mx-auto text-center">
+        {/* Eyebrow */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          custom={0.2}
+          variants={fadeUp}
+          className="flex items-center justify-center gap-3 mb-6"
+        >
+          <div className="h-px w-10 bg-brand-gradient" />
+          <span className="text-brand-blue font-lato text-xs font-bold tracking-[0.35em] uppercase">
+            Cuenca · Ecuador · Desde 1957
+          </span>
+          <div className="h-px w-10 bg-brand-gradient" />
+        </motion.div>
 
-            {/* Headline */}
-            <motion.h1
-              initial="hidden"
-              animate="visible"
-              custom={0.35}
-              variants={fadeUp}
-              className="font-lato font-medium text-brand-dark leading-[1.05] mb-6"
-              style={{ fontSize: 'clamp(2.2rem, 4.8vw, 4rem)' }}
-            >
-              <span className="font-normal text-brand-gradient">Tecnología</span>{' '}
-              <span className="font-medium">de Vanguardia,</span>
-              <br />
-              Los primeros en cuidar de Tí
-            </motion.h1>
+        {/* Headline */}
+        <motion.h1
+          initial="hidden"
+          animate="visible"
+          custom={0.35}
+          variants={fadeUp}
+          className="font-lato font-medium text-brand-dark leading-[1.05] mb-6 mx-auto max-w-3xl"
+          style={{ fontSize: 'clamp(2.4rem, 5.5vw, 4.2rem)' }}
+        >
+          <span className="font-normal text-brand-gradient">Tecnología</span>{' '}
+          <span className="font-medium">de Vanguardia,</span>
+          <br />
+          Los primeros en cuidar de Tí
+        </motion.h1>
 
-            {/* Subtext */}
-            <motion.p
-              initial="hidden"
-              animate="visible"
-              custom={0.5}
-              variants={fadeUp}
-              className="text-brand-gray font-lato font-normal text-lg leading-relaxed mb-9 max-w-[540px]"
-            >
-              <strong className="font-bold text-brand-dark">69 años</strong> brindando atención
-              médica especializada con innovación, experiencia y calidez humana.
-            </motion.p>
+        {/* Subtext */}
+        <motion.p
+          initial="hidden"
+          animate="visible"
+          custom={0.5}
+          variants={fadeUp}
+          className="text-brand-gray font-lato font-normal text-lg leading-relaxed mb-10 max-w-xl mx-auto"
+        >
+          <strong className="font-bold text-brand-dark">69 años</strong> brindando atención
+          médica especializada con innovación, experiencia y calidez humana.
+        </motion.p>
 
-            {/* CTAs */}
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              custom={0.65}
-              variants={fadeUp}
-              className="flex flex-wrap gap-3"
-            >
-              <a
-                href="#contacto"
-                className="group relative inline-flex items-center gap-2.5 bg-brand-gradient text-white font-lato font-bold px-6 py-3.5 transition-all duration-300 hover:shadow-xl hover:shadow-brand-teal/30 text-sm tracking-wide overflow-hidden"
-              >
-                <Calendar size={16} />
-                Agendar una Cita
-                <ArrowRight
-                  size={16}
-                  className="transition-transform duration-300 group-hover:translate-x-1"
-                />
-              </a>
-              <a
-                href="#medicos"
-                className="inline-flex items-center gap-2.5 bg-brand-dark hover:bg-brand-blue text-white font-lato font-bold px-6 py-3.5 transition-colors duration-300 text-sm tracking-wide"
-              >
-                <Users size={16} />
-                Médicos Especialistas
-              </a>
-              <a
-                href="tel:+59372846666"
-                className="inline-flex items-center gap-2.5 border-2 border-brand-dark/15 hover:border-brand-blue text-brand-dark hover:text-brand-blue font-lato font-bold px-6 py-3.5 transition-all duration-300 text-sm tracking-wide"
-              >
-                <Phone size={16} />
-                072 846-666
-              </a>
-            </motion.div>
-
-            {/* Mini stats — clicables, hacen scroll a las secciones */}
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              custom={0.85}
-              variants={fadeUp}
-              className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-12 pt-7 border-t border-brand-surface"
-            >
-              {heroStats.map((stat) => (
-                <a
-                  key={stat.label}
-                  href={stat.href}
-                  className="group block"
-                >
-                  <div className="font-lato font-bold text-2xl lg:text-3xl text-brand-gradient">
-                    {stat.value}
-                  </div>
-                  <div className="font-lato text-brand-gray text-[10px] tracking-[0.2em] uppercase mt-1 font-bold group-hover:text-brand-blue transition-colors">
-                    {stat.label}
-                    <span className="inline-block ml-1 transition-transform duration-200 group-hover:translate-x-0.5">→</span>
-                  </div>
-                </a>
-              ))}
-            </motion.div>
-          </div>
-
-          {/* ── Columna derecha: imagen pegada bottom-right ───────── */}
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1.1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="relative hidden lg:flex h-full self-stretch min-h-[560px] items-end justify-end"
+        {/* CTAs */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          custom={0.65}
+          variants={fadeUp}
+          className="flex flex-wrap justify-center gap-4 mb-12"
+        >
+          <a
+            href="#contacto"
+            className="group inline-flex items-center gap-3 bg-brand-gradient text-white font-lato font-bold px-8 py-4 transition-all duration-300 hover:shadow-xl hover:shadow-brand-teal/30 text-base tracking-wide"
           >
-            {/* Decorative gradient ring detrás */}
-            <motion.svg
-              viewBox="0 0 400 400"
-              className="absolute right-0 bottom-0 w-full h-auto max-h-full opacity-40 pointer-events-none"
-              initial={{ opacity: 0, rotate: -10 }}
-              animate={{ opacity: 0.4, rotate: 0 }}
-              transition={{ duration: 1.8, ease: 'easeOut' }}
-              style={{ aspectRatio: '1/1' }}
-            >
-              <defs>
-                <linearGradient id="hero-ring-grad" x1="0%" y1="100%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#B9DB5C" />
-                  <stop offset="50%" stopColor="#2BB3B2" />
-                  <stop offset="100%" stopColor="#2C6FB1" />
-                </linearGradient>
-              </defs>
-              <circle cx="200" cy="200" r="195" fill="none" stroke="url(#hero-ring-grad)" strokeWidth="1" opacity="0.5" />
-              <circle cx="200" cy="200" r="160" fill="none" stroke="url(#hero-ring-grad)" strokeWidth="0.8" opacity="0.3" />
-              <path d="M 200 5 A 195 195 0 0 1 395 200" fill="none" stroke="url(#hero-ring-grad)" strokeWidth="2" opacity="0.7" />
-              <path d="M 5 200 A 195 195 0 0 1 200 395" fill="none" stroke="url(#hero-ring-grad)" strokeWidth="2" opacity="0.7" />
-              <circle cx="200" cy="10" r="5" fill="#B9DB5C" opacity="0.8" />
-              <circle cx="200" cy="390" r="5" fill="#2C6FB1" opacity="0.8" />
-            </motion.svg>
+            <Calendar size={18} />
+            Agendar una Cita
+            <ArrowRight
+              size={18}
+              className="transition-transform duration-300 group-hover:translate-x-1"
+            />
+          </a>
+          <a
+            href="#medicos"
+            className="inline-flex items-center gap-3 bg-brand-dark hover:bg-brand-blue text-white font-lato font-bold px-8 py-4 transition-colors duration-300 text-base tracking-wide"
+          >
+            <Users size={18} />
+            Médicos Especialistas
+          </a>
+          <a
+            href="tel:+59372846666"
+            className="inline-flex items-center gap-3 border-2 border-brand-dark/15 hover:border-brand-blue text-brand-dark hover:text-brand-blue font-lato font-bold px-8 py-4 transition-all duration-300 text-base tracking-wide"
+          >
+            <Phone size={18} />
+            072 846-666
+          </a>
+        </motion.div>
 
-            {/* Imagen — pegada bottom-right, fill width al 100% */}
-            {HERO_IMAGE_SRC ? (
-              <img
-                src={HERO_IMAGE_SRC}
-                alt="Clínica Latino — médicos especialistas"
-                className="relative z-10 w-full h-auto object-contain object-bottom max-h-[80vh]"
-                style={{
-                  WebkitMaskImage:
-                    'linear-gradient(to bottom, #000 82%, transparent 100%), linear-gradient(to right, #000 85%, transparent 100%)',
-                  WebkitMaskComposite: 'source-in',
-                  maskImage:
-                    'linear-gradient(to bottom, #000 82%, transparent 100%), linear-gradient(to right, #000 85%, transparent 100%)',
-                  maskComposite: 'intersect',
-                }}
-              />
-            ) : (
-              <PlaceholderImage
-                src={null}
-                label="Hero — imagen principal"
-                filename="public/img/hero-banner.png"
-                recommendedSize="875×630px · PNG (fondo transparente)"
-                icon={Stethoscope}
-                variant="brand"
-                ratio="875/630"
-                className="w-full"
-              />
-            )}
-
-          </motion.div>
-        </div>
+        {/* Stats */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          custom={0.85}
+          variants={fadeUp}
+          className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 border-t border-brand-surface max-w-2xl mx-auto"
+        >
+          {heroStats.map((stat) => (
+            <a key={stat.label} href={stat.href} className="group block text-center">
+              <div className="font-lato font-bold text-3xl text-brand-gradient">
+                {stat.value}
+              </div>
+              <div className="font-lato text-brand-gray text-[10px] tracking-[0.2em] uppercase mt-1 font-bold group-hover:text-brand-blue transition-colors">
+                {stat.label}
+                <span className="inline-block ml-1 transition-transform duration-200 group-hover:translate-x-0.5">→</span>
+              </div>
+            </a>
+          ))}
+        </motion.div>
       </div>
 
       {/* Scroll indicator */}
@@ -234,7 +155,7 @@ export default function Hero({ imageSrc }: { imageSrc?: string | null } = {}) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.8 }}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5"
+        className="absolute bottom-5 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5"
       >
         <span className="font-lato text-[10px] tracking-[0.3em] uppercase text-brand-gray font-bold">
           Descubrir
