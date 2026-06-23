@@ -59,7 +59,7 @@ export default async function Home() {
         ]}
       />
       <Hero imageSrc={settings.hero_image_url} />
-      <Services bannerSrc={settings.services_banner_url} />
+      <Services bannerSrc={settings.services_banner_url} serviceImages={settings} />
       <Doctors doctors={doctors} specialties={specialties} />
       <Gallery
         videoUrl={settings.gallery_video_url}

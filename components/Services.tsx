@@ -1,23 +1,32 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { ArrowRight } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 import { SERVICES } from '@/lib/services'
 import PlaceholderImage from './PlaceholderImage'
 
 const container = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.07 } },
+  visible: { transition: { staggerChildren: 0.06 } },
 }
 
 const item = {
-  hidden: { opacity: 0, y: 22 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
+  hidden: { opacity: 0, y: 18 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] } },
 }
 
-export default function Services({ bannerSrc }: { bannerSrc?: string | null } = {}) {
+type ServiceImages = Record<string, string | null | undefined>
+
+export default function Services({
+  bannerSrc,
+  serviceImages = {},
+}: {
+  bannerSrc?: string | null
+  serviceImages?: ServiceImages
+} = {}) {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.05 })
   const banner = bannerSrc || '/img/banner-servicios.jpg'
 
@@ -51,39 +60,65 @@ export default function Services({ bannerSrc }: { bannerSrc?: string | null } = 
           </p>
         </div>
 
-        {/* Grid */}
+        {/* Grid de imágenes */}
         <motion.div
           ref={ref}
           variants={container}
           initial="hidden"
           animate={inView ? 'visible' : 'hidden'}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
+          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"
         >
-          {SERVICES.map((s) => (
-            <motion.div key={s.slug} variants={item}>
-              <Link
-                href={`/servicios/${s.slug}`}
-                className="group h-full p-6 border border-brand-surface hover:border-brand-teal/60 hover:shadow-xl hover:shadow-brand-teal/5 transition-all duration-400 cursor-pointer flex flex-col"
-              >
-                <div className="w-10 h-10 bg-brand-teal/10 group-hover:bg-brand-teal/20 flex items-center justify-center mb-4 transition-colors duration-300">
-                  <s.icon className="text-brand-teal" size={18} />
-                </div>
-                <span className="font-lato text-[10px] text-brand-teal uppercase tracking-[0.2em] font-bold">
-                  {s.tag}
-                </span>
-                <h3 className="font-lato text-brand-dark text-lg font-bold mt-1 mb-2 leading-tight">
-                  {s.title}
-                </h3>
-                <p className="font-lato text-brand-gray text-sm leading-relaxed font-normal flex-grow">
-                  {s.shortDesc}
-                </p>
-                <div className="mt-4 flex items-center gap-1.5 text-brand-teal font-lato text-xs font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <span>Saber más</span>
-                  <ArrowRight size={12} className="transition-transform duration-200 group-hover:translate-x-0.5" />
-                </div>
-              </Link>
-            </motion.div>
-          ))}
+          {SERVICES.map((s) => {
+            const customImg = serviceImages[`service_image_${s.slug}`]
+            const imgSrc = customImg || s.image
+
+            return (
+              <motion.div key={s.slug} variants={item}>
+                <Link
+                  href={`/servicios/${s.slug}`}
+                  className="group relative block overflow-hidden aspect-[3/4]"
+                >
+                  {/* Imagen */}
+                  {imgSrc && !imgSrc.startsWith('/img/servicios/') ? (
+                    <img
+                      src={imgSrc}
+                      alt={s.title}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  ) : (
+                    <PlaceholderImage
+                      src={imgSrc}
+                      alt={s.title}
+                      ratio="auto"
+                      className="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-700"
+                      label={s.title}
+                      filename={`service_image_${s.slug} en /admin/medios`}
+                      recommendedSize="900×1200px"
+                      variant="brand"
+                    />
+                  )}
+
+                  {/* Gradiente permanente inferior */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/85 via-brand-dark/20 to-transparent" />
+
+                  {/* Texto */}
+                  <div className="absolute inset-x-0 bottom-0 p-4">
+                    <div className="font-lato text-[10px] text-brand-teal uppercase tracking-[0.25em] font-bold mb-1">
+                      {s.tag}
+                    </div>
+                    <h3 className="font-lato text-white text-base font-bold leading-tight">
+                      {s.title}
+                    </h3>
+                  </div>
+
+                  {/* Arrow on hover */}
+                  <div className="absolute top-3 right-3 w-8 h-8 bg-brand-gradient flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-x-1 group-hover:translate-x-0">
+                    <ArrowUpRight size={15} className="text-white" />
+                  </div>
+                </Link>
+              </motion.div>
+            )
+          })}
         </motion.div>
       </div>
     </section>
