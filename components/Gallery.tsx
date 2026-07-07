@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { Play, Video, Sparkles, ArrowUpRight } from 'lucide-react'
+import { Play, Video, ArrowUpRight } from 'lucide-react'
 import PlaceholderImage from './PlaceholderImage'
 import { isVideoEmbed, toEmbedUrl } from '@/lib/utils/maps'
 
@@ -155,16 +155,6 @@ export default function Gallery({ videoUrl, items }: GalleryProps = {}) {
             )
           })}
         </motion.div>
-
-        <div className="mt-10 text-center">
-          <a
-            href="#contacto"
-            className="inline-flex items-center gap-2 text-brand-blue hover:text-brand-dark font-lato text-sm font-bold tracking-wider uppercase underline underline-offset-4 transition-colors"
-          >
-            Agenda una visita guiada
-            <Sparkles size={14} />
-          </a>
-        </div>
       </div>
     </section>
   )
