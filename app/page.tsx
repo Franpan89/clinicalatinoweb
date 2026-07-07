@@ -8,10 +8,12 @@ import Doctors from '@/components/Doctors'
 import Testimonials from '@/components/Testimonials'
 import Contact from '@/components/Contact'
 import EmergencyCTA from '@/components/EmergencyCTA'
+import InsurancePartners from '@/components/InsurancePartners'
 import Footer from '@/components/Footer'
 import { createClient } from '@/lib/supabase/server'
 import { getActiveSpecialties } from '@/lib/data/specialties'
 import { getSiteSettings } from '@/lib/data/settings'
+import { getActiveInsuranceLogos } from '@/lib/data/insurance'
 import type { Doctor } from '@/lib/types'
 
 export const revalidate = 60
@@ -39,10 +41,11 @@ async function getDoctors(): Promise<Doctor[]> {
 }
 
 export default async function Home() {
-  const [doctors, specialties, settings] = await Promise.all([
+  const [doctors, specialties, settings, insuranceLogos] = await Promise.all([
     getDoctors(),
     getActiveSpecialties(),
     getSiteSettings(),
+    getActiveInsuranceLogos(),
   ])
 
   return (
@@ -56,6 +59,11 @@ export default async function Home() {
           settings.top_slide_3,
           settings.top_slide_4,
           settings.top_slide_5,
+          settings.top_slide_6,
+          settings.top_slide_7,
+          settings.top_slide_8,
+          settings.top_slide_9,
+          settings.top_slide_10,
         ]}
       />
       <Hero imageSrc={settings.hero_image_url} />
@@ -74,6 +82,7 @@ export default async function Home() {
       <Contact
         mapEmbedUrl={settings.map_embed_url}
         mapAddress={settings.map_address}
+        socials={settings}
       />
       <Testimonials />
       <EmergencyCTA />
@@ -86,6 +95,7 @@ export default async function Home() {
           settings.about_slide_5,
         ]}
       />
+      <InsurancePartners logos={insuranceLogos} />
       <Footer logoUrl={settings.logo_url} socials={settings} />
     </main>
   )

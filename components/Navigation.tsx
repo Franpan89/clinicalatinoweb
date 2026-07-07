@@ -27,6 +27,8 @@ const navLinks: NavItem[] = [
     })),
   },
   { label: 'Quiénes Somos', href: '/nosotros' },
+  { label: 'Paquetes', href: '/paquetes' },
+  { label: 'Noticias', href: '/noticias' },
   { label: 'Contacto', href: '/contacto' },
 ]
 

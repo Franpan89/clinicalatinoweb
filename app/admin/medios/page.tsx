@@ -39,10 +39,10 @@ export default async function MediosPage() {
       {/* ── SLIDESHOW SUPERIOR ──────────────────────────── */}
       <SectionHeader
         title="Slideshow superior (Inicio)"
-        subtitle="Banner full-width en el tope del home. Hasta 5 slides (imágenes y/o videos) que rotan automáticamente. Si dejas todos vacíos, el banner no aparece."
+        subtitle="Banner full-width en el tope del home. Hasta 10 slides (imágenes y/o videos) que rotan automáticamente. Si dejas todos vacíos, el banner no aparece."
       />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
-        {[1, 2, 3, 4, 5].map((n) => (
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
           <MediaUploader
             key={`top_slide_${n}`}
             mediaKey={`top_slide_${n}`}

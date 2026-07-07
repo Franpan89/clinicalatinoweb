@@ -45,3 +45,16 @@
     border-image: linear-gradient(135deg, #B9DB5C, #2BB3B2, #2C6FB1) 1;
   }
 }
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}

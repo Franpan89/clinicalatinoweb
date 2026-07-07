@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { slugify, formatSchedule } from '@/lib/doctors'
-import type { DoctorUpdate, SpecialtyUpdate, ScheduleBlock, WeekDay } from '@/lib/types'
+import type { DoctorUpdate, SpecialtyUpdate, ScheduleBlock, WeekDay, InsuranceLogoUpdate, NewsUpdate, PackageUpdate } from '@/lib/types'
 
 // ─── AUTH ─────────────────────────────────────────────
 export async function signIn(formData: FormData) {
@@ -133,6 +133,10 @@ export async function createDoctor(formData: FormData) {
   const office_number = String(formData.get('office_number') ?? '').trim() || null
   const tower = String(formData.get('tower') ?? '').trim() || null
   const contact_phone = String(formData.get('contact_phone') ?? '').trim() || null
+  const facebook_url = String(formData.get('facebook_url') ?? '').trim() || null
+  const instagram_url = String(formData.get('instagram_url') ?? '').trim() || null
+  const linkedin_url = String(formData.get('linkedin_url') ?? '').trim() || null
+  const whatsapp_url = String(formData.get('whatsapp_url') ?? '').trim() || null
   const display_order = Number(formData.get('display_order') ?? 999)
   const active = formData.get('active') === 'on'
   const schedule_days = parseScheduleBlocks(formData)
@@ -167,6 +171,10 @@ export async function createDoctor(formData: FormData) {
     office_number,
     tower,
     contact_phone,
+    facebook_url,
+    instagram_url,
+    linkedin_url,
+    whatsapp_url,
     display_order,
     active,
   })
@@ -196,6 +204,10 @@ export async function updateDoctor(id: string, formData: FormData) {
   const office_number = String(formData.get('office_number') ?? '').trim() || null
   const tower = String(formData.get('tower') ?? '').trim() || null
   const contact_phone = String(formData.get('contact_phone') ?? '').trim() || null
+  const facebook_url = String(formData.get('facebook_url') ?? '').trim() || null
+  const instagram_url = String(formData.get('instagram_url') ?? '').trim() || null
+  const linkedin_url = String(formData.get('linkedin_url') ?? '').trim() || null
+  const whatsapp_url = String(formData.get('whatsapp_url') ?? '').trim() || null
   const display_order = Number(formData.get('display_order') ?? 999)
   const active = formData.get('active') === 'on'
   const schedule_days = parseScheduleBlocks(formData)
@@ -220,6 +232,10 @@ export async function updateDoctor(id: string, formData: FormData) {
     office_number,
     tower,
     contact_phone,
+    facebook_url,
+    instagram_url,
+    linkedin_url,
+    whatsapp_url,
     display_order,
     active,
   }
@@ -404,6 +420,423 @@ export async function toggleSpecialtyActive(id: string, currentActive: boolean) 
   if (error) return { error: error.message }
   revalidatePath('/')
   revalidatePath('/admin/especialidades')
+  return { success: true }
+}
+
+// ─── ASEGURADORAS ───────────────────────────────────────
+async function uploadInsuranceLogo(file: File, nameHint: string): Promise<string | null> {
+  if (!file || file.size === 0) return null
+  const supabase = createClient()
+  const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg'
+  const filename = `${slugify(nameHint)}-${Date.now()}.${ext}`
+
+  const { error } = await supabase.storage
+    .from('insurance-logos')
+    .upload(filename, file, {
+      cacheControl: '3600',
+      upsert: false,
+      contentType: file.type,
+    })
+
+  if (error) {
+    console.error('Upload error:', error)
+    return null
+  }
+
+  const { data } = supabase.storage.from('insurance-logos').getPublicUrl(filename)
+  return data.publicUrl
+}
+
+export async function createInsuranceLogo(formData: FormData) {
+  const supabase = createClient()
+
+  const name = String(formData.get('name') ?? '').trim()
+  const display_order = Number(formData.get('display_order') ?? 999)
+  const active = formData.get('active') === 'on'
+
+  if (!name) {
+    return { error: 'El nombre es obligatorio.' }
+  }
+
+  let logo_url: string | null = null
+  const logoFile = formData.get('logo') as File | null
+  if (logoFile && logoFile.size > 0) {
+    logo_url = await uploadInsuranceLogo(logoFile, name)
+    if (!logo_url) {
+      return { error: 'No se pudo subir el logo. Intenta de nuevo.' }
+    }
+  }
+
+  const { error } = await supabase.from('insurance_logos').insert({
+    name,
+    logo_url,
+    display_order,
+    active,
+  })
+
+  if (error) {
+    console.error('Insert insurance logo error:', error)
+    return { error: error.message }
+  }
+
+  revalidatePath('/')
+  revalidatePath('/admin/aseguradoras')
+  redirect('/admin/aseguradoras')
+}
+
+export async function updateInsuranceLogo(id: string, formData: FormData) {
+  const supabase = createClient()
+
+  const name = String(formData.get('name') ?? '').trim()
+  const display_order = Number(formData.get('display_order') ?? 999)
+  const active = formData.get('active') === 'on'
+
+  if (!name) {
+    return { error: 'El nombre es obligatorio.' }
+  }
+
+  const update: InsuranceLogoUpdate = {
+    name,
+    display_order,
+    active,
+  }
+
+  const logoFile = formData.get('logo') as File | null
+  if (logoFile && logoFile.size > 0) {
+    const url = await uploadInsuranceLogo(logoFile, name)
+    if (url) update.logo_url = url
+  }
+
+  const removeLogo = formData.get('remove_logo') === 'on'
+  if (removeLogo) {
+    update.logo_url = null
+  }
+
+  const { error } = await supabase.from('insurance_logos').update(update).eq('id', id)
+
+  if (error) {
+    console.error('Update insurance logo error:', error)
+    return { error: error.message }
+  }
+
+  revalidatePath('/')
+  revalidatePath('/admin/aseguradoras')
+  redirect('/admin/aseguradoras')
+}
+
+export async function deleteInsuranceLogo(id: string) {
+  const supabase = createClient()
+  const { error } = await supabase.from('insurance_logos').delete().eq('id', id)
+  if (error) {
+    console.error('Delete insurance logo error:', error)
+    return { error: error.message }
+  }
+  revalidatePath('/')
+  revalidatePath('/admin/aseguradoras')
+  redirect('/admin/aseguradoras')
+}
+
+export async function toggleInsuranceLogoActive(id: string, currentActive: boolean) {
+  const supabase = createClient()
+  const { error } = await supabase
+    .from('insurance_logos')
+    .update({ active: !currentActive })
+    .eq('id', id)
+  if (error) return { error: error.message }
+  revalidatePath('/')
+  revalidatePath('/admin/aseguradoras')
+  return { success: true }
+}
+
+// ─── NOTICIAS ─────────────────────────────────────────
+async function uploadNewsImage(file: File, slug: string): Promise<string | null> {
+  if (!file || file.size === 0) return null
+  const supabase = createClient()
+  const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg'
+  const filename = `${slug}-${Date.now()}.${ext}`
+
+  const { error } = await supabase.storage
+    .from('news-images')
+    .upload(filename, file, {
+      cacheControl: '3600',
+      upsert: false,
+      contentType: file.type,
+    })
+
+  if (error) {
+    console.error('Upload error:', error)
+    return null
+  }
+
+  const { data } = supabase.storage.from('news-images').getPublicUrl(filename)
+  return data.publicUrl
+}
+
+export async function createNews(formData: FormData) {
+  const supabase = createClient()
+
+  const title = String(formData.get('title') ?? '').trim()
+  const slug = String(formData.get('slug') ?? '').trim() || slugify(title)
+  const excerpt = String(formData.get('excerpt') ?? '').trim()
+  const content = String(formData.get('content') ?? '').trim()
+  const published_at = String(formData.get('published_at') ?? '').trim() || new Date().toISOString().split('T')[0]
+  const display_order = Number(formData.get('display_order') ?? 999)
+  const active = formData.get('active') === 'on'
+
+  if (!title || !excerpt || !content) {
+    return { error: 'Título, extracto y contenido son obligatorios.' }
+  }
+
+  let cover_image_url: string | null = null
+  const coverFile = formData.get('cover_image') as File | null
+  if (coverFile && coverFile.size > 0) {
+    cover_image_url = await uploadNewsImage(coverFile, slug)
+    if (!cover_image_url) {
+      return { error: 'No se pudo subir la imagen. Intenta de nuevo.' }
+    }
+  }
+
+  const { error } = await supabase.from('news').insert({
+    slug,
+    title,
+    excerpt,
+    content,
+    cover_image_url,
+    published_at,
+    display_order,
+    active,
+  })
+
+  if (error) {
+    console.error('Insert news error:', error)
+    return { error: error.code === '23505' ? 'Ya existe una noticia con ese slug.' : error.message }
+  }
+
+  revalidatePath('/')
+  revalidatePath('/noticias')
+  revalidatePath('/admin/noticias')
+  redirect('/admin/noticias')
+}
+
+export async function updateNews(id: string, formData: FormData) {
+  const supabase = createClient()
+
+  const title = String(formData.get('title') ?? '').trim()
+  const slug = String(formData.get('slug') ?? '').trim()
+  const excerpt = String(formData.get('excerpt') ?? '').trim()
+  const content = String(formData.get('content') ?? '').trim()
+  const published_at = String(formData.get('published_at') ?? '').trim()
+  const display_order = Number(formData.get('display_order') ?? 999)
+  const active = formData.get('active') === 'on'
+
+  if (!title || !excerpt || !content) {
+    return { error: 'Título, extracto y contenido son obligatorios.' }
+  }
+
+  const update: NewsUpdate = {
+    slug,
+    title,
+    excerpt,
+    content,
+    published_at,
+    display_order,
+    active,
+  }
+
+  const coverFile = formData.get('cover_image') as File | null
+  if (coverFile && coverFile.size > 0) {
+    const url = await uploadNewsImage(coverFile, slug)
+    if (url) update.cover_image_url = url
+  }
+
+  const removeCoverImage = formData.get('remove_cover_image') === 'on'
+  if (removeCoverImage) {
+    update.cover_image_url = null
+  }
+
+  const { error } = await supabase.from('news').update(update).eq('id', id)
+
+  if (error) {
+    console.error('Update news error:', error)
+    return { error: error.code === '23505' ? 'Ya existe una noticia con ese slug.' : error.message }
+  }
+
+  revalidatePath('/')
+  revalidatePath('/noticias')
+  revalidatePath(`/noticias/${slug}`)
+  revalidatePath('/admin/noticias')
+  redirect('/admin/noticias')
+}
+
+export async function deleteNews(id: string) {
+  const supabase = createClient()
+  const { error } = await supabase.from('news').delete().eq('id', id)
+  if (error) {
+    console.error('Delete news error:', error)
+    return { error: error.message }
+  }
+  revalidatePath('/')
+  revalidatePath('/noticias')
+  revalidatePath('/admin/noticias')
+  redirect('/admin/noticias')
+}
+
+export async function toggleNewsActive(id: string, currentActive: boolean) {
+  const supabase = createClient()
+  const { error } = await supabase
+    .from('news')
+    .update({ active: !currentActive })
+    .eq('id', id)
+  if (error) return { error: error.message }
+  revalidatePath('/')
+  revalidatePath('/noticias')
+  revalidatePath('/admin/noticias')
+  return { success: true }
+}
+
+// ─── PAQUETES ─────────────────────────────────────────
+async function uploadPackageImage(file: File, slug: string): Promise<string | null> {
+  if (!file || file.size === 0) return null
+  const supabase = createClient()
+  const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg'
+  const filename = `${slug}-${Date.now()}.${ext}`
+
+  const { error } = await supabase.storage
+    .from('package-images')
+    .upload(filename, file, {
+      cacheControl: '3600',
+      upsert: false,
+      contentType: file.type,
+    })
+
+  if (error) {
+    console.error('Upload error:', error)
+    return null
+  }
+
+  const { data } = supabase.storage.from('package-images').getPublicUrl(filename)
+  return data.publicUrl
+}
+
+export async function createPackage(formData: FormData) {
+  const supabase = createClient()
+
+  const title = String(formData.get('title') ?? '').trim()
+  const slug = String(formData.get('slug') ?? '').trim() || slugify(title)
+  const description = String(formData.get('description') ?? '').trim()
+  const price = String(formData.get('price') ?? '').trim()
+  const items = parseLines(formData.get('items'))
+  const display_order = Number(formData.get('display_order') ?? 999)
+  const active = formData.get('active') === 'on'
+
+  if (!title || !description) {
+    return { error: 'Título y descripción son obligatorios.' }
+  }
+
+  let image_url: string | null = null
+  const imageFile = formData.get('image') as File | null
+  if (imageFile && imageFile.size > 0) {
+    image_url = await uploadPackageImage(imageFile, slug)
+    if (!image_url) {
+      return { error: 'No se pudo subir la imagen. Intenta de nuevo.' }
+    }
+  }
+
+  const { error } = await supabase.from('packages').insert({
+    slug,
+    title,
+    description,
+    price,
+    image_url,
+    items,
+    display_order,
+    active,
+  })
+
+  if (error) {
+    console.error('Insert package error:', error)
+    return { error: error.code === '23505' ? 'Ya existe un paquete con ese slug.' : error.message }
+  }
+
+  revalidatePath('/')
+  revalidatePath('/paquetes')
+  revalidatePath('/admin/paquetes')
+  redirect('/admin/paquetes')
+}
+
+export async function updatePackage(id: string, formData: FormData) {
+  const supabase = createClient()
+
+  const title = String(formData.get('title') ?? '').trim()
+  const slug = String(formData.get('slug') ?? '').trim()
+  const description = String(formData.get('description') ?? '').trim()
+  const price = String(formData.get('price') ?? '').trim()
+  const items = parseLines(formData.get('items'))
+  const display_order = Number(formData.get('display_order') ?? 999)
+  const active = formData.get('active') === 'on'
+
+  if (!title || !description) {
+    return { error: 'Título y descripción son obligatorios.' }
+  }
+
+  const update: PackageUpdate = {
+    slug,
+    title,
+    description,
+    price,
+    items,
+    display_order,
+    active,
+  }
+
+  const imageFile = formData.get('image') as File | null
+  if (imageFile && imageFile.size > 0) {
+    const url = await uploadPackageImage(imageFile, slug)
+    if (url) update.image_url = url
+  }
+
+  const removeImage = formData.get('remove_image') === 'on'
+  if (removeImage) {
+    update.image_url = null
+  }
+
+  const { error } = await supabase.from('packages').update(update).eq('id', id)
+
+  if (error) {
+    console.error('Update package error:', error)
+    return { error: error.code === '23505' ? 'Ya existe un paquete con ese slug.' : error.message }
+  }
+
+  revalidatePath('/')
+  revalidatePath('/paquetes')
+  revalidatePath(`/paquetes/${slug}`)
+  revalidatePath('/admin/paquetes')
+  redirect('/admin/paquetes')
+}
+
+export async function deletePackage(id: string) {
+  const supabase = createClient()
+  const { error } = await supabase.from('packages').delete().eq('id', id)
+  if (error) {
+    console.error('Delete package error:', error)
+    return { error: error.message }
+  }
+  revalidatePath('/')
+  revalidatePath('/paquetes')
+  revalidatePath('/admin/paquetes')
+  redirect('/admin/paquetes')
+}
+
+export async function togglePackageActive(id: string, currentActive: boolean) {
+  const supabase = createClient()
+  const { error } = await supabase
+    .from('packages')
+    .update({ active: !currentActive })
+    .eq('id', id)
+  if (error) return { error: error.message }
+  revalidatePath('/')
+  revalidatePath('/paquetes')
+  revalidatePath('/admin/paquetes')
   return { success: true }
 }
 

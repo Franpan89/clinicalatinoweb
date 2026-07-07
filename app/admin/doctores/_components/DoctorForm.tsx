@@ -328,6 +328,48 @@ export default function DoctorForm({
               />
             </Field>
           </div>
+
+          <div className="mt-6 pt-6 border-t border-brand-surface">
+            <h3 className="font-lato text-brand-dark text-sm font-bold mb-4">Redes sociales</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+              <Field label="Facebook" hint="URL completa del perfil o página">
+                <input
+                  name="facebook_url"
+                  type="url"
+                  defaultValue={doctor?.facebook_url ?? ''}
+                  placeholder="https://facebook.com/..."
+                  className={inputClass}
+                />
+              </Field>
+              <Field label="Instagram" hint="URL completa del perfil">
+                <input
+                  name="instagram_url"
+                  type="url"
+                  defaultValue={doctor?.instagram_url ?? ''}
+                  placeholder="https://instagram.com/..."
+                  className={inputClass}
+                />
+              </Field>
+              <Field label="LinkedIn" hint="URL completa del perfil">
+                <input
+                  name="linkedin_url"
+                  type="url"
+                  defaultValue={doctor?.linkedin_url ?? ''}
+                  placeholder="https://linkedin.com/in/..."
+                  className={inputClass}
+                />
+              </Field>
+              <Field label="WhatsApp" hint="Link wa.me con número">
+                <input
+                  name="whatsapp_url"
+                  type="url"
+                  defaultValue={doctor?.whatsapp_url ?? ''}
+                  placeholder="https://wa.me/593..."
+                  className={inputClass}
+                />
+              </Field>
+            </div>
+          </div>
         </Section>
 
         {/* Display */}

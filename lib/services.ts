@@ -11,6 +11,8 @@ import {
   Pill,
   Microscope,
   Coffee,
+  TestTube,
+  Wind,
 } from 'lucide-react'
 
 export type Service = {
@@ -123,7 +125,7 @@ export const SERVICES: Service[] = [
       'Centro de imágenes diagnósticas equipado con tecnología de última generación. Realizamos tomografía computada, rayos X digital y ecografía de alta resolución, con interpretación a cargo de radiólogos experimentados. La precisión del diagnóstico es la base de un tratamiento exitoso.',
     highlights: [
       'Tomografía computada de alta resolución',
-      'Rayos X digital y ecografía',
+      'Rayos X digital y ecografía (Fluoroscopía)',
       'Interpretación por radiólogos especialistas',
     ],
     image: '/img/servicios/centro-imagenes.jpg',
@@ -209,6 +211,40 @@ export const SERVICES: Service[] = [
       'Variada selección nutritiva',
     ],
     image: '/img/servicios/cafeteria.jpg',
+  },
+
+  // ── Fila 4 ────────────────────────────────────────────
+  {
+    slug: 'patologia',
+    title: 'Patología',
+    tag: 'Diagnóstico',
+    icon: TestTube,
+    shortDesc:
+      'Contamos con un servicio especializado que ofrece análisis precisos y confiables, fundamentales para el diagnóstico y seguimiento de diversas enfermedades.',
+    longDesc:
+      'Contamos con un servicio especializado que ofrece análisis precisos y confiables, fundamentales para el diagnóstico y seguimiento de diversas enfermedades. Nuestro equipo de patólogos trabaja con tecnología moderna para el estudio histopatológico de tejidos y biopsias, garantizando resultados oportunos que orientan el tratamiento adecuado para cada paciente.',
+    highlights: [
+      'Estudio histopatológico de biopsias',
+      'Diagnóstico preciso para el seguimiento clínico',
+      'Resultados confiables en tiempos oportunos',
+    ],
+    image: '/img/servicios/patologia.jpg',
+  },
+  {
+    slug: 'camara-hiperbarica',
+    title: 'Cámara Hiperbárica',
+    tag: 'Terapia',
+    icon: Wind,
+    shortDesc:
+      'La terapia hiperbárica consiste en respirar oxígeno al 100% dentro de una cámara presurizada, aumentando la cantidad de oxígeno que llega a los tejidos.',
+    longDesc:
+      'La terapia hiperbárica consiste en respirar oxígeno al 100% dentro de una cámara presurizada, aumentando la cantidad de oxígeno que llega a los tejidos. Este proceso favorece la regeneración celular, acelera la cicatrización y ayuda a disminuir la inflamación, promoviendo una recuperación más rápida y efectiva.',
+    highlights: [
+      'Oxigenación tisular a presión controlada',
+      'Acelera la cicatrización de heridas complejas',
+      'Tratamiento supervisado por especialistas',
+    ],
+    image: '/img/servicios/camara-hiperbarica.jpg',
   },
 ]
 

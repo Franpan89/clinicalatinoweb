@@ -52,6 +52,7 @@ export default async function ContactoPage() {
       <Contact
         mapEmbedUrl={settings.map_embed_url}
         mapAddress={settings.map_address}
+        socials={settings}
       />
       <EmergencyCTA />
       <Footer logoUrl={settings.logo_url} socials={settings} />

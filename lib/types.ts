@@ -68,6 +68,10 @@ export type Database = {
           office_number: string | null
           tower: string | null
           contact_phone: string | null
+          facebook_url: string | null
+          instagram_url: string | null
+          linkedin_url: string | null
+          whatsapp_url: string | null
           display_order: number
           active: boolean
         }
@@ -90,6 +94,10 @@ export type Database = {
           office_number?: string | null
           tower?: string | null
           contact_phone?: string | null
+          facebook_url?: string | null
+          instagram_url?: string | null
+          linkedin_url?: string | null
+          whatsapp_url?: string | null
           display_order?: number
           active?: boolean
         }
@@ -109,6 +117,10 @@ export type Database = {
           office_number: string | null
           tower: string | null
           contact_phone: string | null
+          facebook_url: string | null
+          instagram_url: string | null
+          linkedin_url: string | null
+          whatsapp_url: string | null
           display_order: number
           active: boolean
         }>
@@ -145,6 +157,111 @@ export type Database = {
           description: string
           icon: string
           color_class: string
+          display_order: number
+          active: boolean
+        }>
+        Relationships: []
+      }
+      news: {
+        Row: {
+          id: string
+          created_at: string
+          updated_at: string
+          slug: string
+          title: string
+          excerpt: string
+          content: string
+          cover_image_url: string | null
+          published_at: string
+          display_order: number
+          active: boolean
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          slug: string
+          title: string
+          excerpt: string
+          content: string
+          cover_image_url?: string | null
+          published_at?: string
+          display_order?: number
+          active?: boolean
+        }
+        Update: Partial<{
+          slug: string
+          title: string
+          excerpt: string
+          content: string
+          cover_image_url: string | null
+          published_at: string
+          display_order: number
+          active: boolean
+        }>
+        Relationships: []
+      }
+      packages: {
+        Row: {
+          id: string
+          created_at: string
+          updated_at: string
+          slug: string
+          title: string
+          description: string
+          price: string
+          image_url: string | null
+          items: string[]
+          display_order: number
+          active: boolean
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          slug: string
+          title: string
+          description: string
+          price?: string
+          image_url?: string | null
+          items?: string[]
+          display_order?: number
+          active?: boolean
+        }
+        Update: Partial<{
+          slug: string
+          title: string
+          description: string
+          price: string
+          image_url: string | null
+          items: string[]
+          display_order: number
+          active: boolean
+        }>
+        Relationships: []
+      }
+      insurance_logos: {
+        Row: {
+          id: string
+          created_at: string
+          updated_at: string
+          name: string
+          logo_url: string | null
+          display_order: number
+          active: boolean
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          name: string
+          logo_url?: string | null
+          display_order?: number
+          active?: boolean
+        }
+        Update: Partial<{
+          name: string
+          logo_url: string | null
           display_order: number
           active: boolean
         }>
@@ -242,3 +359,15 @@ export type DoctorUpdate = Database['public']['Tables']['doctors']['Update']
 export type Specialty = Database['public']['Tables']['specialties']['Row']
 export type SpecialtyInsert = Database['public']['Tables']['specialties']['Insert']
 export type SpecialtyUpdate = Database['public']['Tables']['specialties']['Update']
+
+export type InsuranceLogo = Database['public']['Tables']['insurance_logos']['Row']
+export type InsuranceLogoInsert = Database['public']['Tables']['insurance_logos']['Insert']
+export type InsuranceLogoUpdate = Database['public']['Tables']['insurance_logos']['Update']
+
+export type News = Database['public']['Tables']['news']['Row']
+export type NewsInsert = Database['public']['Tables']['news']['Insert']
+export type NewsUpdate = Database['public']['Tables']['news']['Update']
+
+export type PackageItem = Database['public']['Tables']['packages']['Row']
+export type PackageInsert = Database['public']['Tables']['packages']['Insert']
+export type PackageUpdate = Database['public']['Tables']['packages']['Update']

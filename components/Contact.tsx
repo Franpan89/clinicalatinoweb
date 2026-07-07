@@ -6,6 +6,8 @@ import { useInView } from 'react-intersection-observer'
 import { Send, CheckCircle, AlertCircle, Phone, MapPin, Clock, Mail, Map } from 'lucide-react'
 import { submitAppointment } from '@/app/actions'
 import PlaceholderImage from './PlaceholderImage'
+import SocialIcon from './SocialIcon'
+import { SOCIAL_PLATFORMS } from '@/lib/social'
 
 const specialties = [
   'Cirugía General',
@@ -28,9 +30,11 @@ type FormState = 'idle' | 'success' | 'error'
 type ContactProps = {
   mapEmbedUrl?: string | null
   mapAddress?: string | null
+  socials?: Record<string, string | null>
 }
 
-export default function Contact({ mapEmbedUrl, mapAddress }: ContactProps = {}) {
+export default function Contact({ mapEmbedUrl, mapAddress, socials }: ContactProps = {}) {
+  const activeSocials = SOCIAL_PLATFORMS.filter((p) => socials?.[p.key])
   const [formState, setFormState] = useState<FormState>('idle')
   const [errorMsg, setErrorMsg] = useState('')
   const [isPending, startTransition] = useTransition()
@@ -141,6 +145,34 @@ export default function Contact({ mapEmbedUrl, mapAddress }: ContactProps = {}) 
             )
           })}
         </motion.div>
+
+        {/* Redes sociales de la clínica */}
+        {activeSocials.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="flex items-center justify-center gap-4 mb-14"
+          >
+            <span className="font-lato text-xs text-brand-gray uppercase tracking-[0.15em] font-bold">
+              Visítanos en:
+            </span>
+            <div className="flex items-center gap-2.5">
+              {activeSocials.map((s) => (
+                <a
+                  key={s.key}
+                  href={socials![s.key] as string}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label}
+                  className="w-9 h-9 border border-brand-dark/10 hover:border-brand-teal flex items-center justify-center text-brand-dark/50 hover:text-brand-teal transition-all duration-200"
+                >
+                  <SocialIcon platform={s.key} size={15} />
+                </a>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
         <div className="grid lg:grid-cols-[1fr_1.1fr] gap-12">
           {/* Left: Map */}
