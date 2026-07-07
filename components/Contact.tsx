@@ -232,6 +232,15 @@ export default function Contact({ mapEmbedUrl, mapAddress, socials }: ContactPro
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Honeypot anti-spam — oculto para humanos, visible para bots */}
+                <input
+                  type="text"
+                  name="company"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  className="absolute -left-[9999px] w-px h-px opacity-0"
+                  aria-hidden="true"
+                />
                 {/* Row 1 */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>

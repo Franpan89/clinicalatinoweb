@@ -1,28 +1,50 @@
 'use server'
 
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@/lib/supabase/server'
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const PHONE_RE = /^[0-9+\-\s()]{7,20}$/
 
 export async function submitAppointment(formData: FormData) {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
-
-  if (!supabaseUrl || !supabaseKey) {
-    return { success: false, error: 'Configuración de servidor incompleta.' }
+  // Honeypot: campo oculto que solo un bot llenaría
+  const honeypot = String(formData.get('company') ?? '').trim()
+  if (honeypot) {
+    // Respondemos éxito falso para no delatar el honeypot al bot
+    return { success: true }
   }
 
-  const supabase = createClient(supabaseUrl, supabaseKey)
-
-  const name = formData.get('name') as string
-  const email = formData.get('email') as string
-  const phone = formData.get('phone') as string
-  const specialty = formData.get('specialty') as string
-  const date = formData.get('date') as string
-  const time = formData.get('time') as string
-  const notes = formData.get('notes') as string
+  const name = String(formData.get('name') ?? '').trim()
+  const email = String(formData.get('email') ?? '').trim()
+  const phone = String(formData.get('phone') ?? '').trim()
+  const specialty = String(formData.get('specialty') ?? '').trim()
+  const date = String(formData.get('date') ?? '').trim()
+  const time = String(formData.get('time') ?? '').trim()
+  const notes = String(formData.get('notes') ?? '').trim()
 
   if (!name || !email || !phone || !specialty || !date || !time) {
     return { success: false, error: 'Por favor completa todos los campos requeridos.' }
   }
+
+  if (name.length > 120 || specialty.length > 120 || notes.length > 1000) {
+    return { success: false, error: 'Uno de los campos excede la longitud permitida.' }
+  }
+
+  if (!EMAIL_RE.test(email)) {
+    return { success: false, error: 'El correo electrónico no es válido.' }
+  }
+
+  if (!PHONE_RE.test(phone)) {
+    return { success: false, error: 'El teléfono no es válido.' }
+  }
+
+  const today = new Date().toISOString().split('T')[0]
+  if (date < today) {
+    return { success: false, error: 'La fecha preferida no puede estar en el pasado.' }
+  }
+
+  // Cliente con anon key: la tabla appointments tiene una política RLS que
+  // permite insert público (sin lectura/edición), no se necesita service role aquí.
+  const supabase = createClient()
 
   const { error } = await supabase.from('appointments').insert({
     patient_name: name,
