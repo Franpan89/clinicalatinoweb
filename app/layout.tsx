@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { Lato } from 'next/font/google'
+import Script from 'next/script'
+import { getSiteSettings } from '@/lib/data/settings'
 import './globals.css'
 
 const lato = Lato({
@@ -68,7 +70,11 @@ const jsonLd = {
   openingHours: 'Mo-Su 00:00-23:59',
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const settings = await getSiteSettings()
+  const gaId = settings.google_analytics_id
+  const pixelId = settings.meta_pixel_id
+
   return (
     <html lang="es" className={lato.variable}>
       <body>
@@ -77,6 +83,49 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+
+        {/* Google Analytics (GA4) — se activa al configurar el ID en /admin/configuracion */}
+        {gaId && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga4-init" strategy="afterInteractive">
+              {`window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${gaId}');`}
+            </Script>
+          </>
+        )}
+
+        {/* Meta Pixel (Facebook / Instagram Ads) — se activa al configurar el ID en /admin/configuracion */}
+        {pixelId && (
+          <>
+            <Script id="meta-pixel-init" strategy="afterInteractive">
+              {`!function(f,b,e,v,n,t,s)
+                {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                n.queue=[];t=b.createElement(e);t.async=!0;
+                t.src=v;s=b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t,s)}(window, document,'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+                fbq('init', '${pixelId}');
+                fbq('track', 'PageView');`}
+            </Script>
+            <noscript>
+              <img
+                height="1"
+                width="1"
+                style={{ display: 'none' }}
+                src={`https://www.facebook.com/tr?id=${pixelId}&ev=PageView&noscript=1`}
+                alt=""
+              />
+            </noscript>
+          </>
+        )}
       </body>
     </html>
   )

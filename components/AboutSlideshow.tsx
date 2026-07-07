@@ -92,7 +92,7 @@ export default function AboutSlideshow({
           ) : (
             <PlaceholderImage
               src={current.url}
-              alt="Clínica Latino"
+              alt={`Clínica Latino — 69 años de trayectoria médica en Cuenca ${index + 1}`}
               ratio="4/3"
               className="w-full h-full"
             />

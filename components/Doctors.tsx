@@ -22,7 +22,7 @@ function DoctorAvatar({ doctor }: { doctor: Doctor }) {
     return (
       <img
         src={doctor.photo_url}
-        alt={doctor.full_name}
+        alt={`${doctor.full_name} — ${doctor.specialty_label} en Clínica Latino`}
         className="w-full h-full object-cover"
       />
     )

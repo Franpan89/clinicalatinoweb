@@ -1001,6 +1001,37 @@ export async function updateLeadsEmail(formData: FormData) {
   return { success: true }
 }
 
+export async function updateAnalyticsSettings(formData: FormData) {
+  const google_analytics_id = String(formData.get('google_analytics_id') ?? '').trim() || null
+  const meta_pixel_id = String(formData.get('meta_pixel_id') ?? '').trim() || null
+
+  if (google_analytics_id && !/^(G|UA|GT)-[A-Za-z0-9-]+$/.test(google_analytics_id)) {
+    return { error: 'El ID de Google Analytics no tiene un formato válido (ej: G-XXXXXXXXXX).' }
+  }
+
+  if (meta_pixel_id && !/^\d{10,20}$/.test(meta_pixel_id)) {
+    return { error: 'El ID del Pixel de Meta debe ser un número de 10 a 20 dígitos.' }
+  }
+
+  const supabase = createClient()
+  const { error } = await supabase.from('site_settings').upsert(
+    [
+      { key: 'google_analytics_id', value: google_analytics_id, updated_at: new Date().toISOString() },
+      { key: 'meta_pixel_id', value: meta_pixel_id, updated_at: new Date().toISOString() },
+    ],
+    { onConflict: 'key' }
+  )
+
+  if (error) {
+    console.error('Update analytics settings error:', error)
+    return { error: error.message }
+  }
+
+  revalidatePath('/')
+  revalidatePath('/admin/configuracion')
+  return { success: true }
+}
+
 export async function updateMapSettings(formData: FormData) {
   const map_embed_url = String(formData.get('map_embed_url') ?? '').trim() || null
   const map_address = String(formData.get('map_address') ?? '').trim() || null

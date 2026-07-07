@@ -2,6 +2,7 @@ import { getSiteSettings } from '@/lib/data/settings'
 import MapSettingsForm from './_components/MapSettingsForm'
 import LeadsEmailForm from './_components/LeadsEmailForm'
 import SocialLinksForm from './_components/SocialLinksForm'
+import AnalyticsForm from './_components/AnalyticsForm'
 
 export const dynamic = 'force-dynamic'
 
@@ -27,6 +28,11 @@ export default async function ConfiguracionPage() {
         <MapSettingsForm
           initialEmbedUrl={settings.map_embed_url ?? ''}
           initialAddress={settings.map_address ?? ''}
+        />
+
+        <AnalyticsForm
+          initialGaId={settings.google_analytics_id ?? ''}
+          initialPixelId={settings.meta_pixel_id ?? ''}
         />
       </div>
     </div>
