@@ -3,6 +3,7 @@ import MapSettingsForm from './_components/MapSettingsForm'
 import LeadsEmailForm from './_components/LeadsEmailForm'
 import SocialLinksForm from './_components/SocialLinksForm'
 import AnalyticsForm from './_components/AnalyticsForm'
+import MediaUploader from '../medios/_components/MediaUploader'
 
 export const dynamic = 'force-dynamic'
 
@@ -21,6 +22,16 @@ export default async function ConfiguracionPage() {
       </div>
 
       <div className="space-y-6">
+        <MediaUploader
+          mediaKey="favicon_url"
+          label="Favicon del sitio"
+          description="Ícono que aparece en la pestaña del navegador. Idealmente PNG o SVG cuadrado con fondo transparente."
+          currentUrl={settings.favicon_url}
+          recommendedSize="512×512px (cuadrado) · PNG, SVG o ICO"
+          previewRatio="1/1"
+          accept="image/png,image/x-icon,image/svg+xml,image/webp"
+        />
+
         <LeadsEmailForm initialEmail={settings.leads_email ?? ''} />
 
         <SocialLinksForm initial={settings} />

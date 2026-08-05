@@ -16,7 +16,19 @@ const lato = Lato({
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.clinicalatino.med.ec'
 
-export const metadata: Metadata = {
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings()
+  const faviconUrl = settings.favicon_url
+
+  return {
+    ...baseMetadata,
+    icons: faviconUrl
+      ? { icon: faviconUrl, shortcut: faviconUrl, apple: faviconUrl }
+      : { icon: '/logo.svg', shortcut: '/logo.svg' },
+  }
+}
+
+const baseMetadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: 'Clínica Latino | Medicina de Excelencia en Ecuador',
