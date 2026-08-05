@@ -24,6 +24,8 @@ type MediaUploaderProps = {
   mediaType?: 'image' | 'video'
   /** Si true, también permite pegar una URL externa (YouTube, etc.) */
   allowExternalUrl?: boolean
+  /** Clases extra para limitar el tamaño del preview (ej: "max-w-[140px]" para favicons) */
+  previewClassName?: string
 }
 
 export default function MediaUploader({
@@ -36,6 +38,7 @@ export default function MediaUploader({
   previewRatio = '16/9',
   mediaType = 'image',
   allowExternalUrl = false,
+  previewClassName = '',
 }: MediaUploaderProps) {
   const [status, setStatus] = useState<{ kind: 'idle' | 'success' | 'error'; msg?: string }>({ kind: 'idle' })
   const [isPending, startTransition] = useTransition()
@@ -137,7 +140,7 @@ export default function MediaUploader({
 
       {/* Preview */}
       <div
-        className="relative bg-brand-surface mb-4 overflow-hidden border border-brand-dark/5"
+        className={`relative bg-brand-surface mb-4 overflow-hidden border border-brand-dark/5 ${previewClassName}`}
         style={{ aspectRatio: previewRatio }}
       >
         {previewUrl ? (

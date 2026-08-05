@@ -29,6 +29,7 @@ export default async function ConfiguracionPage() {
           currentUrl={settings.favicon_url}
           recommendedSize="512×512px (cuadrado) · PNG, SVG o ICO"
           previewRatio="1/1"
+          previewClassName="max-w-[120px]"
           accept="image/png,image/x-icon,image/svg+xml,image/webp"
         />
 
