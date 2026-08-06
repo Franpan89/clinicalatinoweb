@@ -55,7 +55,7 @@ export default function TopSlideshow({
     <>
       {/* Spacer para la barra de navegación fija */}
       <div className="h-[76px] bg-white" />
-      <section className="relative w-full bg-brand-dark overflow-hidden h-[42vw] max-h-[500px] min-h-[260px]">
+      <section className="relative w-full bg-brand-dark overflow-hidden h-[clamp(140px,32vw,500px)]">
       <AnimatePresence mode="wait">
         <motion.div
           key={index}
