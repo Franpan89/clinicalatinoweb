@@ -88,7 +88,7 @@ export default function TopSlideshow({
             <img
               src={current.url}
               alt={`Clínica Latino — instalaciones y equipo médico ${index + 1}`}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
             />
           )}
         </motion.div>
