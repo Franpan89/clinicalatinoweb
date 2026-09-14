@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { LogOut, Users, Calendar, Home as HomeIcon, Layers, Settings, Image as ImageIcon, ShieldCheck, Newspaper, Package } from 'lucide-react'
+import { LogOut, Users, Calendar, Home as HomeIcon, Layers, Settings, Image as ImageIcon, ShieldCheck, Newspaper, Package, Wrench } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { getSiteSettings } from '@/lib/data/settings'
 import { signOut } from './actions'
@@ -70,6 +70,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                 label="Configuración"
               />
               <NavLink
+                href="/admin/mantenimiento"
+                icon={<Wrench size={15} />}
+                label="Mantenimiento"
+              />
+              <NavLink
                 href="/"
                 icon={<Calendar size={15} />}
                 label="Ver sitio"
@@ -97,6 +102,20 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             </div>
           </div>
         </header>
+      )}
+
+      {user && settings.maintenance_mode === 'true' && (
+        <div className="bg-red-600 text-white">
+          <div className="container mx-auto flex items-center justify-between gap-3 py-2 text-sm font-lato">
+            <span className="inline-flex items-center gap-2">
+              <Wrench size={14} />
+              El sitio público está en modo mantenimiento — los visitantes ven la página de aviso.
+            </span>
+            <Link href="/admin/mantenimiento" className="underline font-bold whitespace-nowrap">
+              Desactivar
+            </Link>
+          </div>
+        </div>
       )}
 
       <main>{children}</main>

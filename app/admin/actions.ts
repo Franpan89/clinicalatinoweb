@@ -1032,6 +1032,31 @@ export async function updateAnalyticsSettings(formData: FormData) {
   return { success: true }
 }
 
+export async function updateMaintenanceMode(formData: FormData) {
+  const maintenance_mode = formData.get('maintenance_mode') === 'on' ? 'true' : 'false'
+  const maintenance_message = String(formData.get('maintenance_message') ?? '').trim() || null
+
+  const supabase = createClient()
+  const { error } = await supabase.from('site_settings').upsert(
+    [
+      { key: 'maintenance_mode', value: maintenance_mode, updated_at: new Date().toISOString() },
+      { key: 'maintenance_message', value: maintenance_message, updated_at: new Date().toISOString() },
+    ],
+    { onConflict: 'key' }
+  )
+
+  if (error) {
+    console.error('Update maintenance mode error:', error)
+    return { error: error.message }
+  }
+
+  revalidatePath('/')
+  revalidatePath('/mantenimiento')
+  revalidatePath('/admin')
+  revalidatePath('/admin/mantenimiento')
+  return { success: true, maintenance_mode }
+}
+
 export async function updateMapSettings(formData: FormData) {
   const map_embed_url = String(formData.get('map_embed_url') ?? '').trim() || null
   const map_address = String(formData.get('map_address') ?? '').trim() || null
