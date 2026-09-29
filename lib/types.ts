@@ -63,6 +63,7 @@ export type Database = {
           education: string[]
           schedule: string
           schedule_days: ScheduleBlock[]
+          schedule_note: string | null
           languages: string[]
           photo_url: string | null
           office_number: string | null
@@ -89,6 +90,7 @@ export type Database = {
           education?: string[]
           schedule: string
           schedule_days?: ScheduleBlock[]
+          schedule_note?: string | null
           languages?: string[]
           photo_url?: string | null
           office_number?: string | null
@@ -112,6 +114,7 @@ export type Database = {
           education: string[]
           schedule: string
           schedule_days: ScheduleBlock[]
+          schedule_note: string | null
           languages: string[]
           photo_url: string | null
           office_number: string | null

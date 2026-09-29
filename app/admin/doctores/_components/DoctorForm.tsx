@@ -293,7 +293,10 @@ export default function DoctorForm({
           title="Horario de atención"
           subtitle="Define los días y horas en que el médico atiende. Múltiples bloques por día permitidos."
         >
-          <ScheduleEditor initialBlocks={doctor?.schedule_days ?? []} />
+          <ScheduleEditor
+            initialBlocks={doctor?.schedule_days ?? []}
+            initialNote={doctor?.schedule_note ?? ''}
+          />
         </Section>
 
         {/* Ubicación física + contacto */}

@@ -141,6 +141,7 @@ export async function createDoctor(formData: FormData) {
   const active = formData.get('active') === 'on'
   const schedule_days = parseScheduleBlocks(formData)
   const schedule = formatSchedule(schedule_days) || String(formData.get('schedule') ?? '').trim()
+  const schedule_note = String(formData.get('schedule_note') ?? '').trim() || null
 
   if (!full_name || !specialty || !specialty_label || !subspecialty || !bio || !experience) {
     return { error: 'Todos los campos marcados con * son obligatorios.' }
@@ -165,6 +166,7 @@ export async function createDoctor(formData: FormData) {
     experience,
     schedule,
     schedule_days,
+    schedule_note,
     education,
     languages,
     photo_url,
@@ -212,6 +214,7 @@ export async function updateDoctor(id: string, formData: FormData) {
   const active = formData.get('active') === 'on'
   const schedule_days = parseScheduleBlocks(formData)
   const schedule = formatSchedule(schedule_days) || String(formData.get('schedule') ?? '').trim()
+  const schedule_note = String(formData.get('schedule_note') ?? '').trim() || null
 
   if (!full_name || !specialty || !specialty_label || !subspecialty || !bio || !experience) {
     return { error: 'Todos los campos marcados con * son obligatorios.' }
@@ -227,6 +230,7 @@ export async function updateDoctor(id: string, formData: FormData) {
     experience,
     schedule,
     schedule_days,
+    schedule_note,
     education,
     languages,
     office_number,

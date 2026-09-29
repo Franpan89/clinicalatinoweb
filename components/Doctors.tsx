@@ -71,10 +71,14 @@ function DoctorAvatar({ doctor }: { doctor: Doctor }) {
 }
 
 function DoctorCard({ doctor, index }: { doctor: Doctor; index: number }) {
-  const scheduleText =
+  const scheduleText = [
     doctor.schedule_days && doctor.schedule_days.length > 0
       ? formatSchedule(doctor.schedule_days)
-      : doctor.schedule
+      : doctor.schedule,
+    doctor.schedule_note?.trim(),
+  ]
+    .filter(Boolean)
+    .join(' · ')
 
   return (
     <motion.article

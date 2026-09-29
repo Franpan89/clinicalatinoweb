@@ -10,10 +10,13 @@ const DEFAULT_END = '17:00'
 
 export default function ScheduleEditor({
   initialBlocks = [],
+  initialNote = '',
 }: {
   initialBlocks?: ScheduleBlock[]
+  initialNote?: string
 }) {
   const [blocks, setBlocks] = useState<ScheduleBlock[]>(initialBlocks)
+  const [note, setNote] = useState(initialNote)
 
   const addBlock = (day?: WeekDay) => {
     setBlocks((prev) => [
@@ -73,10 +76,10 @@ export default function ScheduleEditor({
           Vista previa
         </div>
         <div className="font-lato text-sm text-brand-dark">
-          {blocks.length === 0 ? (
+          {blocks.length === 0 && !note.trim() ? (
             <span className="text-brand-gray italic">Sin horarios configurados</span>
           ) : (
-            formatSchedule(blocks)
+            [formatSchedule(blocks), note.trim()].filter(Boolean).join(' · ')
           )}
         </div>
       </div>
@@ -179,6 +182,27 @@ export default function ScheduleEditor({
         Agrega un bloque por cada día/rango de atención. Puedes tener múltiples bloques
         por día (ej. mañana y tarde).
       </p>
+
+      {/* Nota adicional en texto libre */}
+      <div className="mt-6 pt-6 border-t border-brand-surface">
+        <label className="block font-lato text-xs font-bold text-brand-gray uppercase tracking-wider mb-2">
+          Nota adicional (opcional)
+        </label>
+        <textarea
+          name="schedule_note"
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          rows={2}
+          placeholder="Ej: Sábados y domingos bajo cita previa"
+          className="w-full border border-brand-dark/10 focus:border-brand-teal focus:outline-none focus:ring-2 focus:ring-brand-teal/20 px-4 py-2.5 font-lato text-sm text-brand-dark placeholder:text-brand-gray/50 bg-white transition-all resize-none"
+        />
+        <p className="font-lato text-xs text-brand-gray mt-1.5 leading-relaxed">
+          Para casos que no encajan en los bloques de arriba: días bajo cita, guardias,
+          excepciones, etc. Se muestra junto al horario en la tarjeta del médico. Si el
+          médico no tiene horario fijo, deja los bloques vacíos y escribe todo aquí
+          (ej. "Lunes a sábado bajo cita").
+        </p>
+      </div>
     </div>
   )
 }
