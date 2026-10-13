@@ -2,10 +2,97 @@ import type { Metadata } from 'next'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import About from '@/components/About'
+import Accordion, { type AccordionItem } from '@/components/Accordion'
 import EmergencyCTA from '@/components/EmergencyCTA'
+import { CheckCircle2 } from 'lucide-react'
 import { getSiteSettings } from '@/lib/data/settings'
 
 export const revalidate = 60
+
+const QUALITY_OBJECTIVES = [
+  'Ofrecer a la comunidad servicios de salud con calidez, eficiencia y calidad.',
+  'Disponer de un talento humano profesional, especializado, permanentemente capacitado.',
+  'Ser una organización sólida, manteniendo los índices adecuados para su sostenibilidad.',
+  'Gestionar y mantener el compromiso de sus colaboradores a fin de promover el mejoramiento continuo.',
+]
+
+const INSTITUTIONAL_VALUES = [
+  'Respeto',
+  'Compasión',
+  'Empatía',
+  'Integridad',
+  'Altruismo',
+  'Honestidad',
+  'Innovación',
+  'Profesionalismo',
+]
+
+const IDENTITY_ITEMS: AccordionItem[] = [
+  {
+    id: 'politica-calidad',
+    title: 'Política de calidad',
+    content: (
+      <p>
+        Proporcionar a la comunidad una atención integral y especializada en salud, dentro de un
+        ambiente de calidez, eficiencia y calidad, con altos estándares profesionales,
+        capacitación permanente y tecnología de punta, buscando el mejoramiento continuo.
+      </p>
+    ),
+  },
+  {
+    id: 'objetivos-calidad',
+    title: 'Objetivos de calidad',
+    content: (
+      <ol className="space-y-3">
+        {QUALITY_OBJECTIVES.map((objective, i) => (
+          <li key={i} className="flex items-start gap-4">
+            <span className="font-lato text-brand-gradient text-xl font-bold leading-none w-5 flex-shrink-0">
+              {i + 1}
+            </span>
+            <span>{objective}</span>
+          </li>
+        ))}
+      </ol>
+    ),
+  },
+  {
+    id: 'vision',
+    title: 'Visión',
+    content: (
+      <p>
+        Ser los pioneros en el desarrollo institucional en salud en la ciudad de Cuenca, con el
+        reconocimiento nacional e internacional.
+      </p>
+    ),
+  },
+  {
+    id: 'mision',
+    title: 'Misión',
+    content: (
+      <p>
+        Proporcionar a la comunidad, dentro de un ambiente de calidez, eficiencia y calidad, las
+        acciones necesarias y oportunas para la recuperación de la salud, con altos estándares
+        profesionales, investigación especializada, capacitación permanente y tecnología de punta,
+        sin olvidar los principios y valores de ética y profesionalismo de cada uno de sus
+        colaboradores.
+      </p>
+    ),
+  },
+  {
+    id: 'valores',
+    title: 'Valores institucionales',
+    content: (
+      <ul className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-3">
+        {INSTITUTIONAL_VALUES.map((value) => (
+          <li key={value} className="flex items-center gap-2.5">
+            <CheckCircle2 className="text-brand-teal flex-shrink-0" size={15} />
+            <span className="text-brand-dark/80 font-medium">{value}</span>
+          </li>
+        ))}
+      </ul>
+    ),
+  },
+]
 
 export const metadata: Metadata = {
   title: 'Quiénes Somos · Clínica Latino',
@@ -131,6 +218,26 @@ export default async function NosotrosPage() {
               creciendo e innovando para ofrecerte una atención médica de excelencia.&rdquo;
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* Política de calidad, objetivos, visión, misión y valores */}
+      <section id="identidad" className="py-16 bg-white">
+        <div className="container mx-auto max-w-4xl">
+          <div className="text-center mb-12">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="h-px w-10 bg-brand-gradient" />
+              <span className="text-brand-blue font-lato text-xs font-bold tracking-[0.3em] uppercase">
+                Nuestra Identidad
+              </span>
+              <div className="h-px w-10 bg-brand-gradient" />
+            </div>
+            <h2 className="font-lato text-brand-dark text-3xl lg:text-4xl font-medium">
+              Lo que nos guía cada día
+            </h2>
+          </div>
+
+          <Accordion items={IDENTITY_ITEMS} defaultOpenId="politica-calidad" />
         </div>
       </section>
 
