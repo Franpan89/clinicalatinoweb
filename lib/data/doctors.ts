@@ -15,7 +15,7 @@ async function getSpecialtyLabelsEn(): Promise<Record<string, string>> {
   return labels
 }
 
-/** Médicos activos en orden alfabético (home y /medicos). Con `locale` devuelve los textos en ese idioma. */
+/** Médicos activos en orden alfabético por primer apellido (home y /medicos). Con `locale` devuelve los textos en ese idioma. */
 export async function getActiveDoctors(locale?: Locale): Promise<Doctor[]> {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     return []

@@ -88,23 +88,89 @@ export function localizeLanguage(language: string, locale: Locale): string {
   return LANGUAGE_EN[language.trim().toLowerCase()] ?? language
 }
 
-/** Nombre sin el título "Dr./Dra." — base para ordenar alfabéticamente. */
-function nameForSort(fullName: string): string {
-  return fullName.replace(/^\s*(dr|dra)\.?\s+/i, '').trim()
+/** Minúsculas y sin tildes, para comparar tokens. */
+function normalizeToken(token: string): string {
+  return token
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
 }
 
-/** Orden alfabético por nombre (ignora "Dr./Dra." y tildes; "María" va con la M).
- *  Desempata con display_order. No muta el arreglo recibido.
+/** Partículas que forman parte de un apellido compuesto ("de la Torre", "del Pino"). */
+const SURNAME_PARTICLES = new Set(['de', 'del', 'la', 'las', 'los', 'y', 'van', 'von', 'da', 'di'])
+
+/** Segundos nombres frecuentes ("María José", "Juan Pablo", "Luis Fernando").
+ *  Sirven para distinguir, en un nombre de 3 palabras, "María José Carrasco"
+ *  (apellido: Carrasco) de "Eduardo Vásquez Andrade" (apellido: Vásquez).
+ */
+const COMPOUND_GIVEN_NAMES = new Set([
+  'jose', 'maria', 'juan', 'luis', 'carlos', 'fernando', 'pablo', 'andres', 'antonio',
+  'alejandro', 'eduardo', 'xavier', 'javier', 'francisco', 'miguel', 'manuel', 'alberto',
+  'ricardo', 'roberto', 'patricio', 'gabriel', 'daniel', 'david', 'sebastian', 'felipe',
+  'fabian', 'rafael', 'enrique', 'ignacio', 'mauricio', 'marcelo', 'esteban', 'cesar',
+  'hernan', 'edgar', 'byron', 'cristian', 'victor', 'oswaldo', 'isabel', 'elena', 'gabriela',
+  'cristina', 'fernanda', 'alejandra', 'paola', 'lucia', 'carolina', 'veronica', 'patricia',
+  'belen', 'cecilia', 'monica', 'alexandra', 'daniela', 'andrea', 'valeria', 'ximena',
+  'eugenia', 'soledad', 'beatriz', 'catalina', 'natalia', 'rocio', 'sofia', 'sandra',
+])
+
+/**
+ * Separa un nombre completo en nombres de pila y apellidos, sin el título "Dr./Dra.".
+ * Convención hispana: nombres de pila + primer apellido + segundo apellido.
+ *  - 1 palabra: es el apellido.
+ *  - 2 palabras: nombre + apellido.
+ *  - 3 palabras: si la 2.ª es un segundo nombre frecuente → 2 nombres + 1 apellido;
+ *    si no → 1 nombre + 2 apellidos.
+ *  - 4 o más: 2 nombres + el resto son apellidos.
+ * Las partículas ("de", "del", "de la"…) se unen al apellido que sigue.
+ */
+function splitName(fullName: string): { given: string[]; surnames: string[] } {
+  const stripped = fullName.replace(/^\s*(dra?|doctora?)\.?\s+/i, '').trim()
+  const units: string[] = []
+  let pending: string[] = []
+  for (const token of stripped.split(/\s+/).filter(Boolean)) {
+    if (SURNAME_PARTICLES.has(normalizeToken(token)) && units.length > 0) {
+      pending.push(token)
+      continue
+    }
+    units.push([...pending, token].join(' '))
+    pending = []
+  }
+  if (pending.length > 0) units.push(pending.join(' '))
+
+  if (units.length <= 1) return { given: [], surnames: units }
+  if (units.length === 2) return { given: [units[0]], surnames: [units[1]] }
+  if (units.length === 3) {
+    return COMPOUND_GIVEN_NAMES.has(normalizeToken(units[1]))
+      ? { given: units.slice(0, 2), surnames: [units[2]] }
+      : { given: [units[0]], surnames: units.slice(1) }
+  }
+  return { given: units.slice(0, 2), surnames: units.slice(2) }
+}
+
+/** Claves de orden, en este orden: primer apellido, segundo apellido (vacío si no tiene), nombres. */
+function sortKeys(fullName: string): [string, string, string] {
+  const { given, surnames } = splitName(fullName)
+  return [surnames[0] ?? '', surnames.slice(1).join(' '), given.join(' ')]
+}
+
+/** Orden alfabético por primer apellido (ignora "Dr./Dra." y tildes).
+ *  Desempata por segundo apellido (quien no lo tiene va primero), luego por nombre
+ *  y al final por display_order. No muta el arreglo recibido.
  */
 export function sortDoctorsAlphabetically<T extends { full_name: string; display_order: number }>(
   doctors: T[]
 ): T[] {
-  return [...doctors].sort(
-    (a, b) =>
-      nameForSort(a.full_name).localeCompare(nameForSort(b.full_name), 'es', {
-        sensitivity: 'base',
-      }) || a.display_order - b.display_order
-  )
+  const collator = new Intl.Collator('es', { sensitivity: 'base' })
+  return [...doctors].sort((a, b) => {
+    const keysA = sortKeys(a.full_name)
+    const keysB = sortKeys(b.full_name)
+    for (let i = 0; i < keysA.length; i++) {
+      const diff = collator.compare(keysA[i], keysB[i])
+      if (diff !== 0) return diff
+    }
+    return a.display_order - b.display_order
+  })
 }
 
 export function getInitials(fullName: string): string {
