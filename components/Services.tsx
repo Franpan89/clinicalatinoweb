@@ -5,8 +5,9 @@ import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { ArrowUpRight } from 'lucide-react'
-import { SERVICES } from '@/lib/services'
+import { getServices } from '@/lib/services'
 import PlaceholderImage from './PlaceholderImage'
+import { useLocale } from './LocaleProvider'
 
 const container = {
   hidden: {},
@@ -20,6 +21,26 @@ const item = {
 
 type ServiceImages = Record<string, string | null | undefined>
 
+const es = {
+  bannerAlt: 'Banner Clínica Latino — Servicios',
+  eyebrow: 'Nuestros Servicios',
+  heading: 'Atención Médica Integral',
+  intro:
+    'Todas las especialidades y servicios para cubrir integralmente tus necesidades de salud bajo un mismo techo.',
+  placeholderFilename: (slug: string) => `service_image_${slug} en /admin/medios`,
+}
+
+const en: typeof es = {
+  bannerAlt: 'Clínica Latino banner — Services',
+  eyebrow: 'Our Services',
+  heading: 'Comprehensive Medical Care',
+  intro:
+    'Every specialty and service you need to cover your health care needs, all under one roof.',
+  placeholderFilename: (slug: string) => `service_image_${slug} in /admin/medios`,
+}
+
+const COPY = { es, en }
+
 export default function Services({
   bannerSrc,
   serviceImages = {},
@@ -27,6 +48,9 @@ export default function Services({
   bannerSrc?: string | null
   serviceImages?: ServiceImages
 } = {}) {
+  const locale = useLocale()
+  const t = COPY[locale]
+  const services = getServices(locale)
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.05 })
   const banner = bannerSrc || '/img/banner-servicios.jpg'
 
@@ -37,7 +61,7 @@ export default function Services({
         <div className="mb-12">
           <PlaceholderImage
             src={banner}
-            alt="Banner Clínica Latino — Servicios"
+            alt={t.bannerAlt}
             ratio="4/1"
           />
         </div>
@@ -47,16 +71,15 @@ export default function Services({
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="h-px w-10 bg-brand-gradient" />
             <span className="text-brand-blue font-lato text-xs font-bold tracking-[0.3em] uppercase">
-              Nuestros Servicios
+              {t.eyebrow}
             </span>
             <div className="h-px w-10 bg-brand-gradient" />
           </div>
           <h2 className="font-lato text-brand-dark text-5xl font-normal mb-4">
-            Atención Médica Integral
+            {t.heading}
           </h2>
           <p className="text-brand-gray font-lato font-normal max-w-lg mx-auto leading-relaxed text-[15px]">
-            Todas las especialidades y servicios para cubrir integralmente tus necesidades
-            de salud bajo un mismo techo.
+            {t.intro}
           </p>
         </div>
 
@@ -68,7 +91,7 @@ export default function Services({
           animate={inView ? 'visible' : 'hidden'}
           className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"
         >
-          {SERVICES.map((s) => {
+          {services.map((s) => {
             const customImg = serviceImages[`service_image_${s.slug}`]
             const imgSrc = customImg || s.image
 
@@ -92,7 +115,7 @@ export default function Services({
                       ratio="auto"
                       className="absolute inset-0 w-full h-full group-hover:scale-105 transition-transform duration-700"
                       label={s.title}
-                      filename={`service_image_${s.slug} en /admin/medios`}
+                      filename={t.placeholderFilename(s.slug)}
                       recommendedSize="900×1200px"
                       variant="brand"
                     />

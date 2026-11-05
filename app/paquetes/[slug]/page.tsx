@@ -7,8 +7,31 @@ import Footer from '@/components/Footer'
 import PlaceholderImage from '@/components/PlaceholderImage'
 import { getActivePackages, getPackageBySlug } from '@/lib/data/packages'
 import { getSiteSettings } from '@/lib/data/settings'
+import { getLocale } from '@/lib/i18n/server'
 
 export const revalidate = 60
+
+const es = {
+  notFoundTitle: 'Paquete no encontrado',
+  back: 'Volver a paquetes',
+  price: 'Precio',
+  eyebrow: 'Paquete',
+  bookCta: 'Agendar este paquete',
+  callCta: 'Llamar al 072 846-666',
+  otherPackages: 'Otros paquetes',
+}
+
+const en: typeof es = {
+  notFoundTitle: 'Package not found',
+  back: 'Back to packages',
+  price: 'Price',
+  eyebrow: 'Package',
+  bookCta: 'Book this package',
+  callCta: 'Call 072 846-666',
+  otherPackages: 'Other packages',
+}
+
+const COPY = { es, en }
 
 export async function generateStaticParams() {
   const packages = await getActivePackages()
@@ -20,9 +43,10 @@ export async function generateMetadata({
 }: {
   params: { slug: string }
 }): Promise<Metadata> {
-  const pkg = await getPackageBySlug(params.slug)
+  const t = COPY[getLocale()]
+  const pkg = await getPackageBySlug(params.slug, getLocale())
   if (!pkg) {
-    return { title: 'Paquete no encontrado · Clínica Latino' }
+    return { title: `${t.notFoundTitle} · Clínica Latino` }
   }
   return {
     title: `${pkg.title} · Clínica Latino`,
@@ -31,14 +55,16 @@ export async function generateMetadata({
 }
 
 export default async function PackageDetailPage({ params }: { params: { slug: string } }) {
+  const locale = getLocale()
+  const t = COPY[locale]
   const [pkg, settings] = await Promise.all([
-    getPackageBySlug(params.slug),
+    getPackageBySlug(params.slug, locale),
     getSiteSettings(),
   ])
 
   if (!pkg) notFound()
 
-  const allPackages = await getActivePackages()
+  const allPackages = await getActivePackages(locale)
   const related = allPackages.filter((p) => p.slug !== pkg.slug).slice(0, 5)
 
   return (
@@ -56,7 +82,7 @@ export default async function PackageDetailPage({ params }: { params: { slug: st
             className="inline-flex items-center gap-2 text-brand-gray hover:text-brand-blue font-lato text-sm mb-8 transition-colors"
           >
             <ArrowLeft size={14} />
-            Volver a paquetes
+            {t.back}
           </Link>
 
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
@@ -76,7 +102,7 @@ export default async function PackageDetailPage({ params }: { params: { slug: st
               {pkg.price && (
                 <div className="absolute -bottom-5 -right-5 bg-white p-4 pr-6 shadow-xl border border-brand-surface hidden md:block">
                   <div className="font-lato text-[10px] uppercase tracking-[0.2em] text-brand-gray font-bold">
-                    Precio
+                    {t.price}
                   </div>
                   <div className="font-lato text-brand-gradient text-lg font-bold">
                     {pkg.price}
@@ -90,7 +116,7 @@ export default async function PackageDetailPage({ params }: { params: { slug: st
               <div className="flex items-center gap-3 mb-5">
                 <div className="h-px w-10 bg-brand-gradient" />
                 <span className="text-brand-blue font-lato text-xs font-bold tracking-[0.35em] uppercase">
-                  Paquete
+                  {t.eyebrow}
                 </span>
               </div>
 
@@ -132,7 +158,7 @@ export default async function PackageDetailPage({ params }: { params: { slug: st
                   className="group inline-flex items-center gap-2.5 bg-brand-gradient text-white font-lato font-bold px-7 py-3.5 transition-all duration-300 hover:shadow-xl hover:shadow-brand-teal/30 text-sm tracking-wide"
                 >
                   <Calendar size={16} />
-                  Agendar este paquete
+                  {t.bookCta}
                   <ArrowRight
                     size={16}
                     className="transition-transform duration-300 group-hover:translate-x-1"
@@ -143,7 +169,7 @@ export default async function PackageDetailPage({ params }: { params: { slug: st
                   className="inline-flex items-center gap-2.5 border-2 border-brand-dark/15 hover:border-brand-blue text-brand-dark hover:text-brand-blue font-lato font-bold px-7 py-3.5 transition-all duration-300 text-sm tracking-wide"
                 >
                   <Phone size={16} />
-                  Llamar al 072 846-666
+                  {t.callCta}
                 </a>
               </div>
             </div>
@@ -158,7 +184,7 @@ export default async function PackageDetailPage({ params }: { params: { slug: st
             <div className="flex items-center gap-3 mb-6">
               <div className="h-px w-10 bg-brand-gradient" />
               <span className="text-brand-blue font-lato text-xs font-bold tracking-[0.3em] uppercase">
-                Otros paquetes
+                {t.otherPackages}
               </span>
             </div>
 

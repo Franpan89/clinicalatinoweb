@@ -2,14 +2,44 @@
 
 import { Phone, MapPin, Clock, AlertTriangle, Siren } from 'lucide-react'
 import PlaceholderImage from './PlaceholderImage'
+import { useLocale } from './LocaleProvider'
+
+const es = {
+  placeholderLabel: 'Ambulancia / Emergencia',
+  eyebrow: 'Atención Inmediata Disponible',
+  titleLine1: '¿Necesitas Atención',
+  titleLine2: 'de Emergencia?',
+  body: 'Nuestro equipo de emergencias está disponible las 24 horas del día, los 7 días de la semana. No esperes — cada minuto cuenta en una emergencia médica.',
+  callNow: 'Llamar ahora',
+  schedule: 'Lun–Dom · 24h',
+  location: 'Cuenca, Ecuador',
+  allYear: 'Servicio de emergencias activo los 365 días del año',
+}
+
+const en: typeof es = {
+  placeholderLabel: 'Ambulance / Emergency',
+  eyebrow: 'Immediate Care Available',
+  titleLine1: 'Do You Need',
+  titleLine2: 'Emergency Care?',
+  body: "Our emergency team is available 24 hours a day, 7 days a week. Don't wait — every minute counts in a medical emergency.",
+  callNow: 'Call now',
+  schedule: 'Mon–Sun · 24h',
+  location: 'Cuenca, Ecuador',
+  allYear: 'Emergency service open 365 days a year',
+}
+
+const COPY = { es, en }
 
 export default function EmergencyCTA() {
+  const locale = useLocale()
+  const t = COPY[locale]
+
   return (
     <section className="relative py-20 bg-red-900 overflow-hidden">
       {/* Background image placeholder */}
       <div className="absolute inset-0 opacity-25 pointer-events-none">
         <PlaceholderImage
-          label="Ambulancia / Emergencia"
+          label={t.placeholderLabel}
           filename="emergencia-bg.jpg"
           recommendedSize="2400×800px"
           icon={Siren}
@@ -48,19 +78,18 @@ export default function EmergencyCTA() {
                 <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse [animation-delay:0.4s]" />
               </div>
               <span className="text-red-300 font-lato text-xs font-bold uppercase tracking-[0.3em]">
-                Atención Inmediata Disponible
+                {t.eyebrow}
               </span>
             </div>
             <h2
               className="font-lato text-white font-normal leading-[1.1] mb-4"
               style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)' }}
             >
-              ¿Necesitas Atención <br />
-              <span className="font-bold">de Emergencia?</span>
+              {t.titleLine1} <br />
+              <span className="font-bold">{t.titleLine2}</span>
             </h2>
             <p className="font-lato text-red-200/80 leading-relaxed text-[15px] font-normal">
-              Nuestro equipo de emergencias está disponible las 24 horas del día, los 7
-              días de la semana. No esperes — cada minuto cuenta en una emergencia médica.
+              {t.body}
             </p>
           </div>
 
@@ -74,7 +103,7 @@ export default function EmergencyCTA() {
               </div>
               <div>
                 <div className="text-red-400 text-xs font-normal uppercase tracking-widest mb-0.5">
-                  Llamar ahora
+                  {t.callNow}
                 </div>
                 <div>+593 72 846-666</div>
               </div>
@@ -83,16 +112,16 @@ export default function EmergencyCTA() {
             <div className="grid grid-cols-2 gap-4">
               <div className="flex items-center gap-2.5 text-red-300/80">
                 <Clock size={15} />
-                <span className="font-lato text-sm">Lun–Dom · 24h</span>
+                <span className="font-lato text-sm">{t.schedule}</span>
               </div>
               <div className="flex items-center gap-2.5 text-red-300/80">
                 <MapPin size={15} />
-                <span className="font-lato text-sm">Cuenca, Ecuador</span>
+                <span className="font-lato text-sm">{t.location}</span>
               </div>
               <div className="flex items-center gap-2.5 text-red-300/80 col-span-2">
                 <AlertTriangle size={15} />
                 <span className="font-lato text-sm">
-                  Servicio de emergencias activo los 365 días del año
+                  {t.allYear}
                 </span>
               </div>
             </div>

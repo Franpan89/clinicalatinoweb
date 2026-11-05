@@ -1,7 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
+import { localizeSpecialty } from '@/lib/i18n/content'
+import type { Locale } from '@/lib/i18n/config'
 import type { Specialty } from '@/lib/types'
 
-export async function getActiveSpecialties(): Promise<Specialty[]> {
+/** Con `locale` devuelve label/description en ese idioma (fallback a español). */
+export async function getActiveSpecialties(locale?: Locale): Promise<Specialty[]> {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     return []
   }
@@ -16,7 +19,7 @@ export async function getActiveSpecialties(): Promise<Specialty[]> {
       console.error('Error fetching specialties:', error)
       return []
     }
-    return data ?? []
+    return locale ? (data ?? []).map((sp) => localizeSpecialty(sp, locale)) : (data ?? [])
   } catch (e) {
     console.error('Supabase fetch failed:', e)
     return []

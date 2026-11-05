@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { ArrowRight, Phone, Calendar, ChevronDown, Users } from 'lucide-react'
+import { useLocale } from './LocaleProvider'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
@@ -12,14 +13,50 @@ const fadeUp = {
   }),
 }
 
-const heroStats = [
-  { value: '24/7', label: 'Emergencias', href: '#contacto' },
-  { value: '+69', label: 'Años de Experiencia', href: '#nosotros' },
-  { value: '40+', label: 'Especialidades', href: '#medicos' },
-  { value: '100%', label: 'Tecnología de Punta', href: '#servicios' },
-]
+const es = {
+  eyebrow: 'Cuenca · Ecuador · Desde 1957',
+  headlineAccent: 'Tecnología',
+  headlineRest: 'de Vanguardia,',
+  headlineLine2: 'Los primeros en cuidar de Tí',
+  subtextBold: '69 años',
+  subtextRest:
+    'brindando atención médica especializada con innovación, experiencia y calidez humana.',
+  ctaBook: 'Agendar una Cita',
+  ctaDoctors: 'Médicos Especialistas',
+  stats: [
+    { value: '24/7', label: 'Emergencias', href: '#contacto' },
+    { value: '+69', label: 'Años de Experiencia', href: '#nosotros' },
+    { value: '40+', label: 'Especialidades', href: '#medicos' },
+    { value: '100%', label: 'Tecnología de Punta', href: '#servicios' },
+  ],
+  scroll: 'Descubrir',
+}
+
+const en: typeof es = {
+  eyebrow: 'Cuenca · Ecuador · Since 1957',
+  headlineAccent: 'Cutting-Edge',
+  headlineRest: 'Technology,',
+  headlineLine2: 'The First to Care for You',
+  subtextBold: '69 years',
+  subtextRest:
+    'of specialized medical care built on innovation, experience, and a human touch.',
+  ctaBook: 'Book an Appointment',
+  ctaDoctors: 'Specialist Doctors',
+  stats: [
+    { value: '24/7', label: 'Emergency Care', href: '#contacto' },
+    { value: '+69', label: 'Years of Experience', href: '#nosotros' },
+    { value: '40+', label: 'Specialties', href: '#medicos' },
+    { value: '100%', label: 'Cutting-Edge Technology', href: '#servicios' },
+  ],
+  scroll: 'Explore',
+}
+
+const COPY = { es, en }
 
 export default function Hero({ imageSrc }: { imageSrc?: string | null } = {}) {
+  const locale = useLocale()
+  const t = COPY[locale]
+
   return (
     <section
       id="inicio"
@@ -61,7 +98,7 @@ export default function Hero({ imageSrc }: { imageSrc?: string | null } = {}) {
         >
           <div className="h-px w-10 bg-brand-gradient" />
           <span className="text-brand-blue font-lato text-xs font-bold tracking-[0.35em] uppercase">
-            Cuenca · Ecuador · Desde 1957
+            {t.eyebrow}
           </span>
           <div className="h-px w-10 bg-brand-gradient" />
         </motion.div>
@@ -75,10 +112,10 @@ export default function Hero({ imageSrc }: { imageSrc?: string | null } = {}) {
           className="font-lato font-medium text-brand-dark leading-[1.05] mb-6 mx-auto max-w-3xl"
           style={{ fontSize: 'clamp(2.4rem, 5.5vw, 4.2rem)' }}
         >
-          <span className="font-normal text-brand-gradient">Tecnología</span>{' '}
-          <span className="font-medium">de Vanguardia,</span>
+          <span className="font-normal text-brand-gradient">{t.headlineAccent}</span>{' '}
+          <span className="font-medium">{t.headlineRest}</span>
           <br />
-          Los primeros en cuidar de Tí
+          {t.headlineLine2}
         </motion.h1>
 
         {/* Subtext */}
@@ -89,8 +126,7 @@ export default function Hero({ imageSrc }: { imageSrc?: string | null } = {}) {
           variants={fadeUp}
           className="text-brand-gray font-lato font-normal text-lg leading-relaxed mb-10 max-w-xl mx-auto"
         >
-          <strong className="font-bold text-brand-dark">69 años</strong> brindando atención
-          médica especializada con innovación, experiencia y calidez humana.
+          <strong className="font-bold text-brand-dark">{t.subtextBold}</strong> {t.subtextRest}
         </motion.p>
 
         {/* CTAs */}
@@ -106,7 +142,7 @@ export default function Hero({ imageSrc }: { imageSrc?: string | null } = {}) {
             className="group inline-flex items-center gap-3 bg-brand-gradient text-white font-lato font-bold px-8 py-4 transition-all duration-300 hover:shadow-xl hover:shadow-brand-teal/30 text-base tracking-wide"
           >
             <Calendar size={18} />
-            Agendar una Cita
+            {t.ctaBook}
             <ArrowRight
               size={18}
               className="transition-transform duration-300 group-hover:translate-x-1"
@@ -117,7 +153,7 @@ export default function Hero({ imageSrc }: { imageSrc?: string | null } = {}) {
             className="inline-flex items-center gap-3 bg-brand-dark hover:bg-brand-blue text-white font-lato font-bold px-8 py-4 transition-colors duration-300 text-base tracking-wide"
           >
             <Users size={18} />
-            Médicos Especialistas
+            {t.ctaDoctors}
           </a>
           <a
             href="tel:+59372846666"
@@ -136,7 +172,7 @@ export default function Hero({ imageSrc }: { imageSrc?: string | null } = {}) {
           variants={fadeUp}
           className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 border-t border-brand-surface max-w-2xl mx-auto"
         >
-          {heroStats.map((stat) => (
+          {t.stats.map((stat) => (
             <a key={stat.label} href={stat.href} className="group block text-center">
               <div className="font-lato font-bold text-3xl text-brand-gradient">
                 {stat.value}
@@ -158,7 +194,7 @@ export default function Hero({ imageSrc }: { imageSrc?: string | null } = {}) {
         className="absolute bottom-5 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5"
       >
         <span className="font-lato text-[10px] tracking-[0.3em] uppercase text-brand-gray font-bold">
-          Descubrir
+          {t.scroll}
         </span>
         <motion.div
           animate={{ y: [0, 7, 0] }}

@@ -4,17 +4,37 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { inferMediaType, isVideoEmbed } from '@/lib/utils/maps'
+import { useLocale } from './LocaleProvider'
 
 type Slide = { url: string; type: 'image' | 'video'; isEmbed: boolean }
 
 const IMAGE_DURATION = 6000
 const EMBED_DURATION = 18000
 
+const es = {
+  slideAlt: (n: number) => `Clínica Latino — instalaciones y equipo médico ${n}`,
+  previous: 'Anterior',
+  next: 'Siguiente',
+  goToSlide: (n: number) => `Ir a slide ${n}`,
+}
+
+const en: typeof es = {
+  slideAlt: (n: number) => `Clínica Latino — facilities and medical team ${n}`,
+  previous: 'Previous',
+  next: 'Next',
+  goToSlide: (n: number) => `Go to slide ${n}`,
+}
+
+const COPY = { es, en }
+
 export default function TopSlideshow({
   slides: rawSlides,
 }: {
   slides: (string | null | undefined)[]
 }) {
+  const locale = useLocale()
+  const t = COPY[locale]
+
   const slides: Slide[] = rawSlides
     .filter((u): u is string => Boolean(u))
     .map((url) => ({
@@ -87,7 +107,7 @@ export default function TopSlideshow({
           ) : (
             <img
               src={current.url}
-              alt={`Clínica Latino — instalaciones y equipo médico ${index + 1}`}
+              alt={t.slideAlt(index + 1)}
               className="w-full h-full object-contain"
             />
           )}
@@ -100,7 +120,7 @@ export default function TopSlideshow({
           <button
             type="button"
             onClick={goPrev}
-            aria-label="Anterior"
+            aria-label={t.previous}
             className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/15 hover:bg-white/30 backdrop-blur-sm flex items-center justify-center text-white transition-colors"
           >
             <ChevronLeft size={20} />
@@ -108,7 +128,7 @@ export default function TopSlideshow({
           <button
             type="button"
             onClick={goNext}
-            aria-label="Siguiente"
+            aria-label={t.next}
             className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white/15 hover:bg-white/30 backdrop-blur-sm flex items-center justify-center text-white transition-colors"
           >
             <ChevronRight size={20} />
@@ -120,7 +140,7 @@ export default function TopSlideshow({
                 key={i}
                 type="button"
                 onClick={() => goTo(i)}
-                aria-label={`Ir a slide ${i + 1}`}
+                aria-label={t.goToSlide(i + 1)}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
                   i === index ? 'w-8 bg-white' : 'w-1.5 bg-white/50 hover:bg-white/80'
                 }`}

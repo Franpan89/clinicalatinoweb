@@ -2,6 +2,17 @@
 
 import { useId, useState } from 'react'
 import { ImageIcon, type LucideIcon } from 'lucide-react'
+import { useLocale } from './LocaleProvider'
+
+const es = {
+  placeholder: 'Imagen placeholder',
+}
+
+const en: typeof es = {
+  placeholder: 'Placeholder image',
+}
+
+const COPY = { es, en }
 
 type Variant = 'brand' | 'soft' | 'dark' | 'outline'
 
@@ -38,6 +49,8 @@ export default function PlaceholderImage({
   filename?: string
   className?: string
 }) {
+  const locale = useLocale()
+  const t = COPY[locale]
   const id = useId()
   const patternId = `ph-${id.replace(/[:]/g, '')}`
   const [imgError, setImgError] = useState(false)
@@ -90,7 +103,7 @@ export default function PlaceholderImage({
           <div className="font-lato text-[10px] opacity-50 mt-1 font-mono">{filename}</div>
         )}
         <div className="font-lato text-[10px] uppercase tracking-[0.25em] opacity-50 mt-3">
-          Imagen placeholder
+          {t.placeholder}
         </div>
       </div>
     </div>

@@ -7,17 +7,50 @@ import EmergencyCTA from '@/components/EmergencyCTA'
 import PlaceholderImage from '@/components/PlaceholderImage'
 import { getActivePackages } from '@/lib/data/packages'
 import { getSiteSettings } from '@/lib/data/settings'
+import { getLocale } from '@/lib/i18n/server'
 
 export const revalidate = 60
 
-export const metadata: Metadata = {
-  title: 'Paquetes · Clínica Latino',
-  description:
+const es = {
+  metaTitle: 'Paquetes',
+  metaDescription:
     'Conoce los paquetes y promociones de salud de Clínica Latino en Cuenca, Ecuador.',
+  eyebrow: 'Paquetes de Salud',
+  titleLead: 'Paquetes y',
+  titleAccent: 'Promociones',
+  subtitle:
+    'Combos diseñados para cuidar tu salud de forma integral, con la calidad y calidez de siempre.',
+  empty: 'No hay paquetes disponibles por el momento.',
+  viewDetails: 'Ver detalles',
+}
+
+const en: typeof es = {
+  metaTitle: 'Packages',
+  metaDescription:
+    'Explore the health packages and promotions at Clínica Latino in Cuenca, Ecuador.',
+  eyebrow: 'Health Packages',
+  titleLead: 'Packages and',
+  titleAccent: 'Promotions',
+  subtitle:
+    'Bundles designed to care for your health comprehensively, with the same quality and warmth as always.',
+  empty: 'No packages are available at the moment.',
+  viewDetails: 'View details',
+}
+
+const COPY = { es, en }
+
+export function generateMetadata(): Metadata {
+  const t = COPY[getLocale()]
+  return {
+    title: `${t.metaTitle} · Clínica Latino`,
+    description: t.metaDescription,
+  }
 }
 
 export default async function PaquetesPage() {
-  const [packages, settings] = await Promise.all([getActivePackages(), getSiteSettings()])
+  const locale = getLocale()
+  const t = COPY[locale]
+  const [packages, settings] = await Promise.all([getActivePackages(locale), getSiteSettings()])
 
   return (
     <main>
@@ -32,7 +65,7 @@ export default async function PaquetesPage() {
           <div className="flex items-center justify-center gap-3 mb-5">
             <div className="h-px w-10 bg-brand-gradient" />
             <span className="text-brand-blue font-lato text-xs font-bold tracking-[0.35em] uppercase">
-              Paquetes de Salud
+              {t.eyebrow}
             </span>
             <div className="h-px w-10 bg-brand-gradient" />
           </div>
@@ -41,13 +74,12 @@ export default async function PaquetesPage() {
             className="font-lato font-medium text-brand-dark leading-[1.05] mb-5"
             style={{ fontSize: 'clamp(2.2rem, 4.8vw, 3.5rem)' }}
           >
-            Paquetes y{' '}
-            <span className="font-bold text-brand-gradient">Promociones</span>
+            {t.titleLead}{' '}
+            <span className="font-bold text-brand-gradient">{t.titleAccent}</span>
           </h1>
 
           <p className="font-lato text-brand-gray font-normal text-lg leading-relaxed">
-            Combos diseñados para cuidar tu salud de forma integral, con la calidad y
-            calidez de siempre.
+            {t.subtitle}
           </p>
         </div>
       </section>
@@ -58,7 +90,7 @@ export default async function PaquetesPage() {
           {packages.length === 0 ? (
             <div className="text-center py-16">
               <p className="font-lato text-brand-gray">
-                No hay paquetes disponibles por el momento.
+                {t.empty}
               </p>
             </div>
           ) : (
@@ -88,7 +120,7 @@ export default async function PaquetesPage() {
                       {p.description}
                     </p>
                     <div className="mt-4 flex items-center gap-1.5 text-brand-teal font-lato text-xs font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <span>Ver detalles</span>
+                      <span>{t.viewDetails}</span>
                       <ArrowRight size={12} className="transition-transform duration-200 group-hover:translate-x-0.5" />
                     </div>
                   </div>

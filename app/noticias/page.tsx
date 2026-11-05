@@ -7,17 +7,49 @@ import EmergencyCTA from '@/components/EmergencyCTA'
 import PlaceholderImage from '@/components/PlaceholderImage'
 import { getActiveNews } from '@/lib/data/news'
 import { getSiteSettings } from '@/lib/data/settings'
+import { DATE_LOCALE, type Locale } from '@/lib/i18n/config'
+import { getLocale } from '@/lib/i18n/server'
 
 export const revalidate = 60
 
-export const metadata: Metadata = {
-  title: 'Noticias · Clínica Latino',
-  description:
+const es = {
+  metaTitle: 'Noticias',
+  metaDescription:
     'Mantente al día con las últimas noticias y novedades de Clínica Latino en Cuenca, Ecuador.',
+  eyebrow: 'Actualidad',
+  titleLead: 'Noticias y',
+  titleAccent: 'Novedades',
+  subtitle:
+    'Mantente al día con lo que sucede en Clínica Latino: nuevos servicios, certificaciones y eventos.',
+  empty: 'No hay noticias publicadas por el momento.',
+  readMore: 'Leer más',
 }
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr + 'T00:00:00').toLocaleDateString('es-EC', {
+const en: typeof es = {
+  metaTitle: 'News',
+  metaDescription:
+    'Stay up to date with the latest news and updates from Clínica Latino in Cuenca, Ecuador.',
+  eyebrow: 'Latest',
+  titleLead: 'News and',
+  titleAccent: 'Updates',
+  subtitle:
+    "Stay up to date with what's happening at Clínica Latino: new services, certifications, and events.",
+  empty: 'No news has been published at the moment.',
+  readMore: 'Read more',
+}
+
+const COPY = { es, en }
+
+export function generateMetadata(): Metadata {
+  const t = COPY[getLocale()]
+  return {
+    title: `${t.metaTitle} · Clínica Latino`,
+    description: t.metaDescription,
+  }
+}
+
+function formatDate(dateStr: string, locale: Locale): string {
+  return new Date(dateStr + 'T00:00:00').toLocaleDateString(DATE_LOCALE[locale], {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
@@ -25,7 +57,9 @@ function formatDate(dateStr: string): string {
 }
 
 export default async function NoticiasPage() {
-  const [news, settings] = await Promise.all([getActiveNews(), getSiteSettings()])
+  const locale = getLocale()
+  const t = COPY[locale]
+  const [news, settings] = await Promise.all([getActiveNews(locale), getSiteSettings()])
 
   return (
     <main>
@@ -40,7 +74,7 @@ export default async function NoticiasPage() {
           <div className="flex items-center justify-center gap-3 mb-5">
             <div className="h-px w-10 bg-brand-gradient" />
             <span className="text-brand-blue font-lato text-xs font-bold tracking-[0.35em] uppercase">
-              Actualidad
+              {t.eyebrow}
             </span>
             <div className="h-px w-10 bg-brand-gradient" />
           </div>
@@ -49,13 +83,12 @@ export default async function NoticiasPage() {
             className="font-lato font-medium text-brand-dark leading-[1.05] mb-5"
             style={{ fontSize: 'clamp(2.2rem, 4.8vw, 3.5rem)' }}
           >
-            Noticias y{' '}
-            <span className="font-bold text-brand-gradient">Novedades</span>
+            {t.titleLead}{' '}
+            <span className="font-bold text-brand-gradient">{t.titleAccent}</span>
           </h1>
 
           <p className="font-lato text-brand-gray font-normal text-lg leading-relaxed">
-            Mantente al día con lo que sucede en Clínica Latino: nuevos servicios,
-            certificaciones y eventos.
+            {t.subtitle}
           </p>
         </div>
       </section>
@@ -66,7 +99,7 @@ export default async function NoticiasPage() {
           {news.length === 0 ? (
             <div className="text-center py-16">
               <p className="font-lato text-brand-gray">
-                No hay noticias publicadas por el momento.
+                {t.empty}
               </p>
             </div>
           ) : (
@@ -86,7 +119,7 @@ export default async function NoticiasPage() {
                   <div className="p-6 flex flex-col flex-grow">
                     <div className="flex items-center gap-1.5 text-brand-gray font-lato text-xs mb-3">
                       <Calendar size={12} />
-                      {formatDate(n.published_at)}
+                      {formatDate(n.published_at, locale)}
                     </div>
                     <h2 className="font-lato text-brand-dark text-lg font-bold mb-2 leading-tight">
                       {n.title}
@@ -95,7 +128,7 @@ export default async function NoticiasPage() {
                       {n.excerpt}
                     </p>
                     <div className="mt-4 flex items-center gap-1.5 text-brand-teal font-lato text-xs font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <span>Leer más</span>
+                      <span>{t.readMore}</span>
                       <ArrowRight size={12} className="transition-transform duration-200 group-hover:translate-x-0.5" />
                     </div>
                   </div>

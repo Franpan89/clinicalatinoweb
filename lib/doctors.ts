@@ -1,4 +1,5 @@
 import type { ScheduleBlock, WeekDay } from '@/lib/types'
+import type { Locale } from '@/lib/i18n/config'
 
 export const WEEK_DAYS: { value: WeekDay; short: string; label: string }[] = [
   { value: 'mon', short: 'Lun', label: 'Lunes' },
@@ -20,11 +21,24 @@ const DAY_ORDER: Record<WeekDay, number> = {
   sun: 7,
 }
 
+const WEEK_DAY_SHORT_EN: Record<WeekDay, string> = {
+  mon: 'Mon',
+  tue: 'Tue',
+  wed: 'Wed',
+  thu: 'Thu',
+  fri: 'Fri',
+  sat: 'Sat',
+  sun: 'Sun',
+}
+
 /** Genera el texto display del horario a partir de los bloques estructurados.
- *  Ej: "Lun · Mié · Vie · 09:00 – 17:00"
+ *  Ej: "Lun · Mié · Vie · 09:00 – 17:00" (en inglés: "Mon · Wed · Fri · 09:00 – 17:00")
  *  Si los bloques tienen rangos diferentes por día, los agrupa por rango.
  */
-export function formatSchedule(blocks: ScheduleBlock[] | null | undefined): string {
+export function formatSchedule(
+  blocks: ScheduleBlock[] | null | undefined,
+  locale: Locale = 'es'
+): string {
   if (!blocks || blocks.length === 0) return ''
 
   // Agrupa por mismo start-end
@@ -40,7 +54,9 @@ export function formatSchedule(blocks: ScheduleBlock[] | null | undefined): stri
     const days = groups[range]
     const sorted = [...days].sort((a: WeekDay, b: WeekDay) => DAY_ORDER[a] - DAY_ORDER[b])
     const dayLabels = sorted
-      .map((d: WeekDay) => WEEK_DAYS.find((w) => w.value === d)?.short)
+      .map((d: WeekDay) =>
+        locale === 'en' ? WEEK_DAY_SHORT_EN[d] : WEEK_DAYS.find((w) => w.value === d)?.short
+      )
       .filter(Boolean)
       .join(' · ')
     const [start, end] = range.split('-')
@@ -48,6 +64,47 @@ export function formatSchedule(blocks: ScheduleBlock[] | null | undefined): stri
   }
 
   return parts.join(' / ')
+}
+
+/** Idiomas que el admin suele cargar a mano en `doctors.languages` (texto libre). */
+const LANGUAGE_EN: Record<string, string> = {
+  español: 'Spanish',
+  inglés: 'English',
+  francés: 'French',
+  alemán: 'German',
+  italiano: 'Italian',
+  portugués: 'Portuguese',
+  quichua: 'Quichua',
+  kichwa: 'Kichwa',
+  árabe: 'Arabic',
+  chino: 'Chinese',
+  japonés: 'Japanese',
+  ruso: 'Russian',
+}
+
+/** Traduce el nombre de un idioma cargado en español; si no lo conoce, lo deja igual. */
+export function localizeLanguage(language: string, locale: Locale): string {
+  if (locale === 'es') return language
+  return LANGUAGE_EN[language.trim().toLowerCase()] ?? language
+}
+
+/** Nombre sin el título "Dr./Dra." — base para ordenar alfabéticamente. */
+function nameForSort(fullName: string): string {
+  return fullName.replace(/^\s*(dr|dra)\.?\s+/i, '').trim()
+}
+
+/** Orden alfabético por nombre (ignora "Dr./Dra." y tildes; "María" va con la M).
+ *  Desempata con display_order. No muta el arreglo recibido.
+ */
+export function sortDoctorsAlphabetically<T extends { full_name: string; display_order: number }>(
+  doctors: T[]
+): T[] {
+  return [...doctors].sort(
+    (a, b) =>
+      nameForSort(a.full_name).localeCompare(nameForSort(b.full_name), 'es', {
+        sensitivity: 'base',
+      }) || a.display_order - b.display_order
+  )
 }
 
 export function getInitials(fullName: string): string {

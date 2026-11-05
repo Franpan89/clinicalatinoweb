@@ -5,9 +5,42 @@ import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { Clock, Award, Phone, Building2, DoorOpen, Facebook, Instagram, Linkedin } from 'lucide-react'
 import { getInitials, formatSchedule } from '@/lib/doctors'
+import { useLocale } from '@/components/LocaleProvider'
 import type { Doctor, Specialty } from '@/lib/types'
 
 type Filter = string | 'todos'
+
+const es = {
+  avatarAlt: (name: string, specialty: string) => `${name} — ${specialty} en Clínica Latino`,
+  office: 'Consultorio',
+  contact: 'Contactar',
+  all: 'Todos',
+  eyebrow: 'Nuestros Médicos',
+  title: 'Especialistas a Tu Servicio',
+  intro:
+    'Conoce a nuestro equipo médico. Filtra por especialidad para encontrar al profesional ideal según tu necesidad de salud.',
+  showing: 'Mostrando',
+  doctorNoun: (n: number): string => (n === 1 ? 'médico' : 'médicos'),
+  inSpecialty: 'en',
+  empty: 'No hay médicos disponibles en esta especialidad por el momento.',
+}
+
+const en: typeof es = {
+  avatarAlt: (name: string, specialty: string) => `${name} — ${specialty} at Clínica Latino`,
+  office: 'Office',
+  contact: 'Contact',
+  all: 'All',
+  eyebrow: 'Our Doctors',
+  title: 'Specialists at Your Service',
+  intro:
+    'Meet our medical team. Filter by specialty to find the right provider for your health needs.',
+  showing: 'Showing',
+  doctorNoun: (n: number) => (n === 1 ? 'doctor' : 'doctors'),
+  inSpecialty: 'in',
+  empty: 'There are no doctors available in this specialty at the moment.',
+}
+
+const COPY = { es, en }
 
 function WhatsAppGlyph({ size = 13 }: { size?: number }) {
   return (
@@ -18,11 +51,14 @@ function WhatsAppGlyph({ size = 13 }: { size?: number }) {
 }
 
 function DoctorAvatar({ doctor }: { doctor: Doctor }) {
+  const locale = useLocale()
+  const t = COPY[locale]
+
   if (doctor.photo_url) {
     return (
       <img
         src={doctor.photo_url}
-        alt={`${doctor.full_name} — ${doctor.specialty_label} en Clínica Latino`}
+        alt={t.avatarAlt(doctor.full_name, doctor.specialty_label)}
         className="w-full h-full object-cover"
       />
     )
@@ -71,9 +107,12 @@ function DoctorAvatar({ doctor }: { doctor: Doctor }) {
 }
 
 function DoctorCard({ doctor, index }: { doctor: Doctor; index: number }) {
+  const locale = useLocale()
+  const t = COPY[locale]
+
   const scheduleText = [
     doctor.schedule_days && doctor.schedule_days.length > 0
-      ? formatSchedule(doctor.schedule_days)
+      ? formatSchedule(doctor.schedule_days, locale)
       : doctor.schedule,
     doctor.schedule_note?.trim(),
   ]
@@ -138,7 +177,7 @@ function DoctorCard({ doctor, index }: { doctor: Doctor; index: number }) {
             <div className="flex items-start gap-2.5">
               <DoorOpen className="text-brand-teal flex-shrink-0 mt-0.5" size={13} />
               <span className="font-lato text-xs text-brand-dark/70">
-                Consultorio {doctor.office_number}
+                {t.office} {doctor.office_number}
               </span>
             </div>
           )}
@@ -198,7 +237,7 @@ function DoctorCard({ doctor, index }: { doctor: Doctor; index: number }) {
           className="inline-flex items-center justify-center gap-2 bg-brand-dark hover:bg-brand-blue text-white font-lato font-bold py-3 text-xs tracking-wider uppercase transition-colors w-full"
         >
           <Phone size={13} />
-          Contactar
+          {t.contact}
         </a>
       </div>
     </motion.article>
@@ -212,6 +251,8 @@ export default function Doctors({
   doctors: Doctor[]
   specialties: Specialty[]
 }) {
+  const locale = useLocale()
+  const t = COPY[locale]
   const [filter, setFilter] = useState<Filter>('todos')
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.05 })
 
@@ -238,7 +279,7 @@ export default function Doctors({
   }, [doctors])
 
   const allOptions = [
-    { slug: 'todos', label: 'Todos' },
+    { slug: 'todos', label: t.all },
     ...specialties.map((s) => ({ slug: s.slug, label: s.label })),
   ]
 
@@ -249,16 +290,15 @@ export default function Doctors({
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="h-px w-10 bg-brand-gradient" />
             <span className="text-brand-blue font-lato text-xs font-bold tracking-[0.3em] uppercase">
-              Nuestros Médicos
+              {t.eyebrow}
             </span>
             <div className="h-px w-10 bg-brand-gradient" />
           </div>
           <h2 className="font-lato text-brand-dark text-4xl lg:text-5xl font-normal mb-4">
-            Especialistas a Tu Servicio
+            {t.title}
           </h2>
           <p className="text-brand-gray font-lato font-normal max-w-xl mx-auto text-[15px] leading-relaxed">
-            Conoce a nuestro equipo médico. Filtra por especialidad para encontrar al
-            profesional ideal según tu necesidad de salud.
+            {t.intro}
           </p>
         </div>
 
@@ -300,12 +340,12 @@ export default function Doctors({
 
         <div className="text-center mb-8">
           <span className="font-lato text-sm text-brand-gray">
-            Mostrando{' '}
+            {t.showing}{' '}
             <strong className="text-brand-dark font-bold">{filtered.length}</strong>{' '}
-            {filtered.length === 1 ? 'médico' : 'médicos'}
+            {t.doctorNoun(filtered.length)}
             {filter !== 'todos' && (
               <>
-                {' '}en{' '}
+                {' '}{t.inSpecialty}{' '}
                 <strong className="text-brand-teal font-bold">
                   {allOptions.find((o) => o.slug === filter)?.label}
                 </strong>
@@ -326,7 +366,7 @@ export default function Doctors({
         {filtered.length === 0 && (
           <div className="text-center py-16">
             <p className="font-lato text-brand-gray">
-              No hay médicos disponibles en esta especialidad por el momento.
+              {t.empty}
             </p>
           </div>
         )}

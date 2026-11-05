@@ -10,40 +10,37 @@ import Contact from '@/components/Contact'
 import EmergencyCTA from '@/components/EmergencyCTA'
 import InsurancePartners from '@/components/InsurancePartners'
 import Footer from '@/components/Footer'
-import { createClient } from '@/lib/supabase/server'
 import { getActiveSpecialties } from '@/lib/data/specialties'
 import { getSiteSettings } from '@/lib/data/settings'
 import { getActiveInsuranceLogos } from '@/lib/data/insurance'
-import type { Doctor } from '@/lib/types'
+import { getActiveDoctors } from '@/lib/data/doctors'
+import { getLocale } from '@/lib/i18n/server'
 
 export const revalidate = 60
 
-async function getDoctors(): Promise<Doctor[]> {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-    return []
-  }
-  try {
-    const supabase = createClient()
-    const { data, error } = await supabase
-      .from('doctors')
-      .select('*')
-      .eq('active', true)
-      .order('display_order', { ascending: true })
-    if (error) {
-      console.error('Error fetching doctors:', error)
-      return []
-    }
-    return data ?? []
-  } catch (e) {
-    console.error('Supabase fetch failed:', e)
-    return []
-  }
+const GALLERY_LABELS = {
+  es: {
+    facade: 'Fachada principal',
+    room: 'Habitación hospitalaria',
+    surgery: 'Quirófano',
+    lab: 'Laboratorio',
+    imaging: 'Centro de imágenes',
+  },
+  en: {
+    facade: 'Main building',
+    room: 'Hospital room',
+    surgery: 'Operating room',
+    lab: 'Laboratory',
+    imaging: 'Imaging center',
+  },
 }
 
 export default async function Home() {
+  const locale = getLocale()
+  const galleryLabels = GALLERY_LABELS[locale]
   const [doctors, specialties, settings, insuranceLogos] = await Promise.all([
-    getDoctors(),
-    getActiveSpecialties(),
+    getActiveDoctors(locale),
+    getActiveSpecialties(locale),
     getSiteSettings(),
     getActiveInsuranceLogos(),
   ])
@@ -72,11 +69,11 @@ export default async function Home() {
       <Gallery
         videoUrl={settings.gallery_video_url}
         items={[
-          { url: settings.gallery_1_url, fallback: '/img/fachada.jpg', label: 'Fachada principal', href: '/nosotros' },
-          { url: settings.gallery_2_url, fallback: '/img/habitacion.jpg', label: 'Habitación hospitalaria', href: '/servicios/hospitalizacion' },
-          { url: settings.gallery_3_url, fallback: '/img/quirofano.jpg', label: 'Quirófano', href: '/servicios/quirofano' },
-          { url: settings.gallery_4_url, fallback: '/img/laboratorio.jpg', label: 'Laboratorio', href: '/servicios/laboratorio' },
-          { url: settings.gallery_5_url, fallback: '/img/imagenes.jpg', label: 'Centro de imágenes', href: '/servicios/centro-imagenes' },
+          { url: settings.gallery_1_url, fallback: '/img/fachada.jpg', label: galleryLabels.facade, href: '/nosotros' },
+          { url: settings.gallery_2_url, fallback: '/img/habitacion.jpg', label: galleryLabels.room, href: '/servicios/hospitalizacion' },
+          { url: settings.gallery_3_url, fallback: '/img/quirofano.jpg', label: galleryLabels.surgery, href: '/servicios/quirofano' },
+          { url: settings.gallery_4_url, fallback: '/img/laboratorio.jpg', label: galleryLabels.lab, href: '/servicios/laboratorio' },
+          { url: settings.gallery_5_url, fallback: '/img/imagenes.jpg', label: galleryLabels.imaging, href: '/servicios/centro-imagenes' },
         ]}
       />
       <Contact

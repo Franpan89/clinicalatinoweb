@@ -64,6 +64,11 @@ export type Database = {
           schedule: string
           schedule_days: ScheduleBlock[]
           schedule_note: string | null
+          subspecialty_en: string | null
+          bio_en: string | null
+          experience_en: string | null
+          education_en: string[]
+          schedule_note_en: string | null
           languages: string[]
           photo_url: string | null
           office_number: string | null
@@ -91,6 +96,11 @@ export type Database = {
           schedule: string
           schedule_days?: ScheduleBlock[]
           schedule_note?: string | null
+          subspecialty_en?: string | null
+          bio_en?: string | null
+          experience_en?: string | null
+          education_en?: string[]
+          schedule_note_en?: string | null
           languages?: string[]
           photo_url?: string | null
           office_number?: string | null
@@ -115,6 +125,11 @@ export type Database = {
           schedule: string
           schedule_days: ScheduleBlock[]
           schedule_note: string | null
+          subspecialty_en: string | null
+          bio_en: string | null
+          experience_en: string | null
+          education_en: string[]
+          schedule_note_en: string | null
           languages: string[]
           photo_url: string | null
           office_number: string | null
@@ -137,6 +152,8 @@ export type Database = {
           slug: string
           label: string
           description: string
+          label_en: string | null
+          description_en: string | null
           icon: string
           color_class: string
           display_order: number
@@ -149,6 +166,8 @@ export type Database = {
           slug: string
           label: string
           description: string
+          label_en?: string | null
+          description_en?: string | null
           icon?: string
           color_class?: string
           display_order?: number
@@ -158,6 +177,8 @@ export type Database = {
           slug: string
           label: string
           description: string
+          label_en: string | null
+          description_en: string | null
           icon: string
           color_class: string
           display_order: number
@@ -174,6 +195,9 @@ export type Database = {
           title: string
           excerpt: string
           content: string
+          title_en: string | null
+          excerpt_en: string | null
+          content_en: string | null
           cover_image_url: string | null
           published_at: string
           display_order: number
@@ -187,6 +211,9 @@ export type Database = {
           title: string
           excerpt: string
           content: string
+          title_en?: string | null
+          excerpt_en?: string | null
+          content_en?: string | null
           cover_image_url?: string | null
           published_at?: string
           display_order?: number
@@ -197,6 +224,9 @@ export type Database = {
           title: string
           excerpt: string
           content: string
+          title_en: string | null
+          excerpt_en: string | null
+          content_en: string | null
           cover_image_url: string | null
           published_at: string
           display_order: number
@@ -215,6 +245,10 @@ export type Database = {
           price: string
           image_url: string | null
           items: string[]
+          title_en: string | null
+          description_en: string | null
+          price_en: string | null
+          items_en: string[]
           display_order: number
           active: boolean
         }
@@ -228,6 +262,10 @@ export type Database = {
           price?: string
           image_url?: string | null
           items?: string[]
+          title_en?: string | null
+          description_en?: string | null
+          price_en?: string | null
+          items_en?: string[]
           display_order?: number
           active?: boolean
         }
@@ -238,6 +276,10 @@ export type Database = {
           price: string
           image_url: string | null
           items: string[]
+          title_en: string | null
+          description_en: string | null
+          price_en: string | null
+          items_en: string[]
           display_order: number
           active: boolean
         }>

@@ -2,22 +2,55 @@ import Link from 'next/link'
 import { Phone, MapPin, Mail, Clock } from 'lucide-react'
 import Logo from './Logo'
 import SocialIcon from './SocialIcon'
-import { SERVICES } from '@/lib/services'
+import { getServices } from '@/lib/services'
 import { SOCIAL_PLATFORMS } from '@/lib/social'
+import { getLocale } from '@/lib/i18n/server'
 
-// Primeros 9 servicios para el footer, con link a su landing
-const serviceLinks = SERVICES.slice(0, 9).map((s) => ({
-  label: s.title,
-  href: `/servicios/${s.slug}`,
-}))
+const es = {
+  tagline:
+    'Centro médico privado con tecnología de vanguardia y atención humanista. Tu salud es nuestra misión desde 1990.',
+  servicesHeading: 'Servicios',
+  clinicHeading: 'Clínica',
+  contactHeading: 'Contacto',
+  clinicLinks: [
+    { label: 'Inicio', href: '/' },
+    { label: 'Nuestros Médicos', href: '/medicos' },
+    { label: 'Servicios', href: '/servicios' },
+    { label: 'Quiénes Somos', href: '/nosotros' },
+    { label: 'Contacto', href: '/contacto' },
+  ],
+  emergency: 'Emergencias 24 horas',
+  location: 'Cuenca, Ecuador',
+  daysRange: 'Lun – Dom',
+  hours: '24 Horas',
+  copyright: (year: number) => `© ${year} Clínica Latino. Todos los derechos reservados.`,
+  privacy: 'Política de Privacidad',
+  terms: 'Términos de Uso',
+}
 
-const clinicLinks = [
-  { label: 'Inicio', href: '/' },
-  { label: 'Nuestros Médicos', href: '/medicos' },
-  { label: 'Servicios', href: '/servicios' },
-  { label: 'Quiénes Somos', href: '/nosotros' },
-  { label: 'Contacto', href: '/contacto' },
-]
+const en: typeof es = {
+  tagline:
+    'Private medical center with cutting-edge technology and compassionate care. Your health has been our mission since 1990.',
+  servicesHeading: 'Services',
+  clinicHeading: 'Clinic',
+  contactHeading: 'Contact',
+  clinicLinks: [
+    { label: 'Home', href: '/' },
+    { label: 'Our Doctors', href: '/medicos' },
+    { label: 'Services', href: '/servicios' },
+    { label: 'About Us', href: '/nosotros' },
+    { label: 'Contact', href: '/contacto' },
+  ],
+  emergency: '24-hour emergency care',
+  location: 'Cuenca, Ecuador',
+  daysRange: 'Mon – Sun',
+  hours: '24 Hours',
+  copyright: (year: number) => `© ${year} Clínica Latino. All rights reserved.`,
+  privacy: 'Privacy Policy',
+  terms: 'Terms of Use',
+}
+
+const COPY = { es, en }
 
 export default function Footer({
   logoUrl,
@@ -26,7 +59,17 @@ export default function Footer({
   logoUrl?: string | null
   socials?: Record<string, string | null>
 } = {}) {
+  const locale = getLocale()
+  const t = COPY[locale]
   const year = new Date().getFullYear()
+
+  // Primeros 9 servicios para el footer, con link a su landing
+  const serviceLinks = getServices(locale)
+    .slice(0, 9)
+    .map((s) => ({
+      label: s.title,
+      href: `/servicios/${s.slug}`,
+    }))
 
   // Solo redes con URL configurada
   const activeSocials = SOCIAL_PLATFORMS.filter((p) => socials?.[p.key]).map((p) => ({
@@ -45,8 +88,7 @@ export default function Footer({
               <Logo size={56} src={logoUrl} />
             </a>
             <p className="font-outfit text-white/35 text-sm leading-relaxed mb-7">
-              Centro médico privado con tecnología de vanguardia y atención humanista.
-              Tu salud es nuestra misión desde 1990.
+              {t.tagline}
             </p>
             {activeSocials.length > 0 && (
               <div className="flex flex-wrap gap-2.5">
@@ -69,7 +111,7 @@ export default function Footer({
           {/* Services */}
           <div>
             <h4 className="font-outfit text-white/80 font-semibold uppercase tracking-widest text-xs mb-6">
-              Servicios
+              {t.servicesHeading}
             </h4>
             <ul className="space-y-2.5">
               {serviceLinks.map((s) => (
@@ -89,10 +131,10 @@ export default function Footer({
           {/* Clinic */}
           <div>
             <h4 className="font-outfit text-white/80 font-semibold uppercase tracking-widest text-xs mb-6">
-              Clínica
+              {t.clinicHeading}
             </h4>
             <ul className="space-y-2.5">
-              {clinicLinks.map((link) => (
+              {t.clinicLinks.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
@@ -109,14 +151,14 @@ export default function Footer({
           {/* Contact */}
           <div>
             <h4 className="font-outfit text-white/80 font-semibold uppercase tracking-widest text-xs mb-6">
-              Contacto
+              {t.contactHeading}
             </h4>
             <div className="space-y-5">
               <a href="tel:+59372846666" className="flex items-start gap-3 group">
                 <Phone className="text-gold flex-shrink-0 mt-0.5" size={15} />
                 <div>
                   <div className="font-outfit text-white/60 group-hover:text-gold text-sm transition-colors">+593 72 846-666</div>
-                  <div className="font-outfit text-white/25 text-xs mt-0.5">Emergencias 24 horas</div>
+                  <div className="font-outfit text-white/25 text-xs mt-0.5">{t.emergency}</div>
                 </div>
               </a>
               <a
@@ -126,13 +168,13 @@ export default function Footer({
                 className="flex items-start gap-3 group"
               >
                 <MapPin className="text-gold flex-shrink-0 mt-0.5" size={15} />
-                <div className="font-outfit text-white/60 group-hover:text-gold text-sm transition-colors">Cuenca, Ecuador</div>
+                <div className="font-outfit text-white/60 group-hover:text-gold text-sm transition-colors">{t.location}</div>
               </a>
               <div className="flex items-start gap-3">
                 <Clock className="text-gold flex-shrink-0 mt-0.5" size={15} />
                 <div>
-                  <div className="font-outfit text-white/60 text-sm">Lun – Dom</div>
-                  <div className="font-outfit text-gold text-sm font-semibold">24 Horas</div>
+                  <div className="font-outfit text-white/60 text-sm">{t.daysRange}</div>
+                  <div className="font-outfit text-gold text-sm font-semibold">{t.hours}</div>
                 </div>
               </div>
               <a href="mailto:info@clinicalatino.med.ec" className="flex items-start gap-3 group">
@@ -151,14 +193,14 @@ export default function Footer({
         {/* Bottom */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
           <p className="font-outfit text-white/25 text-xs">
-            © {year} Clínica Latino. Todos los derechos reservados.
+            {t.copyright(year)}
           </p>
           <div className="flex gap-6">
             <a href="#" className="font-outfit text-white/20 hover:text-white/40 text-xs transition-colors">
-              Política de Privacidad
+              {t.privacy}
             </a>
             <a href="#" className="font-outfit text-white/20 hover:text-white/40 text-xs transition-colors">
-              Términos de Uso
+              {t.terms}
             </a>
           </div>
         </div>

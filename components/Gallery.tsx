@@ -6,6 +6,7 @@ import { useInView } from 'react-intersection-observer'
 import { Play, Video, ArrowUpRight } from 'lucide-react'
 import PlaceholderImage from './PlaceholderImage'
 import { isVideoEmbed, toEmbedUrl } from '@/lib/utils/maps'
+import { useLocale } from './LocaleProvider'
 
 type GalleryItem = {
   url: string | null
@@ -19,17 +20,59 @@ type GalleryProps = {
   items?: GalleryItem[]
 }
 
-const DEFAULT_ITEMS: GalleryItem[] = [
-  { url: null, fallback: '/img/fachada.jpg', label: 'Fachada principal', href: '/nosotros' },
-  { url: null, fallback: '/img/habitacion.jpg', label: 'Habitación hospitalaria', href: '/servicios/hospitalizacion' },
-  { url: null, fallback: '/img/quirofano.jpg', label: 'Quirófano', href: '/servicios/quirofano' },
-  { url: null, fallback: '/img/laboratorio.jpg', label: 'Laboratorio', href: '/servicios/laboratorio' },
-  { url: null, fallback: '/img/imagenes.jpg', label: 'Centro de imágenes', href: '/servicios/centro-imagenes' },
-]
+const es = {
+  eyebrow: 'Nuestras Instalaciones',
+  titleLine1: 'Infraestructura',
+  titleLine2: 'de Vanguardia',
+  intro:
+    'Espacios diseñados para la comodidad del paciente y la excelencia clínica, con equipos de última generación en cada área.',
+  videoTitle: 'Video institucional Clínica Latino',
+  videoPlaceholderLabel: 'Video institucional',
+  videoPlaceholderFilename: 'Configura en /admin/medios',
+  videoPlaceholderSize: 'MP4 1920×1080 · o YouTube embed URL',
+  defaultLabels: {
+    facade: 'Fachada principal',
+    room: 'Habitación hospitalaria',
+    surgery: 'Quirófano',
+    lab: 'Laboratorio',
+    imaging: 'Centro de imágenes',
+  },
+}
+
+const en: typeof es = {
+  eyebrow: 'Our Facilities',
+  titleLine1: 'Infrastructure',
+  titleLine2: 'at the Cutting Edge',
+  intro:
+    'Spaces designed for patient comfort and clinical excellence, with state-of-the-art equipment in every area.',
+  videoTitle: 'Clínica Latino overview video',
+  videoPlaceholderLabel: 'Overview video',
+  videoPlaceholderFilename: 'Configure in /admin/medios',
+  videoPlaceholderSize: 'MP4 1920×1080 · or YouTube embed URL',
+  defaultLabels: {
+    facade: 'Main building',
+    room: 'Hospital room',
+    surgery: 'Operating room',
+    lab: 'Laboratory',
+    imaging: 'Imaging center',
+  },
+}
+
+const COPY = { es, en }
 
 export default function Gallery({ videoUrl, items }: GalleryProps = {}) {
+  const locale = useLocale()
+  const t = COPY[locale]
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.05 })
-  const galleryItems = items ?? DEFAULT_ITEMS
+
+  const defaultItems: GalleryItem[] = [
+    { url: null, fallback: '/img/fachada.jpg', label: t.defaultLabels.facade, href: '/nosotros' },
+    { url: null, fallback: '/img/habitacion.jpg', label: t.defaultLabels.room, href: '/servicios/hospitalizacion' },
+    { url: null, fallback: '/img/quirofano.jpg', label: t.defaultLabels.surgery, href: '/servicios/quirofano' },
+    { url: null, fallback: '/img/laboratorio.jpg', label: t.defaultLabels.lab, href: '/servicios/laboratorio' },
+    { url: null, fallback: '/img/imagenes.jpg', label: t.defaultLabels.imaging, href: '/servicios/centro-imagenes' },
+  ]
+  const galleryItems = items ?? defaultItems
 
   return (
     <section className="py-16 bg-white">
@@ -40,18 +83,17 @@ export default function Gallery({ videoUrl, items }: GalleryProps = {}) {
             <div className="flex items-center gap-3 mb-4">
               <div className="h-px w-10 bg-brand-gradient" />
               <span className="text-brand-blue font-lato text-xs font-bold tracking-[0.3em] uppercase">
-                Nuestras Instalaciones
+                {t.eyebrow}
               </span>
             </div>
             <h2 className="font-lato text-brand-dark text-4xl lg:text-5xl font-normal leading-[1.1]">
-              Infraestructura
+              {t.titleLine1}
               <br />
-              <span className="font-bold text-brand-gradient">de Vanguardia</span>
+              <span className="font-bold text-brand-gradient">{t.titleLine2}</span>
             </h2>
           </div>
           <p className="text-brand-gray font-lato font-normal max-w-md text-[15px] leading-relaxed lg:text-right">
-            Espacios diseñados para la comodidad del paciente y la excelencia clínica,
-            con equipos de última generación en cada área.
+            {t.intro}
           </p>
         </div>
 
@@ -75,7 +117,7 @@ export default function Gallery({ videoUrl, items }: GalleryProps = {}) {
               isVideoEmbed(videoUrl) ? (
                 <iframe
                   src={toEmbedUrl(videoUrl) ?? videoUrl}
-                  title="Video institucional Clínica Latino"
+                  title={t.videoTitle}
                   className="w-full h-full"
                   frameBorder={0}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -95,9 +137,9 @@ export default function Gallery({ videoUrl, items }: GalleryProps = {}) {
             ) : (
               <div className="relative h-full">
                 <PlaceholderImage
-                  label="Video institucional"
-                  filename="Configura en /admin/medios"
-                  recommendedSize="MP4 1920×1080 · o YouTube embed URL"
+                  label={t.videoPlaceholderLabel}
+                  filename={t.videoPlaceholderFilename}
+                  recommendedSize={t.videoPlaceholderSize}
                   icon={Video}
                   variant="dark"
                   ratio="auto"

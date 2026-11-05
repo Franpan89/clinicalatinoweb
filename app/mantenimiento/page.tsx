@@ -1,19 +1,37 @@
+import type { Metadata } from 'next'
 import { Wrench } from 'lucide-react'
 import { getSiteSettings } from '@/lib/data/settings'
+import { getLocale } from '@/lib/i18n/server'
 import Logo from '@/components/Logo'
 
 export const dynamic = 'force-dynamic'
 
-export const metadata = {
+const es = {
   title: 'Sitio en mantenimiento',
-  robots: { index: false, follow: false },
+  defaultMessage: 'Estamos realizando mejoras en el sitio. Volvemos a estar disponibles muy pronto.',
+  emergency: 'Si es una emergencia médica, comunícate directamente al',
+}
+
+const en: typeof es = {
+  title: 'Site under maintenance',
+  defaultMessage: "We're making improvements to the site. We'll be back very soon.",
+  emergency: 'If this is a medical emergency, please call us directly at',
+}
+
+const COPY = { es, en }
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = COPY[getLocale()]
+  return {
+    title: t.title,
+    robots: { index: false, follow: false },
+  }
 }
 
 export default async function MantenimientoPage() {
+  const t = COPY[getLocale()]
   const settings = await getSiteSettings()
-  const message =
-    settings.maintenance_message ||
-    'Estamos realizando mejoras en el sitio. Volvemos a estar disponibles muy pronto.'
+  const message = settings.maintenance_message || t.defaultMessage
 
   return (
     <main className="min-h-screen bg-brand-surface flex items-center justify-center px-6 py-16">
@@ -27,7 +45,7 @@ export default async function MantenimientoPage() {
         </div>
 
         <h1 className="font-lato text-brand-dark text-2xl md:text-3xl font-bold mb-4">
-          Sitio en mantenimiento
+          {t.title}
         </h1>
 
         <p className="font-lato text-brand-gray text-base leading-relaxed mb-8">
@@ -35,7 +53,7 @@ export default async function MantenimientoPage() {
         </p>
 
         <p className="font-lato text-brand-gray text-sm">
-          Si es una emergencia médica, comunícate directamente al{' '}
+          {t.emergency}{' '}
           <a href="tel:+59372846666" className="text-brand-blue font-bold">
             +593 7 284 6666
           </a>

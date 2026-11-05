@@ -1,7 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
+import { localizeNews } from '@/lib/i18n/content'
+import type { Locale } from '@/lib/i18n/config'
 import type { News } from '@/lib/types'
 
-export async function getActiveNews(): Promise<News[]> {
+/** Con `locale` devuelve título/extracto/contenido en ese idioma (fallback a español). */
+export async function getActiveNews(locale?: Locale): Promise<News[]> {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     return []
   }
@@ -16,7 +19,7 @@ export async function getActiveNews(): Promise<News[]> {
       console.error('Error fetching news:', error)
       return []
     }
-    return data ?? []
+    return locale ? (data ?? []).map((n) => localizeNews(n, locale)) : (data ?? [])
   } catch (e) {
     console.error('Supabase fetch failed:', e)
     return []
@@ -44,7 +47,7 @@ export async function getAllNews(): Promise<News[]> {
   }
 }
 
-export async function getNewsBySlug(slug: string): Promise<News | null> {
+export async function getNewsBySlug(slug: string, locale?: Locale): Promise<News | null> {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     return null
   }
@@ -57,7 +60,7 @@ export async function getNewsBySlug(slug: string): Promise<News | null> {
       .eq('active', true)
       .single()
     if (error || !data) return null
-    return data
+    return locale ? localizeNews(data, locale) : data
   } catch (e) {
     console.error('Supabase fetch failed:', e)
     return null
