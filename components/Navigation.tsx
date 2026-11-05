@@ -5,7 +5,9 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, Phone, ChevronDown } from 'lucide-react'
 import Logo from './Logo'
-import { SERVICES } from '@/lib/services'
+import LanguageToggle from './LanguageToggle'
+import { useLocale } from './LocaleProvider'
+import { getServices } from '@/lib/services'
 
 type ChildLink = { label: string; href: string }
 
@@ -15,24 +17,53 @@ type NavItem = {
   children?: ChildLink[]
 }
 
-const navLinks: NavItem[] = [
-  { label: 'Inicio', href: '/' },
-  { label: 'Nuestros Médicos', href: '/medicos' },
-  {
-    label: 'Servicios',
-    href: '/servicios',
-    children: SERVICES.map((s) => ({
-      label: s.title,
-      href: `/servicios/${s.slug}`,
-    })),
-  },
-  { label: 'Quiénes Somos', href: '/nosotros' },
-  { label: 'Paquetes', href: '/paquetes' },
-  { label: 'Noticias', href: '/noticias' },
-  { label: 'Contacto', href: '/contacto' },
-]
+const es = {
+  home: 'Inicio',
+  doctors: 'Nuestros Médicos',
+  services: 'Servicios',
+  about: 'Quiénes Somos',
+  packages: 'Paquetes',
+  news: 'Noticias',
+  contact: 'Contacto',
+  menu: 'Menú',
+  emergencies: 'Emergencias:',
+}
+
+const en: typeof es = {
+  home: 'Home',
+  doctors: 'Our Doctors',
+  services: 'Services',
+  about: 'About Us',
+  packages: 'Packages',
+  news: 'News',
+  contact: 'Contact',
+  menu: 'Menu',
+  emergencies: 'Emergencies:',
+}
+
+const COPY = { es, en }
 
 export default function Navigation({ logoUrl }: { logoUrl?: string | null } = {}) {
+  const locale = useLocale()
+  const t = COPY[locale]
+
+  const navLinks: NavItem[] = [
+    { label: t.home, href: '/' },
+    { label: t.doctors, href: '/medicos' },
+    {
+      label: t.services,
+      href: '/servicios',
+      children: getServices(locale).map((s) => ({
+        label: s.title,
+        href: `/servicios/${s.slug}`,
+      })),
+    },
+    { label: t.about, href: '/nosotros' },
+    { label: t.packages, href: '/paquetes' },
+    { label: t.news, href: '/noticias' },
+    { label: t.contact, href: '/contacto' },
+  ]
+
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
@@ -58,7 +89,7 @@ export default function Navigation({ logoUrl }: { logoUrl?: string | null } = {}
         </a>
 
         {/* Desktop Nav */}
-        <div className="hidden lg:flex items-center gap-6">
+        <div className="hidden lg:flex items-center gap-4 xl:gap-6">
           {navLinks.map((link) => (
             <div
               key={link.href}
@@ -97,21 +128,24 @@ export default function Navigation({ logoUrl }: { logoUrl?: string | null } = {}
           ))}
         </div>
 
-        {/* Emergency CTA */}
-        <a
-          href="tel:+59372846666"
-          className="hidden lg:flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 font-lato text-sm font-bold transition-all duration-200 hover:shadow-lg rounded-sm"
-        >
-          <Phone size={15} />
-          <span>072 846-666</span>
-          <span className="text-red-200 text-xs font-normal">24/7</span>
-        </a>
+        {/* Language + Emergency CTA */}
+        <div className="hidden lg:flex items-center gap-4">
+          <LanguageToggle />
+          <a
+            href="tel:+59372846666"
+            className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 font-lato text-sm font-bold transition-all duration-200 hover:shadow-lg rounded-sm"
+          >
+            <Phone size={15} />
+            <span>072 846-666</span>
+            <span className="text-red-200 text-xs font-normal">24/7</span>
+          </a>
+        </div>
 
         {/* Mobile Toggle */}
         <button
           className="lg:hidden text-brand-dark p-1"
           onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Menú"
+          aria-label={t.menu}
         >
           {menuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
@@ -137,12 +171,13 @@ export default function Navigation({ logoUrl }: { logoUrl?: string | null } = {}
                   {link.label}
                 </a>
               ))}
+              <LanguageToggle className="mt-4" />
               <a
                 href="tel:+59372846666"
                 className="flex items-center gap-2 text-red-600 font-lato text-sm py-4 font-bold"
               >
                 <Phone size={16} />
-                Emergencias: +593 72 846-666
+                {t.emergencies} +593 72 846-666
               </a>
             </div>
           </motion.div>

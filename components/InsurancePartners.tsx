@@ -1,7 +1,22 @@
 import type { InsuranceLogo } from '@/lib/types'
+import { getLocale } from '@/lib/i18n/server'
+
+const es = {
+  eyebrow: 'Aseguradoras',
+  heading: 'Trabajamos con tu aseguradora',
+}
+
+const en: typeof es = {
+  eyebrow: 'Insurance Partners',
+  heading: 'We work with your insurance provider',
+}
+
+const COPY = { es, en }
 
 export default function InsurancePartners({ logos }: { logos: InsuranceLogo[] }) {
   if (logos.length === 0) return null
+
+  const t = COPY[getLocale()]
 
   // Duplicamos la lista para que el loop CSS translate(-50%) sea continuo
   const track = [...logos, ...logos]
@@ -12,12 +27,12 @@ export default function InsurancePartners({ logos }: { logos: InsuranceLogo[] })
         <div className="flex items-center justify-center gap-3 mb-3">
           <div className="h-px w-10 bg-brand-gradient" />
           <span className="text-brand-blue font-lato text-xs font-bold tracking-[0.3em] uppercase">
-            Aseguradoras
+            {t.eyebrow}
           </span>
           <div className="h-px w-10 bg-brand-gradient" />
         </div>
         <h2 className="font-lato text-brand-dark text-2xl font-bold">
-          Trabajamos con tu aseguradora
+          {t.heading}
         </h2>
       </div>
 

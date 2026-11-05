@@ -142,6 +142,11 @@ export async function createDoctor(formData: FormData) {
   const schedule_days = parseScheduleBlocks(formData)
   const schedule = formatSchedule(schedule_days) || String(formData.get('schedule') ?? '').trim()
   const schedule_note = String(formData.get('schedule_note') ?? '').trim() || null
+  const subspecialty_en = String(formData.get('subspecialty_en') ?? '').trim() || null
+  const bio_en = String(formData.get('bio_en') ?? '').trim() || null
+  const experience_en = String(formData.get('experience_en') ?? '').trim() || null
+  const education_en = parseLines(formData.get('education_en'))
+  const schedule_note_en = String(formData.get('schedule_note_en') ?? '').trim() || null
 
   if (!full_name || !specialty || !specialty_label || !subspecialty || !bio || !experience) {
     return { error: 'Todos los campos marcados con * son obligatorios.' }
@@ -167,6 +172,11 @@ export async function createDoctor(formData: FormData) {
     schedule,
     schedule_days,
     schedule_note,
+    subspecialty_en,
+    bio_en,
+    experience_en,
+    education_en,
+    schedule_note_en,
     education,
     languages,
     photo_url,
@@ -215,6 +225,11 @@ export async function updateDoctor(id: string, formData: FormData) {
   const schedule_days = parseScheduleBlocks(formData)
   const schedule = formatSchedule(schedule_days) || String(formData.get('schedule') ?? '').trim()
   const schedule_note = String(formData.get('schedule_note') ?? '').trim() || null
+  const subspecialty_en = String(formData.get('subspecialty_en') ?? '').trim() || null
+  const bio_en = String(formData.get('bio_en') ?? '').trim() || null
+  const experience_en = String(formData.get('experience_en') ?? '').trim() || null
+  const education_en = parseLines(formData.get('education_en'))
+  const schedule_note_en = String(formData.get('schedule_note_en') ?? '').trim() || null
 
   if (!full_name || !specialty || !specialty_label || !subspecialty || !bio || !experience) {
     return { error: 'Todos los campos marcados con * son obligatorios.' }
@@ -231,6 +246,11 @@ export async function updateDoctor(id: string, formData: FormData) {
     schedule,
     schedule_days,
     schedule_note,
+    subspecialty_en,
+    bio_en,
+    experience_en,
+    education_en,
+    schedule_note_en,
     education,
     languages,
     office_number,
@@ -299,6 +319,8 @@ export async function createSpecialty(formData: FormData) {
   const label = String(formData.get('label') ?? '').trim()
   const slug = String(formData.get('slug') ?? '').trim() || slugify(label)
   const description = String(formData.get('description') ?? '').trim()
+  const label_en = String(formData.get('label_en') ?? '').trim() || null
+  const description_en = String(formData.get('description_en') ?? '').trim() || null
   const icon = String(formData.get('icon') ?? 'stethoscope').trim()
   const color_class = String(formData.get('color_class') ?? 'from-slate-900 to-slate-800').trim()
   const display_order = Number(formData.get('display_order') ?? 999)
@@ -312,6 +334,8 @@ export async function createSpecialty(formData: FormData) {
     slug,
     label,
     description,
+    label_en,
+    description_en,
     icon,
     color_class,
     display_order,
@@ -334,6 +358,8 @@ export async function updateSpecialty(id: string, formData: FormData) {
   const label = String(formData.get('label') ?? '').trim()
   const slug = String(formData.get('slug') ?? '').trim()
   const description = String(formData.get('description') ?? '').trim()
+  const label_en = String(formData.get('label_en') ?? '').trim() || null
+  const description_en = String(formData.get('description_en') ?? '').trim() || null
   const icon = String(formData.get('icon') ?? 'stethoscope').trim()
   const color_class = String(formData.get('color_class') ?? 'from-slate-900 to-slate-800').trim()
   const display_order = Number(formData.get('display_order') ?? 999)
@@ -354,6 +380,8 @@ export async function updateSpecialty(id: string, formData: FormData) {
     slug,
     label,
     description,
+    label_en,
+    description_en,
     icon,
     color_class,
     display_order,
@@ -583,6 +611,9 @@ export async function createNews(formData: FormData) {
   const slug = String(formData.get('slug') ?? '').trim() || slugify(title)
   const excerpt = String(formData.get('excerpt') ?? '').trim()
   const content = String(formData.get('content') ?? '').trim()
+  const title_en = String(formData.get('title_en') ?? '').trim() || null
+  const excerpt_en = String(formData.get('excerpt_en') ?? '').trim() || null
+  const content_en = String(formData.get('content_en') ?? '').trim() || null
   const published_at = String(formData.get('published_at') ?? '').trim() || new Date().toISOString().split('T')[0]
   const display_order = Number(formData.get('display_order') ?? 999)
   const active = formData.get('active') === 'on'
@@ -605,6 +636,9 @@ export async function createNews(formData: FormData) {
     title,
     excerpt,
     content,
+    title_en,
+    excerpt_en,
+    content_en,
     cover_image_url,
     published_at,
     display_order,
@@ -629,6 +663,9 @@ export async function updateNews(id: string, formData: FormData) {
   const slug = String(formData.get('slug') ?? '').trim()
   const excerpt = String(formData.get('excerpt') ?? '').trim()
   const content = String(formData.get('content') ?? '').trim()
+  const title_en = String(formData.get('title_en') ?? '').trim() || null
+  const excerpt_en = String(formData.get('excerpt_en') ?? '').trim() || null
+  const content_en = String(formData.get('content_en') ?? '').trim() || null
   const published_at = String(formData.get('published_at') ?? '').trim()
   const display_order = Number(formData.get('display_order') ?? 999)
   const active = formData.get('active') === 'on'
@@ -642,6 +679,9 @@ export async function updateNews(id: string, formData: FormData) {
     title,
     excerpt,
     content,
+    title_en,
+    excerpt_en,
+    content_en,
     published_at,
     display_order,
     active,
@@ -730,6 +770,10 @@ export async function createPackage(formData: FormData) {
   const description = String(formData.get('description') ?? '').trim()
   const price = String(formData.get('price') ?? '').trim()
   const items = parseLines(formData.get('items'))
+  const title_en = String(formData.get('title_en') ?? '').trim() || null
+  const description_en = String(formData.get('description_en') ?? '').trim() || null
+  const price_en = String(formData.get('price_en') ?? '').trim() || null
+  const items_en = parseLines(formData.get('items_en'))
   const display_order = Number(formData.get('display_order') ?? 999)
   const active = formData.get('active') === 'on'
 
@@ -753,6 +797,10 @@ export async function createPackage(formData: FormData) {
     price,
     image_url,
     items,
+    title_en,
+    description_en,
+    price_en,
+    items_en,
     display_order,
     active,
   })
@@ -776,6 +824,10 @@ export async function updatePackage(id: string, formData: FormData) {
   const description = String(formData.get('description') ?? '').trim()
   const price = String(formData.get('price') ?? '').trim()
   const items = parseLines(formData.get('items'))
+  const title_en = String(formData.get('title_en') ?? '').trim() || null
+  const description_en = String(formData.get('description_en') ?? '').trim() || null
+  const price_en = String(formData.get('price_en') ?? '').trim() || null
+  const items_en = parseLines(formData.get('items_en'))
   const display_order = Number(formData.get('display_order') ?? 999)
   const active = formData.get('active') === 'on'
 
@@ -789,6 +841,10 @@ export async function updatePackage(id: string, formData: FormData) {
     description,
     price,
     items,
+    title_en,
+    description_en,
+    price_en,
+    items_en,
     display_order,
     active,
   }

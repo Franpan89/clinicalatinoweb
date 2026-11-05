@@ -2,6 +2,9 @@ import type { Metadata } from 'next'
 import { Lato } from 'next/font/google'
 import Script from 'next/script'
 import { getSiteSettings } from '@/lib/data/settings'
+import { getLocale } from '@/lib/i18n/server'
+import { OG_LOCALE, type Locale } from '@/lib/i18n/config'
+import { LocaleProvider } from '@/components/LocaleProvider'
 import './globals.css'
 
 const lato = Lato({
@@ -21,43 +24,68 @@ export async function generateMetadata(): Promise<Metadata> {
   const faviconUrl = settings.favicon_url
 
   return {
-    ...baseMetadata,
+    ...buildBaseMetadata(getLocale()),
     icons: faviconUrl
       ? { icon: faviconUrl, shortcut: faviconUrl, apple: faviconUrl }
       : { icon: '/logo.svg', shortcut: '/logo.svg' },
   }
 }
 
-const baseMetadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: {
-    default: 'Clínica Latino | Medicina de Excelencia en Ecuador',
-    template: '%s',
+const META_COPY: Record<
+  Locale,
+  { title: string; description: string; keywords: string; ogTitle: string; ogDescription: string }
+> = {
+  es: {
+    title: 'Clínica Latino | Medicina de Excelencia en Ecuador',
+    description:
+      'Centro médico privado con tecnología de vanguardia en Cuenca, Ecuador. Emergencias 24/7, especialidades médicas, cirugía, neonatología y más.',
+    keywords:
+      'clínica, médico, Ecuador, Cuenca, cirugía, emergencias, especialistas, salud, neonatología, cardiología',
+    ogTitle: 'Clínica Latino | Medicina de Excelencia',
+    ogDescription: 'Centro médico privado con tecnología de vanguardia. Atención de emergencias 24/7.',
   },
-  description:
-    'Centro médico privado con tecnología de vanguardia en Cuenca, Ecuador. Emergencias 24/7, especialidades médicas, cirugía, neonatología y más.',
-  keywords:
-    'clínica, médico, Ecuador, Cuenca, cirugía, emergencias, especialistas, salud, neonatología, cardiología',
-  alternates: {
-    canonical: '/',
+  en: {
+    title: 'Clínica Latino | Medical Excellence in Ecuador',
+    description:
+      'Private medical center with cutting-edge technology in Cuenca, Ecuador. 24/7 emergency care, medical specialties, surgery, neonatology and more.',
+    keywords:
+      'clinic, doctor, Ecuador, Cuenca, surgery, emergency, specialists, health, neonatology, cardiology',
+    ogTitle: 'Clínica Latino | Medical Excellence',
+    ogDescription: 'Private medical center with cutting-edge technology. 24/7 emergency care.',
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
-  openGraph: {
-    title: 'Clínica Latino | Medicina de Excelencia',
-    description: 'Centro médico privado con tecnología de vanguardia. Atención de emergencias 24/7.',
-    locale: 'es_EC',
-    type: 'website',
-    url: SITE_URL,
-    siteName: 'Clínica Latino',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Clínica Latino | Medicina de Excelencia',
-    description: 'Centro médico privado con tecnología de vanguardia. Atención de emergencias 24/7.',
-  },
+}
+
+function buildBaseMetadata(locale: Locale): Metadata {
+  const m = META_COPY[locale]
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: {
+      default: m.title,
+      template: '%s',
+    },
+    description: m.description,
+    keywords: m.keywords,
+    alternates: {
+      canonical: '/',
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+    openGraph: {
+      title: m.ogTitle,
+      description: m.ogDescription,
+      locale: OG_LOCALE[locale],
+      type: 'website',
+      url: SITE_URL,
+      siteName: 'Clínica Latino',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: m.ogTitle,
+      description: m.ogDescription,
+    },
+  }
 }
 
 const jsonLd = {
@@ -84,13 +112,14 @@ const jsonLd = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const settings = await getSiteSettings()
+  const locale = getLocale()
   const gaId = settings.google_analytics_id
   const pixelId = settings.meta_pixel_id
 
   return (
-    <html lang="es" className={lato.variable}>
+    <html lang={locale} className={lato.variable}>
       <body>
-        {children}
+        <LocaleProvider locale={locale}>{children}</LocaleProvider>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

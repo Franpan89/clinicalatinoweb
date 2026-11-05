@@ -8,8 +8,11 @@ import { submitAppointment } from '@/app/actions'
 import PlaceholderImage from './PlaceholderImage'
 import SocialIcon from './SocialIcon'
 import { SOCIAL_PLATFORMS } from '@/lib/social'
+import { useLocale } from '@/components/LocaleProvider'
 
-const specialties = [
+// Los valores se envían tal cual a la base de datos (siempre en español);
+// solo cambia la etiqueta visible según el idioma.
+const SPECIALTY_VALUES = [
   'Cirugía General',
   'Cirugía Bariátrica',
   'Cardio Latino',
@@ -23,7 +26,133 @@ const specialties = [
   'Emergencia',
   'Hospitalización',
   'Otro',
-]
+] as const
+
+type SpecialtyValue = (typeof SPECIALTY_VALUES)[number]
+
+const TIME_SLOTS = ['08:00', '09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00']
+
+const es = {
+  specialtyLabels: {
+    'Cirugía General': 'Cirugía General',
+    'Cirugía Bariátrica': 'Cirugía Bariátrica',
+    'Cardio Latino': 'Cardio Latino',
+    'Cirugía Estética': 'Cirugía Estética',
+    Neonatología: 'Neonatología',
+    Ginecología: 'Ginecología',
+    'Cuidados Intensivos': 'Cuidados Intensivos',
+    'Centro de Imágenes': 'Centro de Imágenes',
+    Laboratorio: 'Laboratorio',
+    'Biología Molecular': 'Biología Molecular',
+    Emergencia: 'Emergencia',
+    Hospitalización: 'Hospitalización',
+    Otro: 'Otro',
+  } as Record<SpecialtyValue, string>,
+  timeLabel: (hhmm: string): string => hhmm,
+  unexpectedError: 'Error inesperado.',
+  phoneLabel: 'Teléfono Principal',
+  phoneSub: 'Emergencias disponibles 24/7',
+  locationLabel: 'Ubicación',
+  locationSub: 'Consulta la dirección al agendar',
+  hoursLabel: 'Horario de Atención',
+  hoursValue: 'Lunes a Domingo',
+  hoursSub: '24 horas del día, sin excepción',
+  emailLabel: 'Correo Electrónico',
+  emailSub: 'Respondemos en menos de 24h',
+  eyebrow: 'Contacto',
+  headingStart: 'Agenda tu Cita',
+  headingEnd: 'Hoy Mismo',
+  intro:
+    'Completa el formulario y nuestro equipo se pondrá en contacto contigo a la brevedad para confirmar tu cita con el especialista de tu elección.',
+  visitUs: 'Visítanos en:',
+  mapTitle: 'Ubicación de Clínica Latino',
+  mapPlaceholderLabel: 'Mapa / Ubicación',
+  mapPlaceholderFilename: 'Configura en /admin/configuracion',
+  successTitle: '¡Solicitud Enviada!',
+  successText:
+    'Hemos recibido tu solicitud de cita. Nuestro equipo se pondrá en contacto contigo muy pronto para confirmar los detalles.',
+  sendAnother: 'Enviar otra solicitud',
+  nameLabel: 'Nombre completo *',
+  namePlaceholder: 'Tu nombre',
+  phoneFieldLabel: 'Teléfono *',
+  emailFieldLabel: 'Correo electrónico *',
+  emailPlaceholder: 'tu@email.com',
+  specialtyFieldLabel: 'Especialidad requerida *',
+  specialtyPlaceholder: 'Selecciona una especialidad',
+  dateLabel: 'Fecha preferida *',
+  timeFieldLabel: 'Hora preferida *',
+  timePlaceholder: 'Selecciona hora',
+  notesLabel: 'Motivo de consulta (opcional)',
+  notesPlaceholder: 'Describe brevemente tu motivo de consulta...',
+  submitting: 'Enviando solicitud...',
+  submit: 'Solicitar Cita',
+  privacy:
+    'Al enviar confirmas que has leído nuestra política de privacidad. Tus datos están protegidos y no serán compartidos.',
+}
+
+const en: typeof es = {
+  specialtyLabels: {
+    'Cirugía General': 'General Surgery',
+    'Cirugía Bariátrica': 'Bariatric Surgery',
+    'Cardio Latino': 'Cardio Latino',
+    'Cirugía Estética': 'Cosmetic Surgery',
+    Neonatología: 'Neonatology',
+    Ginecología: 'Gynecology',
+    'Cuidados Intensivos': 'Intensive Care',
+    'Centro de Imágenes': 'Imaging Center',
+    Laboratorio: 'Laboratory',
+    'Biología Molecular': 'Molecular Biology',
+    Emergencia: 'Emergency',
+    Hospitalización: 'Inpatient Care',
+    Otro: 'Other',
+  },
+  timeLabel: (hhmm: string): string => {
+    const [h, m] = hhmm.split(':')
+    const hour = Number(h)
+    return `${hour % 12 === 0 ? 12 : hour % 12}:${m} ${hour < 12 ? 'AM' : 'PM'}`
+  },
+  unexpectedError: 'Unexpected error.',
+  phoneLabel: 'Main Phone',
+  phoneSub: '24/7 emergency care available',
+  locationLabel: 'Location',
+  locationSub: 'Ask for the address when you book',
+  hoursLabel: 'Hours',
+  hoursValue: 'Monday to Sunday',
+  hoursSub: 'Open 24 hours a day, no exceptions',
+  emailLabel: 'Email',
+  emailSub: 'We reply within 24 hours',
+  eyebrow: 'Contact',
+  headingStart: 'Book Your Appointment',
+  headingEnd: 'Today',
+  intro:
+    'Fill out the form and our team will contact you shortly to confirm your appointment with the specialist of your choice.',
+  visitUs: 'Find us on:',
+  mapTitle: 'Clínica Latino location',
+  mapPlaceholderLabel: 'Map / Location',
+  mapPlaceholderFilename: 'Configure at /admin/configuracion',
+  successTitle: 'Request Sent!',
+  successText:
+    "We've received your appointment request. Our team will contact you very soon to confirm the details.",
+  sendAnother: 'Send another request',
+  nameLabel: 'Full name *',
+  namePlaceholder: 'Your name',
+  phoneFieldLabel: 'Phone *',
+  emailFieldLabel: 'Email *',
+  emailPlaceholder: 'you@email.com',
+  specialtyFieldLabel: 'Specialty needed *',
+  specialtyPlaceholder: 'Select a specialty',
+  dateLabel: 'Preferred date *',
+  timeFieldLabel: 'Preferred time *',
+  timePlaceholder: 'Select a time',
+  notesLabel: 'Reason for visit (optional)',
+  notesPlaceholder: 'Briefly describe the reason for your visit...',
+  submitting: 'Sending request...',
+  submit: 'Request Appointment',
+  privacy:
+    'By submitting, you confirm that you have read our privacy policy. Your information is protected and will not be shared.',
+}
+
+const COPY = { es, en }
 
 type FormState = 'idle' | 'success' | 'error'
 
@@ -34,6 +163,8 @@ type ContactProps = {
 }
 
 export default function Contact({ mapEmbedUrl, mapAddress, socials }: ContactProps = {}) {
+  const locale = useLocale()
+  const t = COPY[locale]
   const activeSocials = SOCIAL_PLATFORMS.filter((p) => socials?.[p.key])
   const [formState, setFormState] = useState<FormState>('idle')
   const [errorMsg, setErrorMsg] = useState('')
@@ -48,7 +179,7 @@ export default function Contact({ mapEmbedUrl, mapAddress, socials }: ContactPro
       if (result.success) {
         setFormState('success')
       } else {
-        setErrorMsg(result.error || 'Error inesperado.')
+        setErrorMsg(result.error || t.unexpectedError)
         setFormState('error')
       }
     })
@@ -57,28 +188,28 @@ export default function Contact({ mapEmbedUrl, mapAddress, socials }: ContactPro
   const contactItems = [
     {
       icon: Phone,
-      label: 'Teléfono Principal',
+      label: t.phoneLabel,
       value: '+593 72 846-666',
-      sub: 'Emergencias disponibles 24/7',
+      sub: t.phoneSub,
       href: 'tel:+59372846666',
     },
     {
       icon: MapPin,
-      label: 'Ubicación',
+      label: t.locationLabel,
       value: mapAddress || 'Cuenca, Ecuador',
-      sub: 'Consulta la dirección al agendar',
+      sub: t.locationSub,
     },
     {
       icon: Clock,
-      label: 'Horario de Atención',
-      value: 'Lunes a Domingo',
-      sub: '24 horas del día, sin excepción',
+      label: t.hoursLabel,
+      value: t.hoursValue,
+      sub: t.hoursSub,
     },
     {
       icon: Mail,
-      label: 'Correo Electrónico',
+      label: t.emailLabel,
       value: 'info@clinicalatino.med.ec',
-      sub: 'Respondemos en menos de 24h',
+      sub: t.emailSub,
       href: 'mailto:info@clinicalatino.med.ec',
     },
   ]
@@ -96,17 +227,16 @@ export default function Contact({ mapEmbedUrl, mapAddress, socials }: ContactPro
           <div className="flex items-center justify-center gap-3 mb-5">
             <div className="h-px w-10 bg-brand-gradient" />
             <span className="text-brand-blue font-lato text-xs font-bold tracking-[0.3em] uppercase">
-              Contacto
+              {t.eyebrow}
             </span>
             <div className="h-px w-10 bg-brand-gradient" />
           </div>
           <h2 className="font-lato text-brand-dark text-4xl lg:text-5xl font-normal leading-[1.1] mb-4">
-            Agenda tu Cita{' '}
-            <span className="font-bold text-brand-gradient">Hoy Mismo</span>
+            {t.headingStart}{' '}
+            <span className="font-bold text-brand-gradient">{t.headingEnd}</span>
           </h2>
           <p className="font-lato text-brand-gray text-[15px] leading-relaxed max-w-2xl mx-auto font-normal">
-            Completa el formulario y nuestro equipo se pondrá en contacto contigo a la
-            brevedad para confirmar tu cita con el especialista de tu elección.
+            {t.intro}
           </p>
         </motion.div>
 
@@ -155,7 +285,7 @@ export default function Contact({ mapEmbedUrl, mapAddress, socials }: ContactPro
             className="flex items-center justify-center gap-4 mb-14"
           >
             <span className="font-lato text-xs text-brand-gray uppercase tracking-[0.15em] font-bold">
-              Visítanos en:
+              {t.visitUs}
             </span>
             <div className="flex items-center gap-2.5">
               {activeSocials.map((s) => (
@@ -190,14 +320,14 @@ export default function Contact({ mapEmbedUrl, mapAddress, socials }: ContactPro
                 style={{ border: 0, minHeight: 480 }}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Ubicación de Clínica Latino"
+                title={t.mapTitle}
                 allowFullScreen
                 className="w-full h-full"
               />
             ) : (
               <PlaceholderImage
-                label="Mapa / Ubicación"
-                filename="Configura en /admin/configuracion"
+                label={t.mapPlaceholderLabel}
+                filename={t.mapPlaceholderFilename}
                 recommendedSize="Google Maps embed"
                 icon={Map}
                 variant="soft"
@@ -217,17 +347,16 @@ export default function Contact({ mapEmbedUrl, mapAddress, socials }: ContactPro
               <div className="h-full flex flex-col items-center justify-center text-center py-16 bg-cream rounded-none border border-gold/20">
                 <CheckCircle className="text-gold mb-5" size={52} />
                 <h3 className="font-cormorant text-navy text-3xl font-semibold mb-3">
-                  ¡Solicitud Enviada!
+                  {t.successTitle}
                 </h3>
                 <p className="font-outfit text-gray-500 max-w-sm leading-relaxed text-[15px]">
-                  Hemos recibido tu solicitud de cita. Nuestro equipo se pondrá en contacto
-                  contigo muy pronto para confirmar los detalles.
+                  {t.successText}
                 </p>
                 <button
                   onClick={() => setFormState('idle')}
                   className="mt-8 font-outfit text-sm text-gold hover:text-gold-dark underline underline-offset-2 transition-colors"
                 >
-                  Enviar otra solicitud
+                  {t.sendAnother}
                 </button>
               </div>
             ) : (
@@ -245,18 +374,18 @@ export default function Contact({ mapEmbedUrl, mapAddress, socials }: ContactPro
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block font-outfit text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                      Nombre completo *
+                      {t.nameLabel}
                     </label>
                     <input
                       name="name"
                       required
-                      placeholder="Tu nombre"
+                      placeholder={t.namePlaceholder}
                       className="w-full border border-gray-200 focus:border-gold focus:outline-none px-4 py-3 font-outfit text-sm text-gray-800 placeholder:text-gray-300 transition-colors bg-white"
                     />
                   </div>
                   <div>
                     <label className="block font-outfit text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                      Teléfono *
+                      {t.phoneFieldLabel}
                     </label>
                     <input
                       name="phone"
@@ -271,13 +400,13 @@ export default function Contact({ mapEmbedUrl, mapAddress, socials }: ContactPro
                 {/* Row 2 */}
                 <div>
                   <label className="block font-outfit text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                    Correo electrónico *
+                    {t.emailFieldLabel}
                   </label>
                   <input
                     name="email"
                     type="email"
                     required
-                    placeholder="tu@email.com"
+                    placeholder={t.emailPlaceholder}
                     className="w-full border border-gray-200 focus:border-gold focus:outline-none px-4 py-3 font-outfit text-sm text-gray-800 placeholder:text-gray-300 transition-colors bg-white"
                   />
                 </div>
@@ -285,7 +414,7 @@ export default function Contact({ mapEmbedUrl, mapAddress, socials }: ContactPro
                 {/* Row 3 */}
                 <div>
                   <label className="block font-outfit text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                    Especialidad requerida *
+                    {t.specialtyFieldLabel}
                   </label>
                   <select
                     name="specialty"
@@ -294,11 +423,11 @@ export default function Contact({ mapEmbedUrl, mapAddress, socials }: ContactPro
                     className="w-full border border-gray-200 focus:border-gold focus:outline-none px-4 py-3 font-outfit text-sm text-gray-800 transition-colors bg-white appearance-none"
                   >
                     <option value="" disabled>
-                      Selecciona una especialidad
+                      {t.specialtyPlaceholder}
                     </option>
-                    {specialties.map((s) => (
+                    {SPECIALTY_VALUES.map((s) => (
                       <option key={s} value={s}>
-                        {s}
+                        {t.specialtyLabels[s]}
                       </option>
                     ))}
                   </select>
@@ -308,7 +437,7 @@ export default function Contact({ mapEmbedUrl, mapAddress, socials }: ContactPro
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block font-outfit text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                      Fecha preferida *
+                      {t.dateLabel}
                     </label>
                     <input
                       name="date"
@@ -320,7 +449,7 @@ export default function Contact({ mapEmbedUrl, mapAddress, socials }: ContactPro
                   </div>
                   <div>
                     <label className="block font-outfit text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                      Hora preferida *
+                      {t.timeFieldLabel}
                     </label>
                     <select
                       name="time"
@@ -328,9 +457,9 @@ export default function Contact({ mapEmbedUrl, mapAddress, socials }: ContactPro
                       defaultValue=""
                       className="w-full border border-gray-200 focus:border-gold focus:outline-none px-4 py-3 font-outfit text-sm text-gray-800 transition-colors bg-white"
                     >
-                      <option value="" disabled>Selecciona hora</option>
-                      {['08:00', '09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00'].map((t) => (
-                        <option key={t} value={t}>{t}</option>
+                      <option value="" disabled>{t.timePlaceholder}</option>
+                      {TIME_SLOTS.map((slot) => (
+                        <option key={slot} value={slot}>{t.timeLabel(slot)}</option>
                       ))}
                     </select>
                   </div>
@@ -339,12 +468,12 @@ export default function Contact({ mapEmbedUrl, mapAddress, socials }: ContactPro
                 {/* Row 5 */}
                 <div>
                   <label className="block font-outfit text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                    Motivo de consulta (opcional)
+                    {t.notesLabel}
                   </label>
                   <textarea
                     name="notes"
                     rows={3}
-                    placeholder="Describe brevemente tu motivo de consulta..."
+                    placeholder={t.notesPlaceholder}
                     className="w-full border border-gray-200 focus:border-gold focus:outline-none px-4 py-3 font-outfit text-sm text-gray-800 placeholder:text-gray-300 transition-colors bg-white resize-none"
                   />
                 </div>
@@ -368,12 +497,11 @@ export default function Contact({ mapEmbedUrl, mapAddress, socials }: ContactPro
                   ) : (
                     <Send size={16} />
                   )}
-                  {isPending ? 'Enviando solicitud...' : 'Solicitar Cita'}
+                  {isPending ? t.submitting : t.submit}
                 </button>
 
                 <p className="font-outfit text-gray-400 text-xs text-center leading-relaxed">
-                  Al enviar confirmas que has leído nuestra política de privacidad.
-                  Tus datos están protegidos y no serán compartidos.
+                  {t.privacy}
                 </p>
               </form>
             )}

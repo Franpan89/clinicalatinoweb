@@ -8,6 +8,27 @@ import {
   ArrowUpRight, type LucideIcon,
 } from 'lucide-react'
 import type { Specialty } from '@/lib/types'
+import { useLocale } from './LocaleProvider'
+
+const es = {
+  eyebrow: 'Especialidades',
+  titleLine1: 'Médicos Especialistas',
+  titleLine2: 'a Tu Servicio',
+  intro:
+    'Selecciona una especialidad para ver el listado completo de médicos disponibles, sus credenciales y horarios de atención.',
+  viewDoctors: 'Ver médicos',
+}
+
+const en: typeof es = {
+  eyebrow: 'Specialties',
+  titleLine1: 'Specialist Doctors',
+  titleLine2: 'at Your Service',
+  intro:
+    'Select a specialty to see the full list of available doctors, their credentials, and office hours.',
+  viewDoctors: 'View doctors',
+}
+
+const COPY = { es, en }
 
 const ICON_MAP: Record<string, LucideIcon> = {
   heart: Heart,
@@ -25,6 +46,8 @@ const ICON_MAP: Record<string, LucideIcon> = {
 }
 
 export default function Specialties({ specialties }: { specialties: Specialty[] }) {
+  const locale = useLocale()
+  const t = COPY[locale]
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.05 })
 
   const handleSpecialtyClick = (slug: string) => {
@@ -47,17 +70,16 @@ export default function Specialties({ specialties }: { specialties: Specialty[] 
             <div className="flex items-center gap-3 mb-4">
               <div className="h-px w-10 bg-brand-gradient" />
               <span className="text-brand-blue font-lato text-xs font-bold tracking-[0.3em] uppercase">
-                Especialidades
+                {t.eyebrow}
               </span>
             </div>
             <h2 className="font-lato text-brand-dark text-5xl font-normal leading-[1.1]">
-              Médicos Especialistas
-              <br />a Tu Servicio
+              {t.titleLine1}
+              <br />{t.titleLine2}
             </h2>
           </div>
           <p className="text-brand-gray font-lato font-normal max-w-sm leading-relaxed lg:text-right text-[15px]">
-            Selecciona una especialidad para ver el listado completo de médicos
-            disponibles, sus credenciales y horarios de atención.
+            {t.intro}
           </p>
         </div>
 
@@ -94,7 +116,7 @@ export default function Specialties({ specialties }: { specialties: Specialty[] 
                 </p>
 
                 <div className="mt-7 flex items-center gap-2 text-brand-teal font-lato text-xs font-bold uppercase tracking-wider relative z-10">
-                  <span>Ver médicos</span>
+                  <span>{t.viewDoctors}</span>
                   <span className="transition-transform duration-200 group-hover:translate-x-0.5">→</span>
                 </div>
 

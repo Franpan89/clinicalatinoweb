@@ -1,33 +1,69 @@
 import { Clock, Award, Stethoscope, Cpu } from 'lucide-react'
+import { getLocale } from '@/lib/i18n/server'
 
-const pillars = [
-  {
-    icon: Clock,
-    value: '24/7',
-    label: 'Atención de Emergencias',
-    desc: 'Siempre disponibles cuando más nos necesitas',
-  },
-  {
-    icon: Award,
-    value: '69',
-    label: 'Años de Experiencia',
-    desc: 'Desde 1957 cuidando la salud cuencana',
-  },
-  {
-    icon: Stethoscope,
-    value: '40+',
-    label: 'Especialidades Médicas',
-    desc: 'Cobertura integral de tus necesidades de salud',
-  },
-  {
-    icon: Cpu,
-    value: '100%',
-    label: 'Tecnología de Punta',
-    desc: 'Equipos de diagnóstico de última generación',
-  },
-]
+const es = {
+  pillars: [
+    {
+      icon: Clock,
+      value: '24/7',
+      label: 'Atención de Emergencias',
+      desc: 'Siempre disponibles cuando más nos necesitas',
+    },
+    {
+      icon: Award,
+      value: '69',
+      label: 'Años de Experiencia',
+      desc: 'Desde 1957 cuidando la salud cuencana',
+    },
+    {
+      icon: Stethoscope,
+      value: '40+',
+      label: 'Especialidades Médicas',
+      desc: 'Cobertura integral de tus necesidades de salud',
+    },
+    {
+      icon: Cpu,
+      value: '100%',
+      label: 'Tecnología de Punta',
+      desc: 'Equipos de diagnóstico de última generación',
+    },
+  ],
+}
+
+const en: typeof es = {
+  pillars: [
+    {
+      icon: Clock,
+      value: '24/7',
+      label: 'Emergency Care',
+      desc: 'Always available when you need us most',
+    },
+    {
+      icon: Award,
+      value: '69',
+      label: 'Years of Experience',
+      desc: 'Caring for the health of Cuenca since 1957',
+    },
+    {
+      icon: Stethoscope,
+      value: '40+',
+      label: 'Medical Specialties',
+      desc: 'Comprehensive coverage for all your health needs',
+    },
+    {
+      icon: Cpu,
+      value: '100%',
+      label: 'Cutting-Edge Technology',
+      desc: 'State-of-the-art diagnostic equipment',
+    },
+  ],
+}
+
+const COPY = { es, en }
 
 export default function TrustBar() {
+  const { pillars } = COPY[getLocale()]
+
   return (
     <section className="bg-brand-dark py-16 relative overflow-hidden">
       {/* Subtle dot pattern */}

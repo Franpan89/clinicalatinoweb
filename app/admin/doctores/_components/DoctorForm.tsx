@@ -375,6 +375,79 @@ export default function DoctorForm({
           </div>
         </Section>
 
+        {/* Versión en inglés */}
+        <Section
+          title="Versión en inglés (opcional)"
+          subtitle="Si dejas un campo vacío, el sitio en inglés mostrará el texto en español. La especialidad se traduce en Especialidades."
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <Field label="Sub-especialidad (EN)" hint="Ejemplo: Interventional Cardiology">
+              <input
+                name="subspecialty_en"
+                defaultValue={doctor?.subspecialty_en ?? ''}
+                placeholder="Specific area of practice"
+                className={inputClass}
+              />
+            </Field>
+          </div>
+
+          <div className="mt-5">
+            <Field
+              label="Biografía / Descripción (EN)"
+              hint="2-3 líneas describiendo experiencia y enfoque"
+            >
+              <textarea
+                name="bio_en"
+                rows={4}
+                defaultValue={doctor?.bio_en ?? ''}
+                placeholder="Briefly describe the doctor's background, specialization and areas of practice..."
+                className={`${inputClass} resize-none`}
+              />
+            </Field>
+          </div>
+
+          <div className="mt-5">
+            <Field label="Experiencia (EN)" hint="Ejemplo: 22 years">
+              <input
+                name="experience_en"
+                defaultValue={doctor?.experience_en ?? ''}
+                placeholder="XX years"
+                className={inputClass}
+              />
+            </Field>
+          </div>
+
+          <div className="mt-5">
+            <Field
+              label="Formación académica (EN)"
+              hint="Una línea por título / institución"
+            >
+              <textarea
+                name="education_en"
+                rows={3}
+                defaultValue={doctor?.education_en?.join('\n') ?? ''}
+                placeholder={'XYZ University\nFellowship at ABC Center\nMaster in...'}
+                className={`${inputClass} resize-none`}
+              />
+            </Field>
+          </div>
+
+          <div className="mt-5">
+            <Field
+              label="Nota adicional de horario (EN)"
+              hint="Se muestra junto al horario en la tarjeta del médico"
+            >
+              <textarea
+                name="schedule_note_en"
+                rows={2}
+                defaultValue={doctor?.schedule_note_en ?? ''}
+                placeholder="E.g. Weekends by appointment only"
+                className={`${inputClass} resize-none`}
+              />
+            </Field>
+          </div>
+        </Section>
+
         {/* Display */}
         <Section title="Configuración de visualización">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

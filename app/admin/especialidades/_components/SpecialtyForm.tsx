@@ -206,6 +206,33 @@ export default function SpecialtyForm({
           </div>
         </Section>
 
+        {/* Versión en inglés */}
+        <Section
+          title="Versión en inglés (opcional)"
+          subtitle="Si dejas un campo vacío, el sitio en inglés mostrará el texto en español."
+        >
+          <Field label="Nombre (EN)" hint="Ej: Cardiology, Pediatrics, Orthopedics">
+            <input
+              name="label_en"
+              defaultValue={specialty?.label_en ?? ''}
+              placeholder="Visible name"
+              className={inputClass}
+            />
+          </Field>
+
+          <div className="mt-5">
+            <Field label="Descripción (EN)" hint="1-2 líneas que describen la especialidad">
+              <textarea
+                name="description_en"
+                rows={3}
+                defaultValue={specialty?.description_en ?? ''}
+                placeholder="Describe the scope and focus of this specialty..."
+                className={`${inputClass} resize-none`}
+              />
+            </Field>
+          </div>
+        </Section>
+
         {/* Display */}
         <Section title="Configuración de visualización">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -278,14 +305,19 @@ const inputClass =
 
 function Section({
   title,
+  subtitle,
   children,
 }: {
   title: string
+  subtitle?: string
   children: React.ReactNode
 }) {
   return (
     <div className="bg-white p-6 md:p-8 border border-brand-surface">
-      <h2 className="font-lato text-brand-dark text-lg font-bold mb-6">{title}</h2>
+      <div className="mb-6">
+        <h2 className="font-lato text-brand-dark text-lg font-bold">{title}</h2>
+        {subtitle && <p className="font-lato text-brand-gray text-xs mt-1">{subtitle}</p>}
+      </div>
       {children}
     </div>
   )

@@ -4,11 +4,24 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import PlaceholderImage from './PlaceholderImage'
 import { inferMediaType, isVideoEmbed } from '@/lib/utils/maps'
+import { useLocale } from './LocaleProvider'
 
 type Slide = { url: string; type: 'image' | 'video'; isEmbed: boolean }
 
 const IMAGE_DURATION = 5000 // ms que dura una imagen en pantalla
 const EMBED_DURATION = 15000 // ms para videos embed (no detectamos fin)
+
+const es = {
+  slideAlt: (n: number) => `Clínica Latino — 69 años de trayectoria médica en Cuenca ${n}`,
+  goToSlide: (n: number) => `Ir a slide ${n}`,
+}
+
+const en: typeof es = {
+  slideAlt: (n: number) => `Clínica Latino — 69 years of medical excellence in Cuenca ${n}`,
+  goToSlide: (n: number) => `Go to slide ${n}`,
+}
+
+const COPY = { es, en }
 
 export default function AboutSlideshow({
   slides: rawSlides,
@@ -17,6 +30,9 @@ export default function AboutSlideshow({
   slides: (string | null | undefined)[]
   fallbackImage?: string
 }) {
+  const locale = useLocale()
+  const t = COPY[locale]
+
   // Construye lista limpia de slides
   const slides: Slide[] = rawSlides
     .filter((u): u is string => Boolean(u))
@@ -92,7 +108,7 @@ export default function AboutSlideshow({
           ) : (
             <PlaceholderImage
               src={current.url}
-              alt={`Clínica Latino — 69 años de trayectoria médica en Cuenca ${index + 1}`}
+              alt={t.slideAlt(index + 1)}
               ratio="4/3"
               className="w-full h-full"
             />
@@ -108,7 +124,7 @@ export default function AboutSlideshow({
               key={i}
               type="button"
               onClick={() => setIndex(i)}
-              aria-label={`Ir a slide ${i + 1}`}
+              aria-label={t.goToSlide(i + 1)}
               className={`h-1.5 rounded-full transition-all duration-300 ${
                 i === index ? 'w-7 bg-white' : 'w-1.5 bg-white/50 hover:bg-white/80'
               }`}

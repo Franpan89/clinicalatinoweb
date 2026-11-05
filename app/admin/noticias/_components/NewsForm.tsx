@@ -180,6 +180,44 @@ export default function NewsForm({ mode, news }: { mode: Mode; news?: News }) {
           </div>
         </Section>
 
+        <Section
+          title="Versión en inglés (opcional)"
+          subtitle="Si dejas un campo vacío, el sitio en inglés mostrará el texto en español."
+        >
+          <Field label="Título (EN)">
+            <input
+              name="title_en"
+              defaultValue={news?.title_en ?? ''}
+              placeholder="News title"
+              className={inputClass}
+            />
+          </Field>
+
+          <div className="mt-5">
+            <Field label="Extracto (EN)" hint="1-2 líneas que aparecen en la tarjeta de listado">
+              <textarea
+                name="excerpt_en"
+                rows={2}
+                defaultValue={news?.excerpt_en ?? ''}
+                placeholder="Short summary of the news..."
+                className={`${inputClass} resize-none`}
+              />
+            </Field>
+          </div>
+
+          <div className="mt-5">
+            <Field label="Contenido (EN)" hint="Los saltos de línea se preservan automáticamente">
+              <textarea
+                name="content_en"
+                rows={12}
+                defaultValue={news?.content_en ?? ''}
+                placeholder="Full content of the news..."
+                className={`${inputClass} resize-none`}
+              />
+            </Field>
+          </div>
+        </Section>
+
         <Section title="Configuración de visualización">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             <Field label="Fecha de publicación">

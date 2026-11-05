@@ -190,6 +190,55 @@ export default function PackageForm({ mode, pkg }: { mode: Mode; pkg?: PackageIt
           </div>
         </Section>
 
+        <Section
+          title="Versión en inglés (opcional)"
+          subtitle="Si dejas un campo vacío, el sitio en inglés mostrará el texto en español."
+        >
+          <Field label="Título (EN)">
+            <input
+              name="title_en"
+              defaultValue={pkg?.title_en ?? ''}
+              placeholder="Package name"
+              className={inputClass}
+            />
+          </Field>
+
+          <div className="mt-5">
+            <Field label="Descripción (EN)" hint="Describe brevemente el paquete o promoción">
+              <textarea
+                name="description_en"
+                rows={4}
+                defaultValue={pkg?.description_en ?? ''}
+                placeholder="Describe what this package includes..."
+                className={`${inputClass} resize-none`}
+              />
+            </Field>
+          </div>
+
+          <div className="mt-5">
+            <Field label="Precio (EN)" hint='Texto libre. Ej: "From $120", "Contact us"'>
+              <input
+                name="price_en"
+                defaultValue={pkg?.price_en ?? ''}
+                placeholder="From $120"
+                className={inputClass}
+              />
+            </Field>
+          </div>
+
+          <div className="mt-5">
+            <Field label="Qué incluye (EN)" hint="Una línea por ítem">
+              <textarea
+                name="items_en"
+                rows={4}
+                defaultValue={pkg?.items_en?.join('\n') ?? ''}
+                placeholder={'Medical consultation\nLab tests\nUltrasound'}
+                className={`${inputClass} resize-none`}
+              />
+            </Field>
+          </div>
+        </Section>
+
         <Section title="Configuración de visualización">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <Field

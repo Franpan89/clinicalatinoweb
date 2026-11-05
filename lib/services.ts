@@ -1,4 +1,5 @@
 import type { LucideIcon } from 'lucide-react'
+import type { Locale } from '@/lib/i18n/config'
 import {
   Scissors,
   Baby,
@@ -248,6 +249,191 @@ export const SERVICES: Service[] = [
   },
 ]
 
-export function getServiceBySlug(slug: string): Service | undefined {
-  return SERVICES.find((s) => s.slug === slug)
+type ServiceCopy = Pick<Service, 'title' | 'tag' | 'shortDesc' | 'longDesc' | 'highlights'>
+
+/** Traducción al inglés, por slug. Un slug ausente cae al texto en español. */
+const SERVICES_EN: Record<string, ServiceCopy> = {
+  quirofano: {
+    title: 'Operating room',
+    tag: 'Surgery',
+    shortDesc:
+      'High-complexity surgical suites equipped with state-of-the-art technology for general, laparoscopic, and highly specialized surgery.',
+    longDesc:
+      'Our surgical suites offer the technical conditions and the clinical team needed for general, laparoscopic, and highly specialized procedures. We combine cutting-edge technology with certified specialists to ensure safety, efficiency, and the best clinical outcomes in every intervention.',
+    highlights: [
+      'General, bariatric, and high-complexity surgery',
+      'Minimally invasive laparoscopic techniques',
+      'Certified medical team and continuous supervision',
+    ],
+  },
+  ginecologia: {
+    title: 'Gynecology and human reproduction',
+    tag: "Women's Health",
+    shortDesc:
+      "Specialized care for women's overall health, with diagnosis, treatment, and support in gynecology, fertility, and human reproduction.",
+    longDesc:
+      "We offer complete care for women's health at every stage of life: clinical gynecology, obstetrics, gynecologic oncology, and reproductive medicine. Our team combines state-of-the-art technology with close, discreet, personal support, delivering effective and respectful solutions.",
+    highlights: [
+      'Comprehensive gynecology and obstetrics',
+      'Fertility and assisted reproduction',
+      'High-resolution ultrasound and diagnostics',
+    ],
+  },
+  neonatologia: {
+    title: 'Neonatology',
+    tag: 'Newborn',
+    shortDesc:
+      'Intensive, specialized care for premature or critically ill newborns, with constant monitoring and human warmth.',
+    longDesc:
+      'Our Neonatal Intensive Care Unit cares for premature or critically ill newborns with the technology and expertise they need in their first days of life. Our team of neonatologists and specialized nurses provides 24/7 monitoring with a caring approach that supports parents as well.',
+    highlights: [
+      'High-complexity neonatal ICU',
+      'Continuous 24-hour monitoring',
+      'Specialists in prematurity and perinatal conditions',
+    ],
+  },
+  'cuidados-intensivos': {
+    title: 'Intensive care',
+    tag: 'ICU',
+    shortDesc:
+      'Continuous critical-care monitoring around the clock, with advanced life support and a highly qualified multidisciplinary team.',
+    longDesc:
+      'The Intensive Care Unit treats critically ill patients who require close monitoring and advanced life support. A highly trained multidisciplinary team works together with every specialty to ensure the best possible clinical outcome.',
+    highlights: [
+      'Continuous critical-care monitoring, 24 hours a day',
+      'Mechanical ventilation and advanced life support',
+      'Highly qualified multidisciplinary team',
+    ],
+  },
+  laboratorio: {
+    title: 'Laboratory',
+    tag: 'Diagnostics',
+    shortDesc:
+      'Clinical diagnostic service with modern technology and reliable results.',
+    longDesc:
+      "Our clinical laboratory provides timely support for the prevention, diagnosis, and monitoring of our patients' health. We work with modern equipment and standardized processes that ensure reliable, fast, and traceable results.",
+    highlights: [
+      'Complete clinical testing',
+      'Reliable results with modern technology',
+      'Fast, traceable reports',
+    ],
+  },
+  'centro-imagenes': {
+    title: 'Imaging center',
+    tag: 'Imaging',
+    shortDesc:
+      'Accurate diagnoses through CT, X-ray, and high-resolution ultrasound for timely, safe treatment.',
+    longDesc:
+      'Diagnostic imaging center equipped with state-of-the-art technology. We perform computed tomography, digital X-ray, and high-resolution ultrasound, interpreted by experienced radiologists. Diagnostic accuracy is the foundation of successful treatment.',
+    highlights: [
+      'High-resolution computed tomography',
+      'Digital X-ray and ultrasound (Fluoroscopy)',
+      'Interpretation by specialist radiologists',
+    ],
+  },
+  emergencia: {
+    title: 'Emergency',
+    tag: '24/7',
+    shortDesc:
+      'Medical care 24/7 and immediate emergency surgical interventions, available at any time with qualified staff.',
+    longDesc:
+      'The emergency service operates 24 hours a day, 7 days a week. We treat clinical and surgical emergencies with an immediate response, backed by qualified medical staff, life-support infrastructure, and a direct connection to every specialty in the hospital.',
+    highlights: [
+      'Medical care 24/7, every day of the year',
+      'Immediate emergency surgical interventions',
+      'Qualified medical team and multidisciplinary support',
+    ],
+  },
+  hospitalizacion: {
+    title: 'Inpatient care',
+    tag: 'Inpatient',
+    shortDesc:
+      'Comfortable rooms designed for a safe recovery, with continuous nursing assistance and caring medical attention.',
+    longDesc:
+      'Our inpatient rooms are designed to support a safe, dignified recovery. They offer continuous nursing assistance, modern clinical equipment, and a comfortable environment that supports patients and their families throughout the process.',
+    highlights: [
+      'Comfortable private rooms',
+      'Continuous nursing assistance',
+      'Personalized medical support',
+    ],
+  },
+  farmacia: {
+    title: 'Pharmacy',
+    tag: 'Medications',
+    shortDesc:
+      'In-house pharmacy service with a complete stock of medications and guaranteed medical supplies.',
+    longDesc:
+      'The in-house pharmacy at Clínica Latino keeps a broad, verified inventory of medications and medical supplies. This ensures immediate availability for inpatient and outpatient treatments, with the safety and traceability every patient deserves.',
+    highlights: [
+      'Complete stock of medications',
+      'Guaranteed medical supplies',
+      'Immediate availability for patients',
+    ],
+  },
+  'biologia-molecular': {
+    title: 'Molecular biology',
+    tag: 'Specialized',
+    shortDesc:
+      'Advanced diagnostic testing and high-precision genetic analysis for early detection of complex conditions.',
+    longDesc:
+      'Our molecular biology laboratory offers high-precision genetic analysis and molecular testing. These studies enable early diagnosis of complex conditions, identification of infectious agents by PCR, and personalized monitoring of advanced treatments.',
+    highlights: [
+      'Advanced genetic analysis',
+      'Quantitative PCR and sequencing',
+      'High-precision diagnostics',
+    ],
+  },
+  cafeteria: {
+    title: 'Cafeteria',
+    tag: 'Comfort',
+    shortDesc:
+      'A comfortable space designed for patients and family members to rest, with a varied selection of fresh, healthy, and nutritious food.',
+    longDesc:
+      'The Clínica Latino cafeteria is a comfortable space designed for patients and family members to rest. We offer a varied selection of fresh, healthy, and nutritious food in an atmosphere that invites you to take a breather during the day.',
+    highlights: [
+      'Comfortable space for patients and family members',
+      'Fresh, healthy food',
+      'Varied, nutritious selection',
+    ],
+  },
+  patologia: {
+    title: 'Pathology',
+    tag: 'Diagnostics',
+    shortDesc:
+      'We offer a specialized service that provides accurate, reliable analyses, essential for the diagnosis and monitoring of a wide range of diseases.',
+    longDesc:
+      'We offer a specialized service that provides accurate, reliable analyses, essential for the diagnosis and monitoring of a wide range of diseases. Our team of pathologists uses modern technology for the histopathological study of tissue and biopsies, delivering timely results that guide the right treatment for each patient.',
+    highlights: [
+      'Histopathological study of biopsies',
+      'Accurate diagnosis for clinical follow-up',
+      'Reliable results in a timely manner',
+    ],
+  },
+  'camara-hiperbarica': {
+    title: 'Hyperbaric chamber',
+    tag: 'Therapy',
+    shortDesc:
+      'Hyperbaric therapy involves breathing 100% oxygen inside a pressurized chamber, increasing the amount of oxygen that reaches the tissues.',
+    longDesc:
+      'Hyperbaric therapy involves breathing 100% oxygen inside a pressurized chamber, increasing the amount of oxygen that reaches the tissues. This process promotes cell regeneration, speeds up healing, and helps reduce inflammation, supporting a faster, more effective recovery.',
+    highlights: [
+      'Tissue oxygenation at controlled pressure',
+      'Speeds up healing of complex wounds',
+      'Treatment supervised by specialists',
+    ],
+  },
+}
+
+const SERVICES_EN_LIST: Service[] = SERVICES.map((s) => {
+  const en = SERVICES_EN[s.slug]
+  return en ? { ...s, ...en } : s
+})
+
+/** Servicios localizados (slug, icon e image no cambian). */
+export function getServices(locale: Locale): Service[] {
+  return locale === 'en' ? SERVICES_EN_LIST : SERVICES
+}
+
+export function getServiceBySlug(slug: string, locale: Locale = 'es'): Service | undefined {
+  return getServices(locale).find((s) => s.slug === slug)
 }

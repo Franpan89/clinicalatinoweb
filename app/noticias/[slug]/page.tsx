@@ -8,8 +8,24 @@ import EmergencyCTA from '@/components/EmergencyCTA'
 import PlaceholderImage from '@/components/PlaceholderImage'
 import { getActiveNews, getNewsBySlug } from '@/lib/data/news'
 import { getSiteSettings } from '@/lib/data/settings'
+import { DATE_LOCALE, type Locale } from '@/lib/i18n/config'
+import { getLocale } from '@/lib/i18n/server'
 
 export const revalidate = 60
+
+const es = {
+  notFoundTitle: 'Noticia no encontrada',
+  back: 'Volver a noticias',
+  otherNews: 'Otras noticias',
+}
+
+const en: typeof es = {
+  notFoundTitle: 'News article not found',
+  back: 'Back to news',
+  otherNews: 'More news',
+}
+
+const COPY = { es, en }
 
 export async function generateStaticParams() {
   const news = await getActiveNews()
@@ -21,9 +37,10 @@ export async function generateMetadata({
 }: {
   params: { slug: string }
 }): Promise<Metadata> {
-  const news = await getNewsBySlug(params.slug)
+  const t = COPY[getLocale()]
+  const news = await getNewsBySlug(params.slug, getLocale())
   if (!news) {
-    return { title: 'Noticia no encontrada · Clínica Latino' }
+    return { title: `${t.notFoundTitle} · Clínica Latino` }
   }
   return {
     title: `${news.title} · Clínica Latino`,
@@ -31,8 +48,8 @@ export async function generateMetadata({
   }
 }
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr + 'T00:00:00').toLocaleDateString('es-EC', {
+function formatDate(dateStr: string, locale: Locale): string {
+  return new Date(dateStr + 'T00:00:00').toLocaleDateString(DATE_LOCALE[locale], {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
@@ -40,14 +57,16 @@ function formatDate(dateStr: string): string {
 }
 
 export default async function NewsDetailPage({ params }: { params: { slug: string } }) {
+  const locale = getLocale()
+  const t = COPY[locale]
   const [news, settings] = await Promise.all([
-    getNewsBySlug(params.slug),
+    getNewsBySlug(params.slug, locale),
     getSiteSettings(),
   ])
 
   if (!news) notFound()
 
-  const allNews = await getActiveNews()
+  const allNews = await getActiveNews(locale)
   const related = allNews.filter((n) => n.slug !== news.slug).slice(0, 3)
 
   return (
@@ -64,12 +83,12 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
             className="inline-flex items-center gap-2 text-brand-gray hover:text-brand-blue font-lato text-sm mb-8 transition-colors"
           >
             <ArrowLeft size={14} />
-            Volver a noticias
+            {t.back}
           </Link>
 
           <div className="flex items-center gap-1.5 text-brand-gray font-lato text-xs mb-4">
             <Calendar size={12} />
-            {formatDate(news.published_at)}
+            {formatDate(news.published_at, locale)}
           </div>
 
           <h1
@@ -98,7 +117,7 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
             <div className="flex items-center gap-3 mb-6">
               <div className="h-px w-10 bg-brand-gradient" />
               <span className="text-brand-blue font-lato text-xs font-bold tracking-[0.3em] uppercase">
-                Otras noticias
+                {t.otherNews}
               </span>
             </div>
 

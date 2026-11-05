@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { useEffect, useState, useRef } from 'react'
+import { useLocale } from './LocaleProvider'
 
 function AnimatedNumber({
   target,
@@ -45,38 +46,81 @@ function AnimatedNumber({
   )
 }
 
-const stats = [
-  {
-    target: 69,
-    suffix: '',
-    label: 'Años',
-    sublabel: 'de Experiencia',
-    desc: 'Desde 1957 cuidando la salud de la comunidad cuencana con dedicación y excelencia.',
-  },
-  {
-    target: 40,
-    suffix: '+',
-    label: 'Especialidades',
-    sublabel: 'Médicas',
-    desc: 'Cobertura completa de las principales ramas de la medicina moderna.',
-  },
-  {
-    target: 24,
-    suffix: 'h',
-    label: 'Atención',
-    sublabel: 'Sin Interrupciones',
-    desc: 'Emergencias y urgencias atendidas en todo momento, sin excepción.',
-  },
-  {
-    target: 100,
-    suffix: '%',
-    label: 'Compromiso',
-    sublabel: 'con tu Salud',
-    desc: 'Cada paciente recibe atención personalizada y tecnología de última generación.',
-  },
-]
+const es = {
+  eyebrow: 'En Números',
+  heading: 'La Confianza de Miles de Familias',
+  stats: [
+    {
+      target: 69,
+      suffix: '',
+      label: 'Años',
+      sublabel: 'de Experiencia',
+      desc: 'Desde 1957 cuidando la salud de la comunidad cuencana con dedicación y excelencia.',
+    },
+    {
+      target: 40,
+      suffix: '+',
+      label: 'Especialidades',
+      sublabel: 'Médicas',
+      desc: 'Cobertura completa de las principales ramas de la medicina moderna.',
+    },
+    {
+      target: 24,
+      suffix: 'h',
+      label: 'Atención',
+      sublabel: 'Sin Interrupciones',
+      desc: 'Emergencias y urgencias atendidas en todo momento, sin excepción.',
+    },
+    {
+      target: 100,
+      suffix: '%',
+      label: 'Compromiso',
+      sublabel: 'con tu Salud',
+      desc: 'Cada paciente recibe atención personalizada y tecnología de última generación.',
+    },
+  ],
+}
+
+const en: typeof es = {
+  eyebrow: 'By the Numbers',
+  heading: 'Trusted by Thousands of Families',
+  stats: [
+    {
+      target: 69,
+      suffix: '',
+      label: 'Years',
+      sublabel: 'of Experience',
+      desc: 'Caring for the Cuenca community since 1957 with dedication and excellence.',
+    },
+    {
+      target: 40,
+      suffix: '+',
+      label: 'Medical',
+      sublabel: 'Specialties',
+      desc: 'Complete coverage of the major branches of modern medicine.',
+    },
+    {
+      target: 24,
+      suffix: 'h',
+      label: 'Care',
+      sublabel: 'Without Interruption',
+      desc: 'Emergencies and urgent cases treated around the clock, without exception.',
+    },
+    {
+      target: 100,
+      suffix: '%',
+      label: 'Commitment',
+      sublabel: 'to Your Health',
+      desc: 'Every patient receives personalized care and state-of-the-art technology.',
+    },
+  ],
+}
+
+const COPY = { es, en }
 
 export default function Stats() {
+  const locale = useLocale()
+  const t = COPY[locale]
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 })
 
   return (
@@ -107,12 +151,12 @@ export default function Stats() {
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="h-px w-10 bg-gold" />
             <span className="text-gold font-lato text-xs font-semibold tracking-[0.3em] uppercase">
-              En Números
+              {t.eyebrow}
             </span>
             <div className="h-px w-10 bg-gold" />
           </div>
           <h2 className="font-lato text-white text-4xl lg:text-5xl font-semibold">
-            La Confianza de Miles de Familias
+            {t.heading}
           </h2>
         </div>
 
@@ -121,7 +165,7 @@ export default function Stats() {
           ref={ref}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
         >
-          {stats.map((stat, i) => (
+          {t.stats.map((stat, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 24 }}

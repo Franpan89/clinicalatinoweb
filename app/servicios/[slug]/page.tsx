@@ -11,8 +11,29 @@ import {
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import PlaceholderImage from '@/components/PlaceholderImage'
-import { SERVICES, getServiceBySlug } from '@/lib/services'
+import { SERVICES, getServices, getServiceBySlug } from '@/lib/services'
 import { getSiteSettings } from '@/lib/data/settings'
+import { getLocale } from '@/lib/i18n/server'
+
+const es = {
+  notFoundTitle: 'Servicio no encontrado',
+  back: 'Volver a servicios',
+  specialty: 'Especialidad',
+  bookCta: 'Agendar una cita',
+  callCta: 'Llamar al 072 846-666',
+  otherServices: 'Otros servicios',
+}
+
+const en: typeof es = {
+  notFoundTitle: 'Service not found',
+  back: 'Back to services',
+  specialty: 'Specialty',
+  bookCta: 'Book an appointment',
+  callCta: 'Call 072 846-666',
+  otherServices: 'Other services',
+}
+
+const COPY = { es, en }
 
 export async function generateStaticParams() {
   return SERVICES.map((s) => ({ slug: s.slug }))
@@ -23,9 +44,10 @@ export async function generateMetadata({
 }: {
   params: { slug: string }
 }): Promise<Metadata> {
-  const service = getServiceBySlug(params.slug)
+  const locale = getLocale()
+  const service = getServiceBySlug(params.slug, locale)
   if (!service) {
-    return { title: 'Servicio no encontrado · Clínica Latino' }
+    return { title: `${COPY[locale].notFoundTitle} · Clínica Latino` }
   }
   return {
     title: `${service.title} · Clínica Latino`,
@@ -38,7 +60,9 @@ export default async function ServiceLandingPage({
 }: {
   params: { slug: string }
 }) {
-  const service = getServiceBySlug(params.slug)
+  const locale = getLocale()
+  const t = COPY[locale]
+  const service = getServiceBySlug(params.slug, locale)
   if (!service) notFound()
 
   const Icon = service.icon
@@ -63,7 +87,7 @@ export default async function ServiceLandingPage({
             className="inline-flex items-center gap-2 text-brand-gray hover:text-brand-blue font-lato text-sm mb-8 transition-colors"
           >
             <ArrowLeft size={14} />
-            Volver a servicios
+            {t.back}
           </Link>
 
           {/* 2 columnas: imagen | info */}
@@ -88,7 +112,7 @@ export default async function ServiceLandingPage({
                 </div>
                 <div>
                   <div className="font-lato text-[10px] uppercase tracking-[0.2em] text-brand-gray font-bold">
-                    Especialidad
+                    {t.specialty}
                   </div>
                   <div className="font-lato text-brand-dark text-sm font-bold">
                     {service.tag}
@@ -137,7 +161,7 @@ export default async function ServiceLandingPage({
                   className="group inline-flex items-center gap-2.5 bg-brand-gradient text-white font-lato font-bold px-7 py-3.5 transition-all duration-300 hover:shadow-xl hover:shadow-brand-teal/30 text-sm tracking-wide"
                 >
                   <Calendar size={16} />
-                  Agendar una cita
+                  {t.bookCta}
                   <ArrowRight
                     size={16}
                     className="transition-transform duration-300 group-hover:translate-x-1"
@@ -148,7 +172,7 @@ export default async function ServiceLandingPage({
                   className="inline-flex items-center gap-2.5 border-2 border-brand-dark/15 hover:border-brand-blue text-brand-dark hover:text-brand-blue font-lato font-bold px-7 py-3.5 transition-all duration-300 text-sm tracking-wide"
                 >
                   <Phone size={16} />
-                  Llamar al 072 846-666
+                  {t.callCta}
                 </a>
               </div>
             </div>
@@ -162,12 +186,13 @@ export default async function ServiceLandingPage({
           <div className="flex items-center gap-3 mb-6">
             <div className="h-px w-10 bg-brand-gradient" />
             <span className="text-brand-blue font-lato text-xs font-bold tracking-[0.3em] uppercase">
-              Otros servicios
+              {t.otherServices}
             </span>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-            {SERVICES.filter((s) => s.slug !== service.slug)
+            {getServices(locale)
+              .filter((s) => s.slug !== service.slug)
               .slice(0, 5)
               .map((s) => {
                 const SIcon = s.icon
