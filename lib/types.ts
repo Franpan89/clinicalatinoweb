@@ -55,6 +55,9 @@ export type Database = {
           updated_at: string
           slug: string
           full_name: string
+          title: string | null
+          first_names: string | null
+          last_names: string | null
           specialty: string
           specialty_label: string
           subspecialty: string
@@ -87,6 +90,9 @@ export type Database = {
           updated_at?: string
           slug: string
           full_name: string
+          title?: string | null
+          first_names?: string | null
+          last_names?: string | null
           specialty: string
           specialty_label: string
           subspecialty: string
@@ -116,6 +122,9 @@ export type Database = {
         Update: Partial<{
           slug: string
           full_name: string
+          title: string | null
+          first_names: string | null
+          last_names: string | null
           specialty: string
           specialty_label: string
           subspecialty: string
