@@ -55,18 +55,19 @@ export type Database = {
           updated_at: string
           slug: string
           full_name: string
+          title: string | null
+          first_names: string | null
+          last_names: string | null
           specialty: string
           specialty_label: string
           subspecialty: string
           bio: string
-          experience: string
           education: string[]
           schedule: string
           schedule_days: ScheduleBlock[]
           schedule_note: string | null
           subspecialty_en: string | null
           bio_en: string | null
-          experience_en: string | null
           education_en: string[]
           schedule_note_en: string | null
           languages: string[]
@@ -87,18 +88,19 @@ export type Database = {
           updated_at?: string
           slug: string
           full_name: string
+          title?: string | null
+          first_names?: string | null
+          last_names?: string | null
           specialty: string
           specialty_label: string
           subspecialty: string
           bio: string
-          experience: string
           education?: string[]
           schedule: string
           schedule_days?: ScheduleBlock[]
           schedule_note?: string | null
           subspecialty_en?: string | null
           bio_en?: string | null
-          experience_en?: string | null
           education_en?: string[]
           schedule_note_en?: string | null
           languages?: string[]
@@ -116,18 +118,19 @@ export type Database = {
         Update: Partial<{
           slug: string
           full_name: string
+          title: string | null
+          first_names: string | null
+          last_names: string | null
           specialty: string
           specialty_label: string
           subspecialty: string
           bio: string
-          experience: string
           education: string[]
           schedule: string
           schedule_days: ScheduleBlock[]
           schedule_note: string | null
           subspecialty_en: string | null
           bio_en: string | null
-          experience_en: string | null
           education_en: string[]
           schedule_note_en: string | null
           languages: string[]

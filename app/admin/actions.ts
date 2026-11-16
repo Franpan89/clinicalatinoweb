@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { slugify, formatSchedule } from '@/lib/doctors'
+import { slugify, formatSchedule, composeFullName } from '@/lib/doctors'
 import type { DoctorUpdate, SpecialtyUpdate, ScheduleBlock, WeekDay, InsuranceLogoUpdate, NewsUpdate, PackageUpdate } from '@/lib/types'
 
 // ─── AUTH ─────────────────────────────────────────────
@@ -94,6 +94,16 @@ function parseScheduleBlocks(formData: FormData): ScheduleBlock[] {
   }
 }
 
+/** Título, nombres y apellidos del formulario del médico. full_name se arma aquí,
+ *  así nunca queda desfasado de las partes que se usan para ordenar. */
+function parseDoctorName(formData: FormData) {
+  const title = String(formData.get('title') ?? '').trim()
+  const first_names = String(formData.get('first_names') ?? '').trim()
+  const last_names = String(formData.get('last_names') ?? '').trim()
+  const full_name = composeFullName({ title, firstNames: first_names, lastNames: last_names })
+  return { title: title || null, first_names, last_names, full_name }
+}
+
 async function uploadPhoto(file: File, slug: string): Promise<string | null> {
   if (!file || file.size === 0) return null
   const supabase = createClient()
@@ -121,13 +131,12 @@ async function uploadPhoto(file: File, slug: string): Promise<string | null> {
 export async function createDoctor(formData: FormData) {
   const supabase = createClient()
 
-  const full_name = String(formData.get('full_name') ?? '').trim()
+  const { title, first_names, last_names, full_name } = parseDoctorName(formData)
   const slug = String(formData.get('slug') ?? '').trim() || slugify(full_name)
   const specialty = String(formData.get('specialty') ?? '').trim()
   const specialty_label = String(formData.get('specialty_label') ?? '').trim()
   const subspecialty = String(formData.get('subspecialty') ?? '').trim()
   const bio = String(formData.get('bio') ?? '').trim()
-  const experience = String(formData.get('experience') ?? '').trim()
   const education = parseLines(formData.get('education'))
   const languages = parseCommaList(formData.get('languages'))
   const office_number = String(formData.get('office_number') ?? '').trim() || null
@@ -144,11 +153,10 @@ export async function createDoctor(formData: FormData) {
   const schedule_note = String(formData.get('schedule_note') ?? '').trim() || null
   const subspecialty_en = String(formData.get('subspecialty_en') ?? '').trim() || null
   const bio_en = String(formData.get('bio_en') ?? '').trim() || null
-  const experience_en = String(formData.get('experience_en') ?? '').trim() || null
   const education_en = parseLines(formData.get('education_en'))
   const schedule_note_en = String(formData.get('schedule_note_en') ?? '').trim() || null
 
-  if (!full_name || !specialty || !specialty_label || !subspecialty || !bio || !experience) {
+  if (!first_names || !last_names || !specialty || !specialty_label || !subspecialty || !bio) {
     return { error: 'Todos los campos marcados con * son obligatorios.' }
   }
 
@@ -164,17 +172,18 @@ export async function createDoctor(formData: FormData) {
   const { error } = await supabase.from('doctors').insert({
     slug,
     full_name,
+    title,
+    first_names,
+    last_names,
     specialty,
     specialty_label,
     subspecialty,
     bio,
-    experience,
     schedule,
     schedule_days,
     schedule_note,
     subspecialty_en,
     bio_en,
-    experience_en,
     education_en,
     schedule_note_en,
     education,
@@ -204,13 +213,12 @@ export async function createDoctor(formData: FormData) {
 export async function updateDoctor(id: string, formData: FormData) {
   const supabase = createClient()
 
-  const full_name = String(formData.get('full_name') ?? '').trim()
+  const { title, first_names, last_names, full_name } = parseDoctorName(formData)
   const slug = String(formData.get('slug') ?? '').trim()
   const specialty = String(formData.get('specialty') ?? '').trim()
   const specialty_label = String(formData.get('specialty_label') ?? '').trim()
   const subspecialty = String(formData.get('subspecialty') ?? '').trim()
   const bio = String(formData.get('bio') ?? '').trim()
-  const experience = String(formData.get('experience') ?? '').trim()
   const education = parseLines(formData.get('education'))
   const languages = parseCommaList(formData.get('languages'))
   const office_number = String(formData.get('office_number') ?? '').trim() || null
@@ -227,28 +235,28 @@ export async function updateDoctor(id: string, formData: FormData) {
   const schedule_note = String(formData.get('schedule_note') ?? '').trim() || null
   const subspecialty_en = String(formData.get('subspecialty_en') ?? '').trim() || null
   const bio_en = String(formData.get('bio_en') ?? '').trim() || null
-  const experience_en = String(formData.get('experience_en') ?? '').trim() || null
   const education_en = parseLines(formData.get('education_en'))
   const schedule_note_en = String(formData.get('schedule_note_en') ?? '').trim() || null
 
-  if (!full_name || !specialty || !specialty_label || !subspecialty || !bio || !experience) {
+  if (!first_names || !last_names || !specialty || !specialty_label || !subspecialty || !bio) {
     return { error: 'Todos los campos marcados con * son obligatorios.' }
   }
 
   const update: DoctorUpdate = {
     slug,
     full_name,
+    title,
+    first_names,
+    last_names,
     specialty,
     specialty_label,
     subspecialty,
     bio,
-    experience,
     schedule,
     schedule_days,
     schedule_note,
     subspecialty_en,
     bio_en,
-    experience_en,
     education_en,
     schedule_note_en,
     education,

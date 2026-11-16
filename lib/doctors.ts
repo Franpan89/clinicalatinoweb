@@ -88,23 +88,144 @@ export function localizeLanguage(language: string, locale: Locale): string {
   return LANGUAGE_EN[language.trim().toLowerCase()] ?? language
 }
 
-/** Nombre sin el título "Dr./Dra." — base para ordenar alfabéticamente. */
-function nameForSort(fullName: string): string {
-  return fullName.replace(/^\s*(dr|dra)\.?\s+/i, '').trim()
+/** Minúsculas y sin tildes, para comparar tokens. */
+function normalizeToken(token: string): string {
+  return token
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
 }
 
-/** Orden alfabético por nombre (ignora "Dr./Dra." y tildes; "María" va con la M).
- *  Desempata con display_order. No muta el arreglo recibido.
+/** Partículas que forman parte de un apellido compuesto ("de la Torre", "del Pino"). */
+const SURNAME_PARTICLES = new Set(['de', 'del', 'la', 'las', 'los', 'y', 'van', 'von', 'da', 'di'])
+
+/** Segundos nombres frecuentes ("María José", "Juan Pablo", "Luis Fernando").
+ *  Sirven para distinguir, en un nombre de 3 palabras, "María José Carrasco"
+ *  (apellido: Carrasco) de "Eduardo Vásquez Andrade" (apellido: Vásquez).
  */
-export function sortDoctorsAlphabetically<T extends { full_name: string; display_order: number }>(
-  doctors: T[]
-): T[] {
-  return [...doctors].sort(
-    (a, b) =>
-      nameForSort(a.full_name).localeCompare(nameForSort(b.full_name), 'es', {
-        sensitivity: 'base',
-      }) || a.display_order - b.display_order
-  )
+const COMPOUND_GIVEN_NAMES = new Set([
+  'jose', 'maria', 'juan', 'luis', 'carlos', 'fernando', 'pablo', 'andres', 'antonio',
+  'alejandro', 'eduardo', 'xavier', 'javier', 'francisco', 'miguel', 'manuel', 'alberto',
+  'ricardo', 'roberto', 'patricio', 'gabriel', 'daniel', 'david', 'sebastian', 'felipe',
+  'fabian', 'rafael', 'enrique', 'ignacio', 'mauricio', 'marcelo', 'esteban', 'cesar',
+  'hernan', 'edgar', 'byron', 'cristian', 'victor', 'oswaldo', 'isabel', 'elena', 'gabriela',
+  'cristina', 'fernanda', 'alejandra', 'paola', 'lucia', 'carolina', 'veronica', 'patricia',
+  'belen', 'cecilia', 'monica', 'alexandra', 'daniela', 'andrea', 'valeria', 'ximena',
+  'eugenia', 'soledad', 'beatriz', 'catalina', 'natalia', 'rocio', 'sofia', 'sandra',
+])
+
+/** Divide un texto en palabras, uniendo las partículas ("de", "del", "de la"…) a la palabra que sigue:
+ *  "Luis de la Torre Vera" → ["Luis", "de la Torre", "Vera"]. */
+function groupWords(text: string): string[] {
+  const units: string[] = []
+  let pending: string[] = []
+  for (const token of text.split(/\s+/).filter(Boolean)) {
+    if (SURNAME_PARTICLES.has(normalizeToken(token))) {
+      pending.push(token)
+      continue
+    }
+    units.push([...pending, token].join(' '))
+    pending = []
+  }
+  if (pending.length > 0) units.push(pending.join(' '))
+  return units
+}
+
+/** Títulos que se reconocen al inicio de un nombre ya escrito en un solo texto. */
+const TITLE_RE =
+  /^\s*((?:(?:dra?|doctora?|mgs?|mgstr|mag|msc|mtra?|lic|licda|ing|prof|profa|esp|phd|md)\.?\s+)+)/i
+
+/** Separa el título ("Dr.", "Dra. Mgstr."…) del resto del nombre. */
+function stripTitle(fullName: string): { title: string; rest: string } {
+  const match = fullName.match(TITLE_RE)
+  if (!match) return { title: '', rest: fullName.trim() }
+  return { title: match[1].trim(), rest: fullName.slice(match[0].length).trim() }
+}
+
+/**
+ * Separa un nombre (sin título) en nombres de pila y apellidos.
+ * Convención hispana: nombres de pila + primer apellido + segundo apellido.
+ *  - 1 palabra: es el apellido.
+ *  - 2 palabras: nombre + apellido.
+ *  - 3 palabras: si la 2.ª es un segundo nombre frecuente → 2 nombres + 1 apellido;
+ *    si no → 1 nombre + 2 apellidos.
+ *  - 4 o más: 2 nombres + el resto son apellidos.
+ * Las partículas ("de", "del", "de la"…) se unen al apellido que sigue.
+ */
+function splitName(nameWithoutTitle: string): { given: string[]; surnames: string[] } {
+  const units = groupWords(nameWithoutTitle)
+
+  if (units.length <= 1) return { given: [], surnames: units }
+  if (units.length === 2) return { given: [units[0]], surnames: [units[1]] }
+  if (units.length === 3) {
+    return COMPOUND_GIVEN_NAMES.has(normalizeToken(units[1]))
+      ? { given: units.slice(0, 2), surnames: [units[2]] }
+      : { given: [units[0]], surnames: units.slice(1) }
+  }
+  return { given: units.slice(0, 2), surnames: units.slice(2) }
+}
+
+export type NameParts = {
+  /** Texto libre: "Dr.", "Dra.", "Mgstr.", "Dr. PhD"… Puede ir vacío. */
+  title: string
+  firstNames: string
+  /** Primer y segundo apellido, en ese orden: "Vásquez Andrade". */
+  lastNames: string
+}
+
+/** Sugiere título, nombres y apellidos a partir de un nombre completo en un solo texto.
+ *  Es una estimación (ver splitName): se usa para prellenar el admin de los médicos
+ *  que aún no tienen sus nombres y apellidos guardados por separado.
+ */
+export function splitFullName(fullName: string): NameParts {
+  const { title, rest } = stripTitle(fullName)
+  const { given, surnames } = splitName(rest)
+  return { title, firstNames: given.join(' '), lastNames: surnames.join(' ') }
+}
+
+/** Arma el nombre completo que se muestra en el sitio: "Dr. Eduardo Vásquez Andrade". */
+export function composeFullName(parts: NameParts): string {
+  return [parts.title, parts.firstNames, parts.lastNames]
+    .map((p) => p.trim())
+    .filter(Boolean)
+    .join(' ')
+}
+
+type SortableDoctor = {
+  full_name: string
+  display_order: number
+  first_names?: string | null
+  last_names?: string | null
+}
+
+/** Claves de orden, en este orden: primer apellido, resto de apellidos (vacío si no tiene), nombres.
+ *  Si el médico tiene sus apellidos guardados se usan tal cual; si no, se estiman desde full_name.
+ */
+function sortKeys(doctor: SortableDoctor): [string, string, string] {
+  const lastNames = doctor.last_names?.trim()
+  if (lastNames) {
+    const surnames = groupWords(lastNames)
+    return [surnames[0] ?? '', surnames.slice(1).join(' '), doctor.first_names?.trim() ?? '']
+  }
+  const { given, surnames } = splitName(stripTitle(doctor.full_name).rest)
+  return [surnames[0] ?? '', surnames.slice(1).join(' '), given.join(' ')]
+}
+
+/** Orden alfabético por primer apellido (ignora "Dr./Dra." y tildes).
+ *  Desempata por segundo apellido (quien no lo tiene va primero), luego por nombre
+ *  y al final por display_order. No muta el arreglo recibido.
+ */
+export function sortDoctorsAlphabetically<T extends SortableDoctor>(doctors: T[]): T[] {
+  const collator = new Intl.Collator('es', { sensitivity: 'base' })
+  return [...doctors].sort((a, b) => {
+    const keysA = sortKeys(a)
+    const keysB = sortKeys(b)
+    for (let i = 0; i < keysA.length; i++) {
+      const diff = collator.compare(keysA[i], keysB[i])
+      if (diff !== 0) return diff
+    }
+    return a.display_order - b.display_order
+  })
 }
 
 export function getInitials(fullName: string): string {

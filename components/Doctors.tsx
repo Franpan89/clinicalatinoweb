@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { Clock, Award, Phone, Building2, DoorOpen, Facebook, Instagram, Linkedin } from 'lucide-react'
+import { Clock, Phone, Building2, DoorOpen, Facebook, Instagram, Linkedin } from 'lucide-react'
 import { getInitials, formatSchedule } from '@/lib/doctors'
 import { useLocale } from '@/components/LocaleProvider'
 import type { Doctor, Specialty } from '@/lib/types'
@@ -138,12 +138,6 @@ function DoctorCard({ doctor, index }: { doctor: Doctor; index: number }) {
           {doctor.specialty_label}
         </div>
 
-        <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm px-3 py-1.5 flex items-center gap-1.5">
-          <Award size={12} className="text-brand-teal" />
-          <span className="font-lato text-[10px] font-bold text-brand-dark uppercase tracking-wider">
-            {doctor.experience}
-          </span>
-        </div>
       </div>
 
       <div className="p-6 flex flex-col flex-grow">

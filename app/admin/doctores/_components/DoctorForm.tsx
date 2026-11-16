@@ -3,7 +3,7 @@
 import { useState, useTransition, useRef } from 'react'
 import Link from 'next/link'
 import { Save, AlertCircle, Upload, X, ArrowLeft, Image as ImageIcon } from 'lucide-react'
-import { slugify, getInitials } from '@/lib/doctors'
+import { slugify, getInitials, splitFullName, composeFullName, type NameParts } from '@/lib/doctors'
 import { createDoctor, updateDoctor } from '@/app/admin/actions'
 import type { Doctor, Specialty } from '@/lib/types'
 import ScheduleEditor from './ScheduleEditor'
@@ -26,12 +26,25 @@ export default function DoctorForm({
   const [specialty, setSpecialty] = useState<string>(doctor?.specialty ?? '')
   const [autoSlug, setAutoSlug] = useState(mode === 'create')
   const [slug, setSlug] = useState(doctor?.slug ?? '')
-  const [fullName, setFullName] = useState(doctor?.full_name ?? '')
+  // Si el médico ya tiene sus nombres y apellidos guardados se usan tal cual;
+  // si no (médicos anteriores a la migración 020), se sugieren desde full_name.
+  const [nameParts, setNameParts] = useState<NameParts>(() => {
+    if (!doctor) return { title: 'Dr.', firstNames: '', lastNames: '' }
+    if (!doctor.last_names) return splitFullName(doctor.full_name)
+    return {
+      title: doctor.title ?? '',
+      firstNames: doctor.first_names ?? '',
+      lastNames: doctor.last_names,
+    }
+  })
+  const nameIsSuggested = mode === 'edit' && !!doctor && !doctor.last_names
+  const fullName = composeFullName(nameParts)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const handleNameChange = (value: string) => {
-    setFullName(value)
-    if (autoSlug) setSlug(slugify(value))
+  const handleNamePartChange = (key: keyof NameParts, value: string) => {
+    const next = { ...nameParts, [key]: value }
+    setNameParts(next)
+    if (autoSlug) setSlug(slugify(composeFullName(next)))
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -144,22 +157,73 @@ export default function DoctorForm({
         </Section>
 
         {/* Identidad */}
-        <Section title="Identidad profesional">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <Section
+          title="Identidad profesional"
+          subtitle="Nombres y apellidos van por separado: el listado público se ordena por primer apellido."
+        >
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+            <Field label="Título" hint="Dr., Dra., Mgstr.…">
+              <input
+                name="title"
+                list="doctor-titles"
+                value={nameParts.title}
+                onChange={(e) => handleNamePartChange('title', e.target.value)}
+                placeholder="Dr."
+                className={inputClass}
+              />
+              <datalist id="doctor-titles">
+                <option value="Dr." />
+                <option value="Dra." />
+                <option value="Mgstr." />
+                <option value="Mgs." />
+                <option value="Lic." />
+                <option value="Ing." />
+                <option value="PhD" />
+              </datalist>
+            </Field>
+
+            <div className="md:col-span-3">
+              <Field label="Nombres *" hint="Ejemplo: María José">
+                <input
+                  name="first_names"
+                  required
+                  value={nameParts.firstNames}
+                  onChange={(e) => handleNamePartChange('firstNames', e.target.value)}
+                  placeholder="Todos los nombres de pila"
+                  className={inputClass}
+                />
+              </Field>
+            </div>
+          </div>
+
+          <div className="mt-5">
             <Field
-              label="Nombre completo con título *"
-              hint="Ejemplo: Dr. Eduardo Vásquez Andrade"
+              label="Apellidos *"
+              hint="Primer apellido primero: el listado público se ordena por él. Ejemplo: Vásquez Andrade, De la Torre Vera"
             >
               <input
-                name="full_name"
+                name="last_names"
                 required
-                value={fullName}
-                onChange={(e) => handleNameChange(e.target.value)}
-                placeholder="Dr. Nombre Apellido"
+                value={nameParts.lastNames}
+                onChange={(e) => handleNamePartChange('lastNames', e.target.value)}
+                placeholder="Primer y segundo apellido"
                 className={inputClass}
               />
             </Field>
+          </div>
 
+          <p className="font-lato text-sm text-brand-dark mt-4">
+            <span className="text-brand-gray">Se mostrará como: </span>
+            <span className="font-bold">{fullName || '—'}</span>
+          </p>
+          {nameIsSuggested && (
+            <p className="font-lato text-xs text-amber-800 bg-amber-50 border border-amber-200 px-3 py-2 mt-3">
+              Nombres y apellidos sugeridos a partir del nombre actual (&quot;{doctor?.full_name}&quot;).
+              Revisa que estén bien separados y guarda para dejarlos fijos.
+            </p>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-5">
             <Field label="Slug (URL única) *" hint="Generado automáticamente del nombre">
               <div className="flex gap-2">
                 <input
@@ -248,18 +312,6 @@ export default function DoctorForm({
               className={`${inputClass} resize-none`}
             />
           </Field>
-
-          <div className="mt-5">
-            <Field label="Experiencia *" hint="Ejemplo: 22 años">
-              <input
-                name="experience"
-                required
-                defaultValue={doctor?.experience ?? ''}
-                placeholder="XX años"
-                className={inputClass}
-              />
-            </Field>
-          </div>
 
           <div className="mt-5">
             <Field
@@ -402,17 +454,6 @@ export default function DoctorForm({
                 defaultValue={doctor?.bio_en ?? ''}
                 placeholder="Briefly describe the doctor's background, specialization and areas of practice..."
                 className={`${inputClass} resize-none`}
-              />
-            </Field>
-          </div>
-
-          <div className="mt-5">
-            <Field label="Experiencia (EN)" hint="Ejemplo: 22 years">
-              <input
-                name="experience_en"
-                defaultValue={doctor?.experience_en ?? ''}
-                placeholder="XX years"
-                className={inputClass}
               />
             </Field>
           </div>

@@ -100,9 +100,6 @@ export default async function DoctorsAdminPage({
               <th className="text-left px-4 py-3 font-lato text-[11px] uppercase tracking-wider font-bold text-brand-gray hidden md:table-cell">
                 Especialidad
               </th>
-              <th className="text-left px-4 py-3 font-lato text-[11px] uppercase tracking-wider font-bold text-brand-gray hidden lg:table-cell">
-                Experiencia
-              </th>
               <th className="text-center px-4 py-3 font-lato text-[11px] uppercase tracking-wider font-bold text-brand-gray">
                 Estado
               </th>
@@ -158,11 +155,6 @@ export default async function DoctorsAdminPage({
                 <td className="px-4 py-4 hidden md:table-cell">
                   <span className="inline-block bg-brand-teal/10 text-brand-teal font-lato text-[10px] font-bold uppercase tracking-wider px-2 py-1">
                     {d.specialty_label}
-                  </span>
-                </td>
-                <td className="px-4 py-4 hidden lg:table-cell">
-                  <span className="font-lato text-brand-dark/70 text-sm">
-                    {d.experience}
                   </span>
                 </td>
                 <td className="px-4 py-4 text-center">

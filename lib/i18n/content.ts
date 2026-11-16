@@ -28,7 +28,6 @@ export function localizeDoctor(
     specialty_label: specialtyLabels[doctor.specialty] ?? doctor.specialty_label,
     subspecialty: text(doctor.subspecialty, doctor.subspecialty_en),
     bio: text(doctor.bio, doctor.bio_en),
-    experience: text(doctor.experience, doctor.experience_en),
     education: list(doctor.education, doctor.education_en),
     schedule_note: doctor.schedule_note_en?.trim() ? doctor.schedule_note_en : doctor.schedule_note,
   }
