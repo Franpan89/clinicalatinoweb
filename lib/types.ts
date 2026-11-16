@@ -62,14 +62,12 @@ export type Database = {
           specialty_label: string
           subspecialty: string
           bio: string
-          experience: string
           education: string[]
           schedule: string
           schedule_days: ScheduleBlock[]
           schedule_note: string | null
           subspecialty_en: string | null
           bio_en: string | null
-          experience_en: string | null
           education_en: string[]
           schedule_note_en: string | null
           languages: string[]
@@ -97,14 +95,12 @@ export type Database = {
           specialty_label: string
           subspecialty: string
           bio: string
-          experience: string
           education?: string[]
           schedule: string
           schedule_days?: ScheduleBlock[]
           schedule_note?: string | null
           subspecialty_en?: string | null
           bio_en?: string | null
-          experience_en?: string | null
           education_en?: string[]
           schedule_note_en?: string | null
           languages?: string[]
@@ -129,14 +125,12 @@ export type Database = {
           specialty_label: string
           subspecialty: string
           bio: string
-          experience: string
           education: string[]
           schedule: string
           schedule_days: ScheduleBlock[]
           schedule_note: string | null
           subspecialty_en: string | null
           bio_en: string | null
-          experience_en: string | null
           education_en: string[]
           schedule_note_en: string | null
           languages: string[]

@@ -314,18 +314,6 @@ export default function DoctorForm({
           </Field>
 
           <div className="mt-5">
-            <Field label="Experiencia *" hint="Ejemplo: 22 años">
-              <input
-                name="experience"
-                required
-                defaultValue={doctor?.experience ?? ''}
-                placeholder="XX años"
-                className={inputClass}
-              />
-            </Field>
-          </div>
-
-          <div className="mt-5">
             <Field
               label="Formación académica"
               hint="Una línea por título / institución"
@@ -466,17 +454,6 @@ export default function DoctorForm({
                 defaultValue={doctor?.bio_en ?? ''}
                 placeholder="Briefly describe the doctor's background, specialization and areas of practice..."
                 className={`${inputClass} resize-none`}
-              />
-            </Field>
-          </div>
-
-          <div className="mt-5">
-            <Field label="Experiencia (EN)" hint="Ejemplo: 22 years">
-              <input
-                name="experience_en"
-                defaultValue={doctor?.experience_en ?? ''}
-                placeholder="XX years"
-                className={inputClass}
               />
             </Field>
           </div>
